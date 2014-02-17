@@ -1,0 +1,12 @@
+Button generator:
+http://www.plugolabs.com/twitter-bootstrap-button-generator/
+
+Elusive font for buttons:
+http://shoestrap.org/downloads/elusive-icons-webfont/
+
+Javascript:
+http://getbootstrap.com/2.3.2/javascript.html
+
+CKeditor:
+http://ckeditor.com/
+
