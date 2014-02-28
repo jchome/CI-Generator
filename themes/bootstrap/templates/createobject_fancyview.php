@@ -96,7 +96,7 @@ for field in self.fields:
 			}
 		
 	elif field.sqlType.upper()[0:4] == "TEXT":
-		attributeCode += """<textarea name="%(dbName)s" id="%(dbName)s" %(moreAttributes)s></textarea>
+		attributeCode += """<textarea class="ckeditor" name="%(dbName)s" id="%(dbName)s" %(moreAttributes)s></textarea>
 		""" % { 'dbName' : field.dbName ,
 			'moreAttributes' : moreAttributes
 			}

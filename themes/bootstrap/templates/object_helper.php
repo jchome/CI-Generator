@@ -52,31 +52,20 @@ if (!function_exists('getCount%%(self.obName)%%sFromDB')) {
  */
 if (!function_exists('insertNew%%(self.obName)%%')) {
 	function insertNew%%(self.obName)%%($db, %%
-phpCode = "" 
-if self.isCrossTable:
-	phpCode = self.listOfKeys(fieldPrefix="$", fieldSuffix = ", ",withIntConversion=False)
-else:
-	includesAutoIncrement = False
-	for field in self.keyFields:
-		if field.autoincrement and not includesAutoIncrement:
-			includesAutoIncrement = True
-	phpCode = self.dbVariablesList("$(var)s", 'var',  '', '', 0, not includesAutoIncrement)
-RETURN = phpCode
+includesAutoIncrement = False
+for field in self.keyFields:
+	if field.autoincrement and not includesAutoIncrement:
+		includesAutoIncrement = True
+RETURN = self.dbVariablesList("$(var)s", 'var',  '', '', 0, not includesAutoIncrement)
 %%) {
 		$data=array( %%
-phpCode = ""
-if self.isCrossTable:
-	includesKey = True
-	phpCode = self.dbVariablesList("'(var)s'=>$(var)s", 'var',  '', '', 0, includesKey)
-else:
-	includesAutoIncrement = False
-	for field in self.keyFields:
-		if field.autoincrement and not includesAutoIncrement:
-			includesAutoIncrement = True
-	phpCode = self.dbVariablesList("'(var)s'=>$(var)s", 'var',  '', '', 0, not includesAutoIncrement)
-RETURN = phpCode
+includesAutoIncrement = False
+for field in self.keyFields:
+	if field.autoincrement and not includesAutoIncrement:
+		includesAutoIncrement = True
+RETURN = self.dbVariablesList("'(var)s'=>$(var)s", 'var',  '', '', 0, not includesAutoIncrement)
 %%);
-		log_message('debug','[%%(self.obName.lower())%%_helper.php] : insertNew%%(self.obName)%% with data'. print_r($data, true) );
+		log_message('debug','[%%(self.obName.lower())%%_helper.php] : insertNew%%(self.obName)%% with data:'. print_r($data, true) );
 		$db->insert('%%(self.dbTableName)%%',$data);
 		return $db->insert_id();
 	}
@@ -89,19 +78,14 @@ RETURN = phpCode
 if (!function_exists('update%%(self.obName)%%')) {
 	function update%%(self.obName)%%($db, %%(self.listOfKeys(fieldPrefix="$", fieldSuffix = ", "))%% %%
 includesKey = False
-prefix = ", "
-if self.isCrossTable:
-	prefix = ""
-RETURN = prefix + self.dbVariablesList("$(var)s", 'var',  '', '', 0, includesKey)
+RETURN = ", " + self.dbVariablesList("$(var)s", 'var',  '', '', 0, includesKey)
 %%) {
 		$data = array(%%
 includesKey = False
-if self.isCrossTable:
-	includesKey = True
 RETURN = self.dbVariablesList("'(var)s'=>$(var)s", 'var',  '', '', 0, includesKey)
 %%);
 		$db->where('%%(self.keyFields[0].dbName)%%', %%(self.listOfKeys(fieldPrefix="$", fieldSuffix = ", "))%%);
-		log_message('debug','[%%(self.obName.lower())%%_helper.php] : update%%(self.obName)%% with data'. print_r($data, true) );
+		log_message('debug','[%%(self.obName.lower())%%_helper.php] : update%%(self.obName)%% with data:'. print_r($data, true) );
 		$db->update('%%(self.dbTableName)%%', $data);
 	}
 }
