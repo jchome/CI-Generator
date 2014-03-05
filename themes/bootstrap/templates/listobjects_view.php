@@ -94,7 +94,12 @@ RETURN = allAttributesCode
 %%allAttributesCode = ""
 
 for field in self.fields:
-	if field.dbName != self.keyFields[0].dbName:
+	if field.dbName == self.keyFields[0].dbName:
+		attributeCode = """<!-- $%(structureObName)s->%(dbName)s = <?= $%(structureObName)s->%(dbName)s ?> -->""" % {
+					'structureObName' : self.obName.lower(),
+					'dbName' : field.dbName}
+	
+	else:
 		attributeCode = """
 				<td valign="top">"""
 		if field.referencedObject and field.access == "default":

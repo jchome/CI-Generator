@@ -52,8 +52,8 @@ RETURN = allAttributeCode
 		$config['base_url'] = base_url().'index.php/list%%(self.obName.lower())%%s/index/'.$orderBy.'/'.$asc.'/';
 		$config['total_rows'] = %%(self.obName)%%_model::getCount%%(self.obName)%%s($this->db);
 		$config['per_page'] = 15;
-		$config['cur_tag_open'] = '<li class="active">';
-		$config['cur_tag_close'] = '</li>';
+		$config['cur_tag_open'] = '<li class="active"><a href="#">';
+		$config['cur_tag_close'] = '</a></li>';
 		$config['num_tag_open'] = '<li>';
 		$config['num_tag_close'] = '</li>';
 		$config['prev_tag_open'] = '<li class="prev>';
