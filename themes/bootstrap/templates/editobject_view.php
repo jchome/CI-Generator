@@ -139,7 +139,7 @@ for field in self.fields:
 		attributeCode += """<input class="input-file" id="%(dbName)s_file" name="%(dbName)s_file" type="file" %(moreAttributes)s>
 		<input type="hidden" name="%(dbName)s" id="%(dbName)s" value="%(valueCode)s">
 		<?php if($%(structureObName)s->%(dbName)s != "") { ?>
-			<div class="span4"><a href="<?=base_url()?>www/uploads/%(valueCode)s" ><i class="icon-file"></i> Download</a></div>
+			<div class="span4"><a href="<?=base_url()?>www/uploads/%(valueCode)s" target="_new"><i class="icon-file"></i> Download</a></div>
 			<div class="span2"><a href="#" onclick='$("%(dbName)s").val("")' class="btn"><i class="icon-trash"></i> Delete</a></div>
 			<?php } ?>
 		""" % { 'dbName' : field.dbName, 

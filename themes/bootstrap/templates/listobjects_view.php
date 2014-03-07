@@ -123,7 +123,7 @@ for field in self.fields:
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
 		elif field.sqlType.upper()[0:4] == "FILE":
-			attributeCode += """<a href="<?=base_url()?>/www/uploads/<?=$%(structureObName)s->%(dbName)s?>" class="downloadFile">
+			attributeCode += """<a href="<?=base_url()?>www/uploads/<?=$%(structureObName)s->%(dbName)s?>" target="_new" class="downloadFile">
 				<?=$%(structureObName)s->%(dbName)s?></a>""" % {
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}

@@ -51,8 +51,8 @@ for field in self.fields:
 		continue
 	elif field.referencedObject:
 		attributeCode += """
-	public function findBy_%(fieldDbName)s($%(fieldDbName)s, $limit = 50, $offset = 0){
-		$data['%(objectNameLower)ss'] = %(obName)s_model::getAll%(obName)ssFor%(referencedObject)sBy_%(fieldDbName)s($this->db, $%(fieldDbName)s, $limit, $offset);
+	public function findBy_%(fieldDbName)s($%(fieldDbName)s, $orderBy = null, $limit = 50, $offset = 0){
+		$data['%(objectNameLower)ss'] = %(obName)s_model::getAll%(obName)ssFor%(referencedObject)sBy_%(fieldDbName)s($this->db, $%(fieldDbName)s, $orderBy, $limit, $offset);
 		$this->load->view('%(objectNameLower)s/jsonifyList_view', $data);
 	}""" % { 'referencedObject' : field.referencedObject.obName,
 			'fieldDbName' : field.dbName.lower(),
@@ -63,8 +63,8 @@ for field in self.fields:
 		if field.sqlType.upper()[0:4] == "FILE":
 			continue
 		attributeCode += """
-	public function findBy_%(fieldDbName)s($%(fieldDbName)s, $limit = 50, $offset = 0){
-		$data['%(objectNameLower)ss'] = %(obName)s_model::getAll%(obName)ssBy_%(fieldDbName)s($this->db, urldecode($%(fieldDbName)s), $limit, $offset);
+	public function findBy_%(fieldDbName)s($%(fieldDbName)s, $orderBy = null, $limit = 50, $offset = 0){
+		$data['%(objectNameLower)ss'] = %(obName)s_model::getAll%(obName)ssBy_%(fieldDbName)s($this->db, urldecode($%(fieldDbName)s), $orderBy, $limit, $offset);
 		$this->load->view('%(objectNameLower)s/jsonifyList_view', $data);
 	}""" % { 'fieldDbName' : field.dbName.lower(),
 			'objectNameLower' : self.obName.lower(),

@@ -1,0 +1,73 @@
+%[kind : views]
+%[file : list%%(self.obName.lower())%%s.kv]
+%[path : %%(self.obName.lower())%%sScreen]
+<List%%(self.obName)%%s>:
+	logLabel: logLabel_id
+	containerListView: list_id
+
+	BoxLayout:
+		orientation: 'vertical'
+
+		# Action Bar
+		BoxLayout:
+			orientation: 'horizontal'
+			size_hint_y: None
+			height: '60sp'
+			Button:
+				text: "< %%(self.obName)%%"
+				on_press: root.back()
+				font_size: '22sp'
+				halign: 'left'
+				valign: 'middle'
+				text_size: self.size
+				background_normal: ""
+				background_down: ""
+				background_color: (0,0,0,1)
+				color: (1, 1, 1, 1)
+				
+			Label:
+				text: " "
+				size_hint_x: 1
+			
+			Button:
+				text: "R"
+				on_press: root.refresh()
+				font_size: '22sp'
+				valign: 'middle'
+				width: '60sp'
+				size_hint_x: None
+				background_normal: ""
+				background_down: ""
+				background_color: (1,0,0,1)
+				color: (1, 1, 1, 1)
+				
+			Button:
+				text: "N"
+				on_press: root.newItem()
+				font_size: '22sp'
+				valign: 'middle'
+				width: '60sp'
+				size_hint_x: None
+				background_normal: ""
+				background_down: ""
+				background_color: (1,0,0,1)
+				color: (1, 1, 1, 1)
+
+		# Small Padding
+		Label:
+			text: " "
+			size_hint_y: None
+			height: '6sp'
+			
+		ListView:
+			id: list_id
+			
+		# Log line
+		Label: 
+			id: logLabel_id
+			text: ""
+			
+			size_hint_y: None
+			height: '20sp'
+			font_size: '12sp'
+		
