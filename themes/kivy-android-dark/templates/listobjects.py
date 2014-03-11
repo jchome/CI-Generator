@@ -1,6 +1,6 @@
 %[kind : controllers]
 %[file : list%%(self.obName.lower())%%s.py]
-%[path : %%(self.obName.lower())%%sScreen]
+%[path : screens/%%(self.obName.lower())%%sScreen]
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 '''
@@ -130,7 +130,7 @@ class List%%(self.obName)%%s(Screen):
 		
 	def setItems(self, data):
 		self.allItems = data
-		#self.logLabel.text = "count : %s" % len(self.categories)
+		#self.logLabel.text = "count : %s" % len(self.allItems)
 		self.updateDisplay()
 		
 	def back(self):

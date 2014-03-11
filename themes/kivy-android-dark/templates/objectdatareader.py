@@ -6,7 +6,9 @@
 
 ###
 # AFTER CODE GENRATION : add this to the "__init__.py" file:
-#  __all__ = ["datareader", ... , " %%(self.obName.lower())%%datareader"]
+#  __all__ = ["datareader", ... , 
+#		"%%(self.obName.lower())%%datareader.%%(self.obName)%%DataReader"
+#	]
 ###
 
 from datareader import DataReader, JsonRetriever
@@ -38,11 +40,14 @@ for field in self.fields:
 		continue
 	elif field.referencedObject:
 		attributeCode += """
+	# get all <%(displayName)s> by <%(fieldObName)s>, using <%(fieldDbName)s>
 	def retrieveAllBy_%(fieldDbName)s(self, value):
-		URL_ALL = "%(objectNameLower)s/list%(objectNameLower)ssjson/findBy_%(fieldDbName)s/"+value
+		URL_ALL = "%(objectNameLower)s/list%(objectNameLower)ssjson/findBy_%(fieldDbName)s/"+str(value)
 		return self.retrieveFromUrl(URL_ALL)
 		""" % {'fieldDbName' : field.dbName.lower(),
-			'objectNameLower' : self.obName.lower()
+			'objectNameLower' : self.obName.lower(),
+			'displayName' : self.displayName,
+			'fieldObName' : field.obName
 		}
 		
 	if attributeCode != "":
