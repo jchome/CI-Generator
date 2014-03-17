@@ -128,7 +128,7 @@ if (!function_exists('get%%(self.obName)%%Row')) {
 %%getterAll = ""
 for field in self.fields:
 	getter = ""
-	if field.autoincrement:
+	if field.sqlType.upper()[0:4] == "FILE" or field.isKey:
 		continue
 	elif field.referencedObject:
 		getter = """
@@ -166,8 +166,6 @@ if (!function_exists('getAll%(obName)ssFor%(referencedObjectName)sFromDBBy_%(fie
 		'fieldName' : field.dbName
 	}
 	else:
-		if field.sqlType.upper()[0:4] == "FILE":
-			continue
 		getter = """
 /**
  * Recupere la liste des enregistrements depuis une valeur du champ %(fieldName)s

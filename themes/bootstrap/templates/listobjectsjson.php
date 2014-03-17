@@ -47,7 +47,7 @@ RETURN = allAttributeCode
 	
 for field in self.fields:
 	attributeCode = ""
-	if field.autoincrement:
+	if field.sqlType.upper()[0:4] == "FILE":
 		continue
 	elif field.referencedObject:
 		attributeCode += """
@@ -60,8 +60,6 @@ for field in self.fields:
 			'obName' : self.obName
 		}
 	else:
-		if field.sqlType.upper()[0:4] == "FILE":
-			continue
 		attributeCode += """
 	public function findBy_%(fieldDbName)s($%(fieldDbName)s, $orderBy = null, $limit = 50, $offset = 0){
 		$data['%(objectNameLower)ss'] = %(obName)s_model::getAll%(obName)ssBy_%(fieldDbName)s($this->db, urldecode($%(fieldDbName)s), $orderBy, $limit, $offset);

@@ -208,7 +208,7 @@ else:
 %%getterAll = ""
 for field in self.fields:
 	getter = ""
-	if field.autoincrement:
+	if field.sqlType.upper()[0:4] == "FILE":
 		continue
 	elif field.referencedObject:
 		getter = """
@@ -231,9 +231,25 @@ for field in self.fields:
 		'foreignKey' : field.referencedObject.keyFields[0].dbName,
 		'fieldName' : field.dbName
 	}
+	elif field.isKey:
+		getter = """
+	/**
+	 * Recupere la liste des enregistrements depuis le champ %(fieldName)s
+	 * @param object $db database object
+	 * @return array of data
+	 */
+	static function getAll%(obName)ssBy_%(fieldName)s($db, $%(fieldName)s, $limit = null, $offset = null){
+		$records = array();
+		$object = %(obName)s_Model::get%(obName)s($db, $%(fieldName)s);
+		$records[$object->%(keyField)s] = $object;
+		return $records;
+	}
+""" % { 'keyField' : self.keyFields[0].dbName,
+		'obName' : self.obName,
+		'fieldName' : field.dbName
+	}
+		
 	else:
-		if field.sqlType.upper()[0:4] == "FILE":
-			continue
 		getter = """
 	/**
 	 * Recupere la liste des enregistrements depuis le champ %(fieldName)s
