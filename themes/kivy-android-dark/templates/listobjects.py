@@ -9,7 +9,7 @@ This code is generated.
 
 ###
 # AFTER CODE GENRATION : use this code into the "main.py" file to insert a screen 
-# from %%(self.obName.lower())%%sScreen.list%%(self.obName.lower())%%s import List%%(self.obName)%%sApp
+# from screens.%%(self.obName.lower())%%sScreen.list%%(self.obName.lower())%%s import List%%(self.obName)%%sApp
 #
 # app = List%%(self.obName)%%sApp()
 # app.load_kv()
@@ -25,6 +25,7 @@ from kivy.uix.screenmanager import Screen, SlideTransition
 from kivy.adapters.listadapter import ListAdapter
 from kivy.lang import Builder
 
+__all__ = ("List%%(self.obName)%%s", "List%%(self.obName)%%sApp")
 
 Builder.load_string("""
 [CustomListItem%%(self.obName)%%@SelectableView+BoxLayout]:
@@ -43,62 +44,50 @@ Builder.load_string("""
 	
 	# Text of item
 	ListItemButton:
+		id: mainListItemButton
 		canvas.before:
 			Color:
 				rgba: 1,0,0, 1
 			Rectangle:
 				pos: self.pos
 				size: self.size
-		selected_color: 0,0,0, 0
+		halign: 'center'
+		text_size: (self.width , None)
+		color: (1,1,1, 1)
+		text: "[ X ]"
+		size_hint_x: None
+		width: '80sp'
+		font_size: '22sp'
+		
+	ListItemButton:
+		selected_color: 0,0,1, 0
 		deselected_color: 1,1,1, 0
 		background_color: 1,1,1, 0
 		background_normal: ""
 		background_down: ""
 		
-		halign: 'center'
+		halign: 'left'
 		text_size: (self.width , None)
 		color: [1,1,1, 1]
-		text: "[ X ]"
-		size_hint_x: None
-		width: '80sp'
+		text: ctx.text +'\\n[size=14sp][color=bfbfbf]'+ ctx.subtext+'[/color][/size]'
+		markup: True
 		font_size: '22sp'
-
-	BoxLayout:
-		orientation: 'vertical'
-		ListItemButton:
-			selected_color: 0,0,0, 0
-			deselected_color: 1,1,1, 0
-			background_color: 1,1,1, 0
-			background_normal: ""
-			background_down: ""
-			
-			halign: 'left'
-			text_size: (self.width , None)
-			color: [1,1,1, 1]
-			text: ctx.text
-			#font_name: "fonts/Ubuntu-L.ttf"
-			font_size: '22sp'
-		Label:
-			text: ctx.subtext
-			valign: 'top'
-			halign: 'left'
-			text_size: self.size
-			color: (1, 1, 1, 0.75)
-			font_size: '14sp'
+		
 
 """)
 
 class List%%(self.obName)%%s(Screen):
 	allItems = None
-	def __init__(self, ):
+	def __init__(self, aName):
 		super(List%%(self.obName)%%s, self).__init__()
+		self.name = aName
 		# prepare display
 		self.setItems([])
 		self.updateDisplay()
 		
 	def updateDisplay(self):
 		list_item_args_converter = \
-			lambda row_index, obj: {'text': self.allItems[obj]["%%(self.keyFields[0].dbName)%%"],
+			lambda row_index, obj: {'text': obj.%%(self.keyFields[0].dbName)%%,
 									'subtext': "Lorem ipsum",
 									'index': row_index,
 									'id': "itemindex_%d" % row_index, 
@@ -106,7 +95,7 @@ class List%%(self.obName)%%s(Screen):
 									'size_hint_y': None,
 									'height': 25}
 		
-		my_adapter = ListAdapter(data = self.allItems,
+		my_adapter = ListAdapter(data = self.allItems.itervalues(),
 									args_converter=list_item_args_converter,
 									selection_mode='single',
 									allow_empty_selection=True,
@@ -118,9 +107,7 @@ class List%%(self.obName)%%s(Screen):
 	def item_changed(self, adapter, *args):
 		if len(adapter.selection) == 0:
 			return
-		objectId = adapter.data[adapter.selection[0].parent.index]
-		objectSelected = self.allItems[objectId]
-		# pour le graphisme, ne pas changer la couleur du bouton
+		objectSelected = adapter.data[adapter.selection[0].parent.index]
 		adapter.selection[0].deselect()
 		
 		#self.manager.transition = SlideTransition(direction="left")
@@ -144,9 +131,8 @@ class List%%(self.obName)%%s(Screen):
 		pass
 	
 class List%%(self.obName)%%sApp(App):
-		
+	screenName = 'List%%(self.obName)%%s'
+	
 	def build(self):
-		screen = List%%(self.obName)%%s()
-		screen.name = 'List%%(self.obName)%%s'
-		return screen
+		return List%%(self.obName)%%s(self.screenName)
 	
