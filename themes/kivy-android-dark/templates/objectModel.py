@@ -17,10 +17,19 @@ RETURN = self.dbVariablesList("""''' (descrVar)s ; type (typeVar)s'''
 		%%
 		return self
 	
+	def toDict(self):
+		return { %%
+		RETURN = self.dbVariablesList('"(instVar)s": self.(instVar)s', 'instVar', 'typeVar', 'descrVar', 0)
+		%%}
+	
 	@staticmethod
 	def readAllFromDict(aDictOfDict):
 		allObjects = {}
 		for key, aDict in aDictOfDict.iteritems():
 			allObjects[key] = %%(self.obName)%%().readFromDict(aDict)
 		return allObjects
+	
+	def __repr__(self):
+		return "<%%(self.obName)%% instance : %s>" % ( self.toDict() )
+	
 	

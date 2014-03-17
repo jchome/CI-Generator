@@ -69,7 +69,7 @@ class %%(self.obName)%%JsonRetriever(JsonRetriever):
 		JsonRetriever.__init__(self)
 		
 	def retrieveAll(self):
-		URL_ALL = "%%(self.obName.lower())%%/list%%(self.obName.lower())%%json"
+		URL_ALL = "%%(self.obName.lower())%%/list%%(self.obName.lower())%%sjson"
 		fullDict = self.retrieveFromUrl(URL_ALL)
 		return %%(self.obName)%%.readAllFromDict(fullDict)
 

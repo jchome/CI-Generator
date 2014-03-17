@@ -128,7 +128,9 @@ class List%%(self.obName)%%s(Screen):
 		pass
 
 	def refresh(self):
-		pass
+		%%(self.obName.lower())%%Helper = %%(self.obName)%%DataReader()
+		%%(self.obName.lower())%%Helper.refreshData()
+		self.setItems(%%(self.obName.lower())%%Helper.getAllRecords())
 	
 class List%%(self.obName)%%sApp(App):
 	screenName = 'List%%(self.obName)%%s'
