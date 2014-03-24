@@ -33,7 +33,7 @@ Builder.load_string("""
 	spacing: '10sp'
 	padding: (sp(20), 0)
 	size_hint_y: None
-	height: '100sp'
+	height: '64sp'
 	index: ctx.index
 	canvas.after:
 		Color:
@@ -42,22 +42,23 @@ Builder.load_string("""
 			rectangle: self.x,self.y+self.height,self.width,0
 	
 	
-	# Text of item
+	# Icon of item
 	ListItemButton:
 		id: mainListItemButton
 		canvas.before:
 			Color:
-				rgba: 1,0,0, 1
+				rgba: 1,1,1, 1
 			Rectangle:
+				source: "images/ic_action_star.png"
 				pos: self.pos
 				size: self.size
-		halign: 'center'
-		text_size: (self.width , None)
-		color: (1,1,1, 1)
-		text: "[ X ]"
 		size_hint_x: None
-		width: '80sp'
-		font_size: '22sp'
+		width: '64sp'
+		selected_color: 0,0,0, 0
+		deselected_color: 1,1,1, 0
+		background_color: 1,1,1, 0
+		background_normal: ""
+		background_down: ""
 		
 	ListItemButton:
 		selected_color: 0,0,1, 0
@@ -84,6 +85,7 @@ class List%%(self.obName)%%s(Screen):
 		# prepare display
 		self.setItems([])
 		self.updateDisplay()
+		self.%%(self.obName.lower())%% = None
 		
 	def updateDisplay(self):
 		list_item_args_converter = \
@@ -107,18 +109,19 @@ class List%%(self.obName)%%s(Screen):
 	def item_changed(self, adapter, *args):
 		if len(adapter.selection) == 0:
 			return
-		objectSelected = adapter.data[adapter.selection[0].parent.index]
+		self.%%(self.obName.lower())%% = adapter.data[adapter.selection[0].parent.index]
 		adapter.selection[0].deselect()
 		
 		#self.manager.transition = SlideTransition(direction="left")
 		#self.manager.current = "name of the next screen"
-		#self.manager.get_screen("name of the next screen").setItems( ... )
+		#self.manager.current_screen.setItems( ... )
 		
 		
 	def setItems(self, data):
 		self.allItems = data
 		#self.logLabel.text = "count : %s" % len(self.allItems)
 		self.updateDisplay()
+		self.%%(self.obName.lower())%% = None
 		
 	def back(self):
 		self.manager.transition = SlideTransition(direction="right")

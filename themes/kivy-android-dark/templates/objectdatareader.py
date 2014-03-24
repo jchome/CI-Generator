@@ -48,7 +48,7 @@ for field in self.fields:
 		attributeCode += """
 	# get all <%(displayName)s> by <%(fieldObName)s>, using <%(fieldDbName)s>
 	def getAllRecordsBy_%(fieldDbName)s(self, value):
-		fullDict = DataReader.getAllRecordsEquals(self, value)
+		fullDict = DataReader.getAllRecordsEquals(self, "%(fieldDbName)s", value)
 		return %(objectName)s.readAllFromDict(fullDict)
 		""" % {'fieldDbName' : field.dbName.lower(),
 			'displayName' : self.displayName,
