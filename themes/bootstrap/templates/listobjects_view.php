@@ -40,15 +40,15 @@ if($this->session->userdata('user_name') == "") {
 			<thead>
 				<tr>
 		<!-- table header auto-generated : -->
-			%%
-RETURN = self.dbAndObVariablesList("""<th class=\"sortable\">
+					%%
+RETURN = self.dbAndObVariablesList("""<th class=\"sortable\"><!-- (dbVar)s -->
 						<a href="<?=base_url()?>index.php/%(obName)s/list%(obName)ss/index/(dbVar)s/<?= ($orderBy == '(dbVar)s'&& $asc == 'asc')?('desc'):('asc') ?>"
 						<?php if($orderBy == '(dbVar)s'&& $asc == 'asc') {?>
 							class=" sortAsc"
 						<?php }else if($orderBy == '(dbVar)s'&& $asc == 'desc') {?>
 							class=" sortDesc"
 						<?php }?>
-						><?= $this->lang->line('%(obName)s.form.(dbVar)s.label') ?></a></th>""" % {'obName':self.obName.lower()}, 'dbVar', 'obVar', 3, False)
+						><?= $this->lang->line('%(obName)s.form.(dbVar)s.label') ?></a></th>""" % {'obName':self.obName.lower()}, 'dbVar', 'obVar', 5, False)
 %%
 					<th><?= $this->lang->line('object.tableheader.actions') ?></th>
 				</tr>
