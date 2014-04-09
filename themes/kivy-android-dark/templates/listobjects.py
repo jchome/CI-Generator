@@ -78,12 +78,13 @@ Builder.load_string("""
 """)
 
 class List%%(self.obName)%%s(Screen):
-	allItems = None
+	
 	def __init__(self, aName):
 		super(List%%(self.obName)%%s, self).__init__()
 		self.name = aName
+		self.allItems = {}
 		# prepare display
-		self.setItems([])
+		self.setItems( {} )
 		self.updateDisplay()
 		self.%%(self.obName.lower())%% = None
 		

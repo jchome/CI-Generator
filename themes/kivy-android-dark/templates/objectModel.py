@@ -6,10 +6,12 @@
 '''%%(self.description)%%
 '''
 class %%(self.obName)%%():
-	%%
+	
+	def __init__(self):
+		%%
 RETURN = self.dbVariablesList("""''' (descrVar)s ; type (typeVar)s'''
-\t(instVar)s = None;
-""", 'instVar',  'typeVar', 'descrVar', 1)
+\t\tself.(instVar)s = None;
+""", 'instVar',  'typeVar', 'descrVar', 2)
 %%
 	
 	def readFromDict(self, aDict):
