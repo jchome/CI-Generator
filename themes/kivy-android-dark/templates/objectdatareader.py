@@ -4,6 +4,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+### generated from template <objectdatareader.py>
 ###
 # AFTER CODE GENRATION : add this to the "__init__.py" file:
 #  __all__ = ["datareader", ... , 
@@ -19,7 +20,7 @@ from models.%%(self.obName.lower())%%Model import %%(self.obName)%%
 class %%(self.obName)%%DataReader(DataReader):
 	
 	def __init__(self):
-		DataReader.__init__(self, "%%(self.dbTableName)%%", [%%
+		DataReader.__init__(self, "%%(self.dbTableName)%%", "%%(self.keyFields[0].dbName)%%", [%%
 includesKey = True
 RETURN = self.dbVariablesList('"(var)s"', 'var', '', '', 0, includesKey)
 %%])
@@ -38,6 +39,16 @@ RETURN = self.dbVariablesList('"(var)s" : anObject.(var)s', 'var', '', '', 0, in
 %% }
 			self.insertData(json_data)
 		
+	def saveOrUpdate(self, anObject):
+		json_data = { %%
+includesKey = True
+RETURN = self.dbVariablesList('"(var)s" : anObject.(var)s', 'var', '', '', 0, includesKey)
+%% }
+		if anObject.%%(self.keyFields[0].dbName)%% is None:
+			self.updateData(json_data)
+		else:
+			anObject.%%(self.keyFields[0].dbName)%% = self.insertData(json_data)
+
 	
 %%allAttributeCode = ""
 	# récupération par la clé et par les objets référencés
