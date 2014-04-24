@@ -144,3 +144,4 @@ RETURN = codeForUploadFile
 		$this->load->view('%%(self.obName.lower())%%/jsonifyUnique_view', $data);
 	}
 }
+?>

@@ -143,3 +143,4 @@ RETURN = codeForUploadFile
 		redirect('%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index');
 	}
 }
+?>
