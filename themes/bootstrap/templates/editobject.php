@@ -102,8 +102,9 @@ for field in self.fields:
 	
 		if($codeErrors != null && $codeErrors != "NO_FILE") {
 			$this->session->set_flashdata('msg_error', $codeErrors);
-		} else
-		{
+		}else if( $codeErrors == "NO_FILE" ){
+			// rien à faire
+		}else{
 			$model->%(dbName)s = "";
 			if($uploadDataFile_%(dbName)s['file_name'] != null && $uploadDataFile_%(dbName)s['file_name'] != "") {
 				$model->%(dbName)s = '%(obName)s_%(dbName)s_' . $model->%(keyField)s . '_file' . $uploadDataFile_%(dbName)s['file_ext'];
