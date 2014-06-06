@@ -8,6 +8,27 @@ allAttributesCode = ""
 
 for field in self.fields:
 	attributeCode = ""
+	if field.sqlType.upper()[0:4] == "FILE":
+		attributeCode = """ 
+function deleteFile_%(dbName)s(){
+	if( confirm("Supprimer ce fichier ?") ){
+		$("#%(dbName)s_deleteButton").hide();
+		$("#%(dbName)s_currentFile").hide();
+		$("#%(dbName)s").val("");
+	}
+}""" % {'dbName' : field.dbName
+		}
+		
+		
+	allAttributesCode += attributeCode
+RETURN = allAttributesCode
+%%
+
+%%
+allAttributesCode = ""
+
+for field in self.fields:
+	attributeCode = ""
 	if field.referencedObject and field.access == "ajax" :
 		attributeCode = """ 
 $('#%(dbName)s_text').typeahead({

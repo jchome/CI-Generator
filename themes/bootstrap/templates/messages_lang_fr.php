@@ -29,7 +29,7 @@ $lang['%%(self.obName.lower())%%.menu.item'] = "%%(self.displayName)%%";
 %%allAttributesCode = ""
 for field in self.fields:
 	attributeCode = """$lang['%(objectObName)s.form.%(dbName)s.label'] = "%(obName)s";
-$lang['%(objectObName)s.form.%(dbName)s.description'] = "%(desc)s";  
+$lang['%(objectObName)s.form.%(dbName)s.description'] = "%(desc)s";
 """ % {	'dbName': field.dbName, 
 		'obName': field.obName,
 		'objectObName':self.obName.lower(),

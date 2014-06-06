@@ -107,6 +107,24 @@ RETURN = allAttributeCode
 	 * @param $%%(self.keyFields[0].dbName)%% identifiant a supprimer
 	 */
 	function delete($%%(self.keyFields[0].dbName)%%){
+%%allAttributeCode = ""
+for field in self.fields:
+	attributeCode = ""
+	if field.sqlType.upper()[0:4] == "FILE":
+		attributeCode += """
+		$model = %(obName)s_model::get%(obName)s($this->db, $%(field_dbName)s);
+		$path = realpath('www/uploads/');
+		if( $model->%(field_dbName)s && file_exists( $path . $model->%(field_dbName)s ) ){
+			unlink($path . $model->%(field_dbName)s);
+		}
+""" % { 'obName' : self.obName, 'field_dbName' : field.dbName
+}
+	if attributeCode != "":
+		allAttributeCode += attributeCode
+
+RETURN = allAttributeCode
+%%
+
 		%%(self.obName)%%_model::delete($this->db, $%%(self.keyFields[0].dbName)%%);
 
 		$this->session->set_flashdata('msg_confirm', $this->lang->line('%%(self.obName.lower())%%.message.confirm.deleted'));

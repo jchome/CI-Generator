@@ -15,6 +15,7 @@ class Edit%%(self.obName)%% extends CI_Controller {
 		$this->load->library('session');
 		$this->load->helper('template');
 		$this->load->helper('url');
+		$this->load->library('form_validation');
 		$this->load->database();
 %%allAttributeCode = ""
 # inclure les modeles des objets référencés
@@ -61,6 +62,36 @@ RETURN = allAttributeCode
 	 * Sauvegarde des modifications
 	 */
 	public function save(){
+		$this->form_validation->set_error_delimiters('<div class="error">', '</div>');
+%%allAttributeCode = ""
+for field in self.fields:
+	rule = "trim"
+	if not field.nullable:
+		rule += "|required"
+		
+	if field.sqlType.upper()[0:4] == "FILE":
+		attributeCode = """
+		$this->form_validation->set_rules('%(dbName)s_file', 'lang:%(objectObName)s.form.%(dbName)s.label', '%(rule)s');""" % {
+			'dbName': field.dbName,
+			'objectObName': self.obName.lower(),
+			'rule': rule
+		}
+	else:
+		attributeCode = """
+		$this->form_validation->set_rules('%(dbName)s', 'lang:%(objectObName)s.form.%(dbName)s.label', '%(rule)s');""" % {
+			'dbName': field.dbName,
+			'objectObName': self.obName.lower(),
+			'rule': rule
+		}
+	if attributeCode != "":
+		allAttributeCode += attributeCode
+RETURN = allAttributeCode
+%%
+		
+		if($this->form_validation->run() == FALSE){
+			$this->load->view('%%(self.obName.lower())%%/edit%%(self.obName.lower())%%_view');
+		}
+		
 		// Mise a jour des donnees en base
 		$model = new %%(self.obName)%%_model();
 		$oldModel = %%(self.obName)%%_model::get%%(self.obName)%%($this->db, $this->input->post('%%(self.keyFields[0].dbName)%%') );
@@ -78,7 +109,7 @@ RETURN = codeForAttributes
 useUpload = False
 for field in self.fields:
 	attributeCode = ""
-	if field.sqlType.upper() == "FILE":
+	if field.sqlType.upper()[0:4] == "FILE":
 		useUpload = True
 		attributeCode += """
 		
@@ -103,7 +134,7 @@ for field in self.fields:
 		if($codeErrors != null && $codeErrors != "NO_FILE") {
 			$this->session->set_flashdata('msg_error', $codeErrors);
 		}else if( $codeErrors == "NO_FILE" ){
-			// rien à faire
+			// rien a faire
 		}else{
 			$model->%(dbName)s = "";
 			if($uploadDataFile_%(dbName)s['file_name'] != null && $uploadDataFile_%(dbName)s['file_name'] != "") {
