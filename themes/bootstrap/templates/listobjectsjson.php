@@ -43,27 +43,37 @@ RETURN = allAttributeCode
 	}
 
 %%allAttributeCode = ""
-	# inclure les objets référencés
-	
 for field in self.fields:
 	attributeCode = ""
 	if field.sqlType.upper()[0:4] == "FILE":
 		continue
-	elif field.referencedObject:
-		attributeCode += """
-	public function findBy_%(fieldDbName)s($%(fieldDbName)s, $orderBy = null, $limit = 50, $offset = 0){
-		$data['%(objectNameLower)ss'] = %(obName)s_model::getAll%(obName)ssFor%(referencedObject)sBy_%(fieldDbName)s($this->db, $%(fieldDbName)s, $orderBy, $limit, $offset);
-		$this->load->view('%(objectNameLower)s/jsonifyList_view', $data);
-	}""" % { 'referencedObject' : field.referencedObject.obName,
-			'fieldDbName' : field.dbName.lower(),
-			'objectNameLower' : self.obName.lower(),
-			'obName' : self.obName
-		}
 	else:
 		attributeCode += """
 	public function findBy_%(fieldDbName)s($%(fieldDbName)s, $orderBy = null, $limit = 50, $offset = 0){
-		$data['%(objectNameLower)ss'] = %(obName)s_model::getAll%(obName)ssBy_%(fieldDbName)s($this->db, urldecode($%(fieldDbName)s), $orderBy, $limit, $offset);
+		$asc = null;
+		$data['%(objectNameLower)ss'] = %(obName)s_model::getAll%(obName)ssBy_%(fieldDbName)s($this->db, urldecode($%(fieldDbName)s), $orderBy, $asc, $limit, $offset);
 		$this->load->view('%(objectNameLower)s/jsonifyList_view', $data);
+	}""" % { 'fieldDbName' : field.dbName.lower(),
+			'objectNameLower' : self.obName.lower(),
+			'obName' : self.obName
+		}
+		
+	if attributeCode != "":
+		allAttributeCode += attributeCode
+	
+RETURN = allAttributeCode
+%%
+
+%%allAttributeCode = ""
+for field in self.fields:
+	attributeCode = ""
+	if field.sqlType.upper()[0:4] == "FILE":
+		continue
+	else:
+		attributeCode += """
+	public function countBy_%(fieldDbName)s($%(fieldDbName)s){
+		$data['count'] = %(obName)s_model::getCount%(obName)ssBy_%(fieldDbName)s($this->db, urldecode($%(fieldDbName)s));
+		$this->load->view('%(objectNameLower)s/jsonifyCount_view', $data);
 	}""" % { 'fieldDbName' : field.dbName.lower(),
 			'objectNameLower' : self.obName.lower(),
 			'obName' : self.obName

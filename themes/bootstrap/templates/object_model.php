@@ -34,9 +34,7 @@ for field in self.fields:
 			valueAndText = enum.replace('"','').replace("'","").split(':')
 			typeList += """"%(value)s"=>"%(text)s",""" % {'value': valueAndText[0].strip(), 'text': valueAndText[1].strip()}
 		typeList = typeList[:-1]
-		attributeCode += typeList + ");"
-	if allAttributesCode != "":
-		allAttributesCode += "\n\t"
+		attributeCode += typeList + ");\n\t"
 	allAttributesCode += attributeCode
 RETURN = allAttributesCode
 %%
@@ -49,6 +47,7 @@ RETURN = allAttributesCode
 		$this->load->helper('%%(self.obName.lower())%%');
 		// utils for date management
 		$this->load->helper('utils');
+		$this->load->helper('criteria');
 		
 	}
 	
@@ -59,7 +58,7 @@ RETURN = allAttributesCode
 	/**
 	 * Cree une nouvelle instance a partir d'un enregistrement de base de donnees
 	 */
-	static function %%(self.obName)%%_modelFromRow($row){
+	public static function %%(self.obName)%%_modelFromRow($row){
 		if($row == null){
 			return null;
 		}
@@ -84,26 +83,15 @@ RETURN = allAttributesCode
 	 * recupere tous les enregistrements
 	 * @param $db connexion a la base de donnees
 	 */
-	static function getAll%%(self.obName)%%s($db, $orderBy = null, $asc = null, $limit = null, $offset = null){
-		$rows = getAll%%(self.obName)%%sFromDB($db, $orderBy, $asc, $limit, $offset);
-		$records = array();
-		foreach ($rows as $row) {
-			$records[%%allKeys = ""
-for aKey in self.keyFields:
-	if allKeys != "":
-		allKeys += " . '@' . "
-	allKeys += "$row['%s']" % aKey.dbName
-RETURN = allKeys
-%%] = %%(self.obName)%%_model::%%(self.obName)%%_modelFromRow($row);
-		}
-		return $records;
+	public static function getAll%%(self.obName)%%s($db, $orderBy = null, $asc = null, $limit = null, $offset = null){
+		return self::getAllByCrietria($db, Array(), $orderBy, $asc, $limit, $offset);
 	}
 	
 	/**
 	 * recupere le nombre d'enregistrements
 	 * @param $db connexion a la base de donnees
 	 */
-	static function getCount%%(self.obName)%%s($db){
+	public static function getCount%%(self.obName)%%s($db){
 		return getCount%%(self.obName)%%sFromDB($db);
 	}
 	
@@ -142,7 +130,7 @@ for aKey in self.keyFields:
 	allKeys += "$%s" % aKey.dbName
 RETURN = allKeys%% identifiant de l'enregistrement a supprimer
 	 */
-	static function delete($db, %%allKeys = ""
+	public static function delete($db, %%allKeys = ""
 for aKey in self.keyFields:
 	if allKeys != "":
 		allKeys += ", "
@@ -205,50 +193,31 @@ RETURN = allAttributesCode%%);
 else:
 	RETURN = ""%%
 
+	public static function getAllByCrietria($db, $criteriaArray, $orderBy = null, $asc = null, $limit = null, $offset = null){
+		$rows = getAll%%(self.obName)%%sByCrietriaFromDB($db, $criteriaArray, $orderBy, $asc, $limit, $offset);
+		$records = array();
+		foreach ($rows as $row) {
+			$records[%%allKeys = ""
+for aKey in self.keyFields:
+	if allKeys != "":
+		allKeys += " . '@' . "
+	allKeys += "$row['%s']" % aKey.dbName
+RETURN = allKeys
+%%] = %%(self.obName)%%_model::%%(self.obName)%%_modelFromRow($row);
+		}
+		return $records;
+	}
+
+	public static function countByCrietria($db, $criteriaArray){
+		return count%%(self.obName)%%sByCrietriaFromDB($db, $criteriaArray);
+	}
+	
+	
 %%getterAll = ""
 for field in self.fields:
 	getter = ""
 	if field.sqlType.upper()[0:4] == "FILE":
 		continue
-	elif field.referencedObject:
-		getter = """
-	/**
-	 * Recupere la liste des enregistrements depuis la cle etrangere %(obName)s->%(fieldName)s ==> %(referencedObjectName)s->%(foreignKey)s
-	 * @param object $db database object
-	 * @return array of data
-	 */
-	static function getAll%(obName)ssFor%(referencedObjectName)sBy_%(fieldName)s($db, $%(foreignKey)s, $orderBy = null, $asc = null, $limit = null, $offset = null){
-		$rows = getAll%(obName)ssFor%(referencedObjectName)sFromDBBy_%(fieldName)s($db, $%(foreignKey)s, $orderBy, $asc, $limit, $offset);
-		$records = array();
-		foreach ($rows as $row) {
-			$records[$row['%(keyField)s']] = %(obName)s_model::%(obName)s_modelFromRow($row);
-		}
-		return $records;
-	}
-""" % { 'keyField' : self.keyFields[0].dbName,
-		'obName' : self.obName,
-		'referencedObjectName' : field.referencedObject.obName,
-		'foreignKey' : field.referencedObject.keyFields[0].dbName,
-		'fieldName' : field.dbName
-	}
-	elif field.isKey:
-		getter = """
-	/**
-	 * Recupere la liste des enregistrements depuis le champ %(fieldName)s
-	 * @param object $db database object
-	 * @return array of data
-	 */
-	static function getAll%(obName)ssBy_%(fieldName)s($db, $%(fieldName)s, $limit = null, $offset = null){
-		$records = array();
-		$object = %(obName)s_Model::get%(obName)s($db, $%(fieldName)s);
-		$records[$object->%(keyField)s] = $object;
-		return $records;
-	}
-""" % { 'keyField' : self.keyFields[0].dbName,
-		'obName' : self.obName,
-		'fieldName' : field.dbName
-	}
-		
 	else:
 		getter = """
 	/**
@@ -256,13 +225,8 @@ for field in self.fields:
 	 * @param object $db database object
 	 * @return array of data
 	 */
-	static function getAll%(obName)ssBy_%(fieldName)s($db, $%(fieldName)s, $limit = null, $offset = null){
-		$rows = getAll%(obName)ssFromDBBy_%(fieldName)s($db, $%(fieldName)s, $limit, $offset);
-		$records = array();
-		foreach ($rows as $row) {
-			$records[$row['%(keyField)s']] = %(obName)s_model::%(obName)s_modelFromRow($row);
-		}
-		return $records;
+	public static function getAll%(obName)ssBy_%(fieldName)s($db, $%(fieldName)s, $orderBy = null, $asc = null, $limit = null, $offset = null){
+		return self::getAllByCrietria($db, Array( new Criteria('%(fieldName)s', Criteria::$EQ, $%(fieldName)s) ), $orderBy, $asc, $limit, $offset);
 	}
 """ % { 'keyField' : self.keyFields[0].dbName,
 		'obName' : self.obName,
@@ -271,7 +235,7 @@ for field in self.fields:
 	getterAll += getter
 RETURN = getterAll
 %%
-	
+
 %%deleteAll = ""
 for field in self.fields:
 	deleteFct = ""
@@ -300,6 +264,29 @@ for field in self.fields:
 RETURN = deleteAll
 %%
 
+%%countAll = ""
+for field in self.fields:
+	countFct = ""
+	if field.autoincrement:
+		continue
+	else:
+		countFct = """
+	/**
+	 * Decompte d'un ensemble d'objets a partir d'une valeur de %(fieldName)s : %(desc)s
+	 * @param object $db database object
+	 * @return int
+	 */
+	public static function getCount%(obName)ssBy_%(fieldName)s($db, $%(fieldName)s){
+		return self::countByCrietria($db, Array( new Criteria('%(fieldName)s',Criteria::$EQ,$%(fieldName)s) ) );
+	}
+""" % { 'keyField' : self.keyFields[0].dbName,
+		'obName' : self.obName,
+		'fieldName' : field.dbName,
+		'desc' : field.description
+	}
+	countAll += countFct
+RETURN = countAll
+%%
 
 	/***************************************************************************
 	 * DO NOT MODIFY THIS FILE, IT IS GENERATED

@@ -124,21 +124,16 @@ if (!function_exists('get%%(self.obName)%%Row')) {
 	}
 }
 
-
-%%getterAll = ""
-for field in self.fields:
-	getter = ""
-	if field.sqlType.upper()[0:4] == "FILE" or field.isKey:
-		continue
-	elif field.referencedObject:
-		getter = """
 /**
- * Recupere la liste des enregistrements depuis la cle etrangere %(obName)s->%(fieldName)s ==> %(referencedObjectName)s->%(foreignKey)s
+ * Recupere un ensemble d'enregistrements qui correspondent aux criteres fournis
  * @param object $db database object
- * @return array of data
+ * @param array de Criteria
+ * @return array
  */
-if (!function_exists('getAll%(obName)ssFor%(referencedObjectName)sFromDBBy_%(fieldName)s')) {
-	function getAll%(obName)ssFor%(referencedObjectName)sFromDBBy_%(fieldName)s($db, $%(foreignKey)s, $orderBy = null, $asc = null, $limit = null, $offset = null) {
+if (!function_exists('getAll%%(self.obName)%%sByCrietriaFromDB')) {
+	function getAll%%(self.obName)%%sByCrietriaFromDB($db, $criteriaArray, $orderBy = null, $asc = null, $limit = null, $offset = null) {
+		$db->select('*');
+		$db->from("nutpat");
 		if( $orderBy != null ){
 			if($asc != null) {
 				$db->order_by($orderBy, $asc);
@@ -146,11 +141,26 @@ if (!function_exists('getAll%(obName)ssFor%(referencedObjectName)sFromDBBy_%(fie
 				$db->order_by($orderBy, "asc");
 			}
 		}
-		if( $limit == null ) {
-			$query = $db->get_where("%(tableName)s", array('%(fieldName)s' => $%(foreignKey)s));
-		} else {
-			$query = $db->limit($limit, $offset)->get_where("%(tableName)s", array('%(fieldName)s' => $%(foreignKey)s));
+		if($limit != null){
+			$db->limit($limit, $offset);
 		}
+		foreach($criteriaArray as $criteria){
+			if( $criteria->operator == Criteria::$EQ ){
+				$db->where($criteria->column, $criteria->value);
+			}else if($criteria->operator == Criteria::$LIKE){
+				$db->like($criteria->column, $criteria->value);
+			}else if($criteria->operator == Criteria::$DIFF || 
+					$criteria->operator == Criteria::$GE ||
+					$criteria->operator == Criteria::$GT ||
+					$criteria->operator == Criteria::$LE ||
+					$criteria->operator == Criteria::$LT){
+				$db->where($criteria->column. ' '. $criteria->operator, $criteria->value);
+			}else if($criteria->operator == Criteria::$NULL){
+				$db->where($criteria->column. ' '. $criteria->operator);
+			}
+		}
+		$query = $db->get();
+
 		// recuperer les enregistrements
 		$records = array();
 		foreach ($query->result_array() as $row) {
@@ -159,37 +169,36 @@ if (!function_exists('getAll%(obName)ssFor%(referencedObjectName)sFromDBBy_%(fie
 		return $records;
 	}
 }
-""" % { 'tableName' : self.dbTableName,
-		'obName' : self.obName,
-		'referencedObjectName' : field.referencedObject.obName,
-		'foreignKey' : field.referencedObject.keyFields[0].dbName,
-		'fieldName' : field.dbName
-	}
-	else:
-		getter = """
+
 /**
- * Recupere la liste des enregistrements depuis une valeur du champ %(fieldName)s
+ * Recupere le nombre d'enregistrements qui correspondent aux criteres fournis
  * @param object $db database object
- * @return array of data
+ * @param array de Criteria
+ * @return array
  */
-if (!function_exists('getAll%(obName)ssFromDBBy_%(fieldName)s')) {
-	function getAll%(obName)ssFromDBBy_%(fieldName)s($db, $%(fieldName)s, $limit = null, $offset = null) {
-		$query = $db->from("%(tableName)s")->limit($limit, $offset)->like('%(fieldName)s', $%(fieldName)s)->get();
-		// recuperer les enregistrements
-		$records = array();
-		foreach ($query->result_array() as $row) {
-			$records[] = $row;
+ if (!function_exists('count%%(self.obName)%%sByCrietriaFromDB')) {
+	function count%%(self.obName)%%sByCrietriaFromDB($db, $criteriaArray) {
+		$db->select('*');
+		$db->from("nutpat");
+		foreach($criteriaArray as $criteria){
+			if( $criteria->operator == Criteria::$EQ ){
+				$db->where($criteria->column, $criteria->value);
+			}else if($criteria->operator == Criteria::$LIKE){
+				$db->like($criteria->column, $criteria->value);
+			}}else if($criteria->operator == Criteria::$DIFF || 
+					$criteria->operator == Criteria::$GE ||
+					$criteria->operator == Criteria::$GT ||
+					$criteria->operator == Criteria::$LE ||
+					$criteria->operator == Criteria::$LT){
+				$db->where($criteria->column. ' '. $criteria->operator, $criteria->value);
+			}else if($criteria->operator == Criteria::$NULL){
+				$db->where($criteria->column. ' '. $criteria->operator);
+			}
 		}
-		return $records;
+		$query = $db->get();
+		return $query->num_rows();
 	}
 }
-""" % { 'tableName' : self.dbTableName,
-		'obName' : self.obName,
-		'fieldName' : field.dbName
-	}
-	getterAll += getter
-RETURN = getterAll
-%%
 
 
 	/***************************************************************************
