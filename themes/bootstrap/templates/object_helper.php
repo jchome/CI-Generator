@@ -185,7 +185,7 @@ if (!function_exists('getAll%%(self.obName)%%sByCrietriaFromDB')) {
 				$db->where($criteria->column, $criteria->value);
 			}else if($criteria->operator == Criteria::$LIKE){
 				$db->like($criteria->column, $criteria->value);
-			}}else if($criteria->operator == Criteria::$DIFF || 
+			}else if($criteria->operator == Criteria::$DIFF || 
 					$criteria->operator == Criteria::$GE ||
 					$criteria->operator == Criteria::$GT ||
 					$criteria->operator == Criteria::$LE ||
