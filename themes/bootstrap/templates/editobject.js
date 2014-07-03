@@ -4,6 +4,17 @@
 /* Javascript for edit%%(self.obName.lower())%%_view.php */
 
 %%
+jsCode = ""
+hasDate = False
+for field in self.fields:
+	if field.sqlType.upper()[0:4] == "DATE":
+		jsCode += """$('#datepicker_%(dbName)s').datepicker({ language: "fr-FR" });
+""" % { 'dbName' : field.dbName }
+RETURN = jsCode
+%%
+
+
+%%
 allAttributesCode = ""
 
 for field in self.fields:
