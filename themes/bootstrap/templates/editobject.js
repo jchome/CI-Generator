@@ -33,7 +33,7 @@ for field in self.fields:
 		attributeCode = """ 
 $('#%(dbName)s_text').typeahead({
 	source: function (query, process) {
-		return $.get(base_url()+'index.php/%(referencedObject)s/list%(referencedObject)ssjson/findBy_%(display)s/'+query,
+		return $.get(base_url()+'index.php/%(referencedObject)s/list%(referencedObject)ssjson/findLike_%(display)s/'+query,
 		{ /*query: no more parameters*/ }, function (dataIN_str) {
 			data = new Array();
 			var dataIN = JSON.parse(dataIN_str);

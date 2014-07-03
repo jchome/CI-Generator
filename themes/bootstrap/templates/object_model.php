@@ -236,6 +236,27 @@ for field in self.fields:
 RETURN = getterAll
 %%
 
+%%getterAll = ""
+for field in self.fields:
+	getter = ""
+	if field.sqlType.upper()[0:7] == "VARCHAR" or field.sqlType.upper()[0:4] == "TEXT" :
+		getter = """
+	/**
+	 * Recupere la liste des enregistrements depuis le champ %(fieldName)s
+	 * @param object $db database object
+	 * @return array of data
+	 */
+	public static function getAll%(obName)ssLike_%(fieldName)s($db, $%(fieldName)s, $orderBy = null, $asc = null, $limit = null, $offset = null){
+		return self::getAllByCrietria($db, Array( new Criteria('%(fieldName)s', Criteria::$LIKE, $%(fieldName)s) ), $orderBy, $asc, $limit, $offset);
+	}
+""" % { 'keyField' : self.keyFields[0].dbName,
+		'obName' : self.obName,
+		'fieldName' : field.dbName
+	}
+	getterAll += getter
+RETURN = getterAll
+%%
+
 %%deleteAll = ""
 for field in self.fields:
 	deleteFct = ""

@@ -85,5 +85,25 @@ for field in self.fields:
 RETURN = allAttributeCode
 %%
 
+
+%%allAttributeCode = ""
+for field in self.fields:
+	attributeCode = ""
+	if field.sqlType.upper()[0:7] == "VARCHAR" or field.sqlType.upper()[0:4] == "TEXT" :
+		attributeCode += """
+	public function findLike_%(fieldDbName)s($%(fieldDbName)s){
+		$data['%(objectNameLower)ss'] = %(obName)s_model::getAll%(obName)ssLike_%(fieldDbName)s($this->db, urldecode($%(fieldDbName)s));
+		$this->load->view('%(objectNameLower)s/jsonifyList_view', $data);
+	}""" % { 'fieldDbName' : field.dbName.lower(),
+			'objectNameLower' : self.obName.lower(),
+			'obName' : self.obName
+		}
+		
+	if attributeCode != "":
+		allAttributeCode += attributeCode
+	
+RETURN = allAttributeCode
+%%
+
 }
 ?>

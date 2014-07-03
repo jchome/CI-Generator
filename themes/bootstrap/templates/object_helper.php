@@ -133,7 +133,7 @@ if (!function_exists('get%%(self.obName)%%Row')) {
 if (!function_exists('getAll%%(self.obName)%%sByCrietriaFromDB')) {
 	function getAll%%(self.obName)%%sByCrietriaFromDB($db, $criteriaArray, $orderBy = null, $asc = null, $limit = null, $offset = null) {
 		$db->select('*');
-		$db->from("nutpat");
+		$db->from("%%(self.dbTableName)%%");
 		if( $orderBy != null ){
 			if($asc != null) {
 				$db->order_by($orderBy, $asc);
@@ -179,7 +179,7 @@ if (!function_exists('getAll%%(self.obName)%%sByCrietriaFromDB')) {
  if (!function_exists('count%%(self.obName)%%sByCrietriaFromDB')) {
 	function count%%(self.obName)%%sByCrietriaFromDB($db, $criteriaArray) {
 		$db->select('*');
-		$db->from("nutpat");
+		$db->from("%%(self.dbTableName)%%");
 		foreach($criteriaArray as $criteria){
 			if( $criteria->operator == Criteria::$EQ ){
 				$db->where($criteria->column, $criteria->value);
