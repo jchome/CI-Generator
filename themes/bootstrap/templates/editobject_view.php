@@ -70,14 +70,15 @@ for field in self.fields:
 	
 	valueCode = "<?= $%(structureObName)s->%(dbName)s ?>" % { 'structureObName': self.obName.lower(), 'dbName' : field.dbName }
 	
-	attributeCode += """<div class="control-group">
-	<label class="control-label" for="%(dbName)s">""" % { 'dbName' : field.dbName }
+	attributeCode += """<div class="control-group"><!-- %(desc)s -->
+	<label class="control-label" for="%(dbName)s">""" % { 'dbName' : field.dbName, 'desc' : field.description }
 
 	if not field.nullable:
 		attributeCode += "* "
 
 	attributeCode += """<?= $this->lang->line('%(objectObName)s.form.%(dbName)s.label') ?> :</label>
-	<div class="controls">""" % { 'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
+	<div class="controls">
+		""" % { 'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
 
 	cssClass = "inp-form"
 	
@@ -86,14 +87,15 @@ for field in self.fields:
 		moreAttributes = "required "
 			
 	if field.referencedObject and field.access == "default" :
-		attributeCode += """<select name="%(dbName)s" id="%(dbName)s"> """ % { 'dbName' : field.dbName }
+		attributeCode += """<select name="%(dbName)s" id="%(dbName)s">
+		""" % { 'dbName' : field.dbName }
 		if field.nullable:
-			attributeCode += """<option value=""></option>"""
-		attributeCode += """
-					<?php foreach ($%(referencedObject)sCollection as $%(referencedObject)sElt): ?>
-					<option value="<?= $%(referencedObject)sElt->%(keyReference)s ?>" <?= ($%(referencedObject)sElt->%(keyReference)s == $%(structureObName)s->%(dbName)s)?("selected"):("")?>><?= $%(referencedObject)sElt->%(display)s ?> </option>
-					<?php endforeach;?>
-				</select>
+			attributeCode += """	<option value=""></option>
+		"""
+		attributeCode += """	<?php foreach ($%(referencedObject)sCollection as $%(referencedObject)sElt): ?>
+				<option value="<?= $%(referencedObject)sElt->%(keyReference)s ?>" <?= ($%(referencedObject)sElt->%(keyReference)s == $%(structureObName)s->%(dbName)s)?("selected"):("")?>><?= $%(referencedObject)sElt->%(display)s ?> </option>
+			<?php endforeach;?>
+		</select>
 		""" % { 'display' : field.display, 
 				'keyReference' : field.referencedObject.keyFields[0].dbName, 
 				'referencedObject' : field.referencedObject.obName.lower(), 
@@ -157,13 +159,20 @@ for field in self.fields:
 				'structureObName' : self.obName.lower() }
 		
 	elif field.sqlType.upper()[0:4] == "ENUM":
-		attributeCode += """<select name="%(dbName)s" id="%(dbName)s" %(moreAttributes)s>""" % { 
+		attributeCode += """<select name="%(dbName)s" id="%(dbName)s" %(moreAttributes)s>
+		""" % { 
 			'dbName' : field.dbName,
 			'moreAttributes' : moreAttributes }
+		
+		if field.nullable:
+			attributeCode += """	<option value=""></option>
+		"""
+			
 		enumTypes = field.sqlType[5:-1]
 		for enum in enumTypes.split(','):
 			valueAndText = enum.replace('"','').replace("'","").split(':')
-			attributeCode += """<option value="%(value)s" <?= ($%(structureObName)s->%(dbName)s == "%(value)s")?("selected"):("")?> >%(text)s</option>""" % {'value': valueAndText[0].strip(), 
+			attributeCode += """	<option value="%(value)s" <?= ($%(structureObName)s->%(dbName)s == "%(value)s")?("selected"):("")?> >%(text)s</option>
+		""" % {'value': valueAndText[0].strip(), 
 				'text': valueAndText[1].strip(), 
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName }
@@ -184,7 +193,8 @@ for field in self.fields:
 			
 	attributeCode += """
 		<p class="help-block valtype"><?= $this->lang->line('%(objectObName)s.form.%(dbName)s.description')?></p>
-	</div></div>""" % {'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
+	</div></div>
+	""" % {'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
 	
 
 	# ajouter le nouvel attribut, avec indentation si ce n'est pas le premier

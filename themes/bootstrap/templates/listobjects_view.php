@@ -119,7 +119,7 @@ for field in self.fields:
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
 		elif field.sqlType.upper()[0:4] == "ENUM":
-			attributeCode += """<?=$enum_%(dbName)s[$%(structureObName)s->%(dbName)s]?>""" % {
+			attributeCode += """<?=($%(structureObName)s->%(dbName)s == "")?(""):($enum_%(dbName)s[$%(structureObName)s->%(dbName)s])?>""" % {
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
 		elif field.sqlType.upper()[0:4] == "FILE":

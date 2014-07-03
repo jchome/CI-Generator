@@ -47,14 +47,15 @@ for field in self.fields:
 		attributeCode = "<!-- AUTO_INCREMENT : DO NOT DISPLAY THIS ATTRIBUTE - " + attributeCode + " -->"
 		continue
 	
-	attributeCode += """<div class="control-group">
-	<label class="control-label" for="%(dbName)s">""" % { 'dbName' : field.dbName }
+	attributeCode += """<div class="control-group"><!-- %(desc)s -->
+	<label class="control-label" for="%(dbName)s">""" % { 'dbName' : field.dbName, 'desc' : field.description }
 
 	if not field.nullable:
 		attributeCode += "* "
 
 	attributeCode += """<?= $this->lang->line('%(objectObName)s.form.%(dbName)s.label') ?> :</label>
-	<div class="controls">""" % { 'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
+	<div class="controls">
+		""" % { 'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
 
 	cssClass = "inp-form"
 
@@ -63,14 +64,15 @@ for field in self.fields:
 		moreAttributes = "required "
 	
 	if field.referencedObject and field.access == "default":
-		attributeCode += """<select name="%(dbName)s" id="%(dbName)s"> """ % { 'dbName' : field.dbName }
+		attributeCode += """<select name="%(dbName)s" id="%(dbName)s">
+			""" % { 'dbName' : field.dbName }
 		if field.nullable:
-			attributeCode += """<option value=""></option>"""
-		attributeCode += """
-					<?php foreach ($%(referencedObject)sCollection as $%(referencedObject)sElt): ?>
-					<option value="<?= $%(referencedObject)sElt->%(keyReference)s ?>" ><?= $%(referencedObject)sElt->%(display)s ?> </option>
-					<?php endforeach;?>
-				</select>
+			attributeCode += """<option value=""></option>
+			"""
+		attributeCode += """<?php foreach ($%(referencedObject)sCollection as $%(referencedObject)sElt): ?>
+				<option value="<?= $%(referencedObject)sElt->%(keyReference)s ?>" ><?= $%(referencedObject)sElt->%(display)s ?> </option>
+			<?php endforeach;?>
+		</select>
 		""" % { 'display' : field.display, 
 				'keyReference' : field.referencedObject.keyFields[0].dbName, 
 				'referencedObject' : field.referencedObject.obName.lower(), 
@@ -117,20 +119,26 @@ for field in self.fields:
 	elif field.sqlType.upper()[0:4] == "FLAG":
 		label = field.sqlType[5:-1].strip('"').strip("'")
 		attributeCode += """<label class="checkbox"> <input name="%(dbName)s" id="%(dbName)s" value="O" type="checkbox" %(moreAttributes)s/> %(label)s
-							</label>""" % { 'dbName' : field.dbName, 
+			</label>""" % { 'dbName' : field.dbName, 
 			'label': label.strip(), 
 			'structureObName' : self.obName.lower(),
 			'moreAttributes' : moreAttributes
 			}
 		
 	elif field.sqlType.upper()[0:4] == "ENUM":
-		attributeCode += """<select name="%(dbName)s" id="%(dbName)s" %(moreAttributes)s>""" % { 'dbName' : field.dbName,
+		attributeCode += """<select name="%(dbName)s" id="%(dbName)s" %(moreAttributes)s>
+		""" % { 'dbName' : field.dbName,
 			'moreAttributes' : moreAttributes
 			}
+		if field.nullable:
+			attributeCode += """	<option value=""></option>
+		"""
+			
 		enumTypes = field.sqlType[5:-1]
 		for enum in enumTypes.split(','):
 			valueAndText = enum.replace('"','').replace("'","").split(':')
-			attributeCode += """<option value="%(value)s" >%(text)s</option>""" % {'value': valueAndText[0].strip(), 
+			attributeCode += """	<option value="%(value)s" >%(text)s</option>
+		""" % {'value': valueAndText[0].strip(), 
 				'text': valueAndText[1].strip(), 
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName
