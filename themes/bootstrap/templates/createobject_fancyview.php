@@ -170,21 +170,4 @@ echo form_close('');
 		</div> <!-- .row-fluid -->
 	</div> <!-- .container -->
 
-%%
-jsCode = ""
-hasDate = False
-for field in self.fields:
-	if field.sqlType.upper()[0:4] == "DATE":
-		hasDate = True
-		if jsCode == "":
-			jsCode = """<script type="text/javascript">
-"""
-		jsCode += """$('#datepicker_%(dbName)s').datepicker();
-""" % { 'dbName' : field.dbName }
-
-if hasDate:
-	jsCode += """</script>"""
-RETURN = jsCode
-%%
-
 <script src="<?= base_url() ?>www/js/views/%%(self.obName.lower())%%/create%%(self.obName.lower())%%.fancy.js"></script>
