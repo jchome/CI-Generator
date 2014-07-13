@@ -155,7 +155,8 @@ if (!function_exists('getAll%%(self.obName)%%sByCrietriaFromDB')) {
 					$criteria->operator == Criteria::$LE ||
 					$criteria->operator == Criteria::$LT){
 				$db->where($criteria->column. ' '. $criteria->operator, $criteria->value);
-			}else if($criteria->operator == Criteria::$NULL){
+			}else if($criteria->operator == Criteria::$NULL || 
+					$criteria->operator == Criteria::$NOTNULL){
 				$db->where($criteria->column. ' '. $criteria->operator);
 			}
 		}
@@ -191,7 +192,8 @@ if (!function_exists('getAll%%(self.obName)%%sByCrietriaFromDB')) {
 					$criteria->operator == Criteria::$LE ||
 					$criteria->operator == Criteria::$LT){
 				$db->where($criteria->column. ' '. $criteria->operator, $criteria->value);
-			}else if($criteria->operator == Criteria::$NULL){
+			}else if($criteria->operator == Criteria::$NULL || 
+					$criteria->operator == Criteria::$NOTNULL){
 				$db->where($criteria->column. ' '. $criteria->operator);
 			}
 		}
