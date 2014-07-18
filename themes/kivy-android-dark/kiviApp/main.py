@@ -22,11 +22,44 @@ from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
 ### import des entités
 #from clients import ClientsApp
 
+class CustomScreenManager(ScreenManager):
+	def __init__(self, **kwargs):
+		super(ScreenManager, self).__init__(**kwargs)
+		self.allScreens = []
+		self.screenIndex = 0
+		Window.bind(on_keyboard=self.hook_keyboard)
+		
+	def hook_keyboard(self, window, key, *largs):
+		if key == 27: # BACK
+			#print("BACK")
+			return self.back()
+		elif key in (282, 319): # SETTINGS
+			# Irrelevant code
+			print("SETTINGS")
+	
+	def add_screen(self, aScreen):
+		self.allScreens.append(aScreen.name)
+		self.add_widget(aScreen)
+		
+	def next(self):
+		self.screenIndex = self.screenIndex + 1
+		self.transition = SlideTransition(direction="left")
+		self.current = self.allScreens[self.screenIndex]
+		return self.current_screen
+	
+	def back(self):
+		if self.screenIndex == 0:
+			return False
+		self.screenIndex = self.screenIndex - 1
+		self.transition = SlideTransition(direction="right")
+		self.current = self.allScreens[self.screenIndex]
+		self.current_screen.postback()
+		return True
+	
 class Welcome(Screen):
 
 	def do_enter(self):
-		self.manager.transition = SlideTransition(direction="left")
-		self.manager.current = self.manager.next()
+		self.manager.goNext()
 		### passer a l'écran clients
 		#aJsonData = ...
 		#self.manager.get_screen("Clients").setItems( aJsonData )
@@ -35,12 +68,12 @@ class Welcome(Screen):
 class WelcomeApp(App):
 	
 	def build(self):
-		manager = ScreenManager()
+		manager = CustomScreenManager()
 		
 		### ajout de l'instance de page d'accueil
 		welcomeScreen = Welcome(name='Welcome')
 		
-		manager.add_widget(welcomeScreen)
+		manager.add_screen(welcomeScreen)
 		
 		### ajout de la vue 'Clients'
 		#app = ClientsApp()

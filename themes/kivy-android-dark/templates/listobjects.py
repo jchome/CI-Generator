@@ -24,6 +24,7 @@ from kivy.app import App
 from kivy.uix.screenmanager import Screen, SlideTransition
 from kivy.adapters.listadapter import ListAdapter
 from kivy.lang import Builder
+from screens.customscreen import CustomScreen
 
 __all__ = ("List%%(self.obName)%%s", "List%%(self.obName)%%sApp")
 
@@ -77,7 +78,7 @@ Builder.load_string("""
 
 """)
 
-class List%%(self.obName)%%s(Screen):
+class List%%(self.obName)%%s(CustomScreen):
 	
 	def __init__(self, aName):
 		super(List%%(self.obName)%%s, self).__init__()
@@ -113,9 +114,8 @@ class List%%(self.obName)%%s(Screen):
 		self.%%(self.obName.lower())%% = adapter.data[adapter.selection[0].parent.index]
 		adapter.selection[0].deselect()
 		
-		#self.manager.transition = SlideTransition(direction="left")
-		#self.manager.current = "name of the next screen"
-		#self.manager.current_screen.setItems( ... )
+		nextScreen = self.manager.go_next()
+		nextScreen.setItems( ... ) #TODO: ajouter les paramètres pour l'ecran suivant
 		
 		
 	def setItems(self, data):
@@ -124,9 +124,6 @@ class List%%(self.obName)%%s(Screen):
 		self.updateDisplay()
 		self.%%(self.obName.lower())%% = None
 		
-	def back(self):
-		self.manager.transition = SlideTransition(direction="right")
-		self.manager.current = 'Welcome'
 		
 	def newItem(self):
 		pass

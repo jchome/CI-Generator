@@ -7,49 +7,24 @@
 
 	BoxLayout:
 		orientation: 'vertical'
-		BoxLayout:
-			orientation: 'horizontal'
-			canvas.before:
-				Color:
-					rgba: 1, 1, 1, 0.1
-				Rectangle:
-					pos: self.pos
-					size: self.size
-			height: '48sp'
-			size_hint_y: None
-			Button:
-				background_color: 1,1,1, 1
-				background_normal: "images/ic_action_back.png"
-				background_down: "images/ic_action_back.png"
-				border: 0,0,0,0
-				on_press: root.back()
-				size_hint_x: None
-				width: '24sp'
-				padding_y: '10sp'
+		ActionBar:
+			pos_hint: {'top':1}
+			ActionView:
+				use_separator: True
+				ActionPrevious:
+					title: '%%(self.displayName)%%'
+					#with_previous: False
+					on_press: root.manager.back()
+					previous_image: "images/ic_action_previous_item.png"
+					app_icon: "images/ic_action_icon.png"
 				
-			Button:
-				text: '%%(self.displayName)%%'
-				background_color: 0,0,0, 0
-				background_normal: ""
-				background_down: ""
-				color: (1, 1, 1, 1)
-				on_press: root.back()
-				size_hint_x: 0.2
+				ActionOverflow:
 				
-				
-			#ActionOverflow:
-			Label:
-				text: ''
-				size_hint_x: 1
-				
-			Button:
-				#text: 'Refresh'
-				background_normal: "images/ic_action_refresh.png"
-				background_down: "images/ic_action_refresh.png"
-				border: 0,0,0,0
-				on_press: root.refresh()
-				size_hint_x: None
-				width: '48sp'
+				ActionButton:
+					text: 'Refresh'
+					icon: "images/ic_action_refresh.png"
+					on_press: root.refresh()
+
 				
 			
 		ListView:

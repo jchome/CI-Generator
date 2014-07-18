@@ -3,19 +3,17 @@
 
 
 import json
-import urllib2
+import urllib, urllib2
 import sqlite3
 
 
 class DataReader():
-	database = None
-	tablename = None
-	fields = []
 	
-	def __init__(self, aTablename, fieldsArray):
-		self.database = 'database.sdb'
+	def __init__(self, aTablename, keyField, fieldsArray):
+		self.database = 'database/database.sdb'
 		self.tablename = aTablename
 		self.fields = fieldsArray
+		self.key = keyField
 		
 	def purgeTable(self):
 		deleteStatment = "delete from "+self.tablename
@@ -23,17 +21,18 @@ class DataReader():
 		try:
 			con = sqlite3.connect(self.database)
 			cur = con.cursor()
-			print "Database intialisation..."
+			print("Database intialisation...")
 			cur.execute(deleteStatment);
 			con.commit()
-		except Error, e:
-			print "Error with database: %s" % e
+		except sqlite3.Error, e:
+			print("Error with database: %s" % e)
 			return False
 		finally:
 			if con:
 				con.close()
 
 	def insertData(self, json_data):
+		idOfKey = None
 		try:
 			con = sqlite3.connect(self.database)
 			cur = con.cursor()
@@ -42,27 +41,60 @@ class DataReader():
 			questionMarks = ', '.join(["?"]*len(self.fields))
 			insertStatment = "INSERT INTO "+self.tablename+"("+fieldsComaSep+") VALUES("+questionMarks+")"
 			
-			print "Data insertion..."
-			for object in json_data.values():
-				objectAsTuple = []
-				i=0
-				for fieldName in self.fields:
-					objectAsTuple.insert(i,object[ fieldName ])
-					i = i+1
-				cur.execute(insertStatment, tuple(objectAsTuple) )
+			print("Data insertion...")
+			objectAsTuple = []
+			i=0
+			for fieldName in self.fields:
+				objectAsTuple.insert(i,json_data[ fieldName ])
+				i = i+1
+			print(objectAsTuple)
+			cur.execute(insertStatment, tuple(objectAsTuple) )
+			idOfKey = cur.lastrowid
 			con.commit()
 
 		except sqlite3.Error, e:
-			print "Error with database: %s" % e
+			print("Error with database: %s" % e)
 			return False
 		finally:
 			if con:
 				con.close()
-			print "ok"
+		return idOfKey
+
+	"""Update in SQLite3 database and return TRUE if success
+	"""
+	def updateData(self, json_data):
+		try:
+			con = sqlite3.connect(self.database)
+			cur = con.cursor()
+			allSetValue = []
+			for field in self.fields:
+				allSetValue.append(field + " = ?")
+				
+			questionMarks = ', '.join(allSetValue)
+			updateStatment = "UPDATE "+self.tablename+" set "+questionMarks+" where "+self.key+" = ?"
+			
+			print("Data updating...")
+			objectAsTuple = []
+			i=0
+			for fieldName in self.fields:
+				objectAsTuple.insert(i,json_data[ fieldName ])
+				i = i+1
+			objectAsTuple.insert(i,json_data[ self.key ])
+			print(objectAsTuple)
+			cur.execute(updateStatment, tuple(objectAsTuple) )
+			con.commit()
+
+		except sqlite3.Error, e:
+			print("Error with database: %s" % e)
+			return False
+		finally:
+			if con:
+				con.close()
 		return True
 
 	def __getRecords(self, statment, data = None):
 		allRecords = {}
+	
 		try:
 			con = sqlite3.connect(self.database)
 			cur = con.cursor()
@@ -79,7 +111,7 @@ class DataReader():
 					i = i+1
 				allRecords[row[0]] = aRecord
 		except sqlite3.Error, e:
-			print "Error with database: %s" % e
+			print("Error with database: %s" % e)
 		finally:
 			if con:
 				con.close()
@@ -94,7 +126,26 @@ class DataReader():
 		return self.__getRecords("SELECT "+fieldsComaSep+" FROM "+self.tablename + " where "+aFieldname+ " = ?", (aValue,))
 		
 class JsonRetriever():
+	serverURL = ""
+	def __init__(self, aServerURL = "http://path.to/index.php/"):
+		self.serverURL = aServerURL
+	
 	def retrieveFromUrl(self, urlForAllEntities):
-		data = urllib2.urlopen(urlForAllEntities).read()
+		data = "{}"
+		try:
+			data = urllib2.urlopen(self.serverURL + urlForAllEntities).read()
+		except :
+			print("Unable to read URL : " + self.serverURL + urlForAllEntities)
 		json_data = json.loads(data)
 		return json_data
+
+	def sendPostData(self, url, dictForData):
+		params = urllib.urlencode(dictForData)
+		data= None
+		try:
+			response = urllib2.urlopen(self.serverURL + url, params)
+			data = response.read()
+		except :
+			print("Unable to read URL : " + self.serverURL + params)
+		return data
+		
