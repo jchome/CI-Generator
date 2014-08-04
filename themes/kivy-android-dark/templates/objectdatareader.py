@@ -12,7 +12,7 @@
 #	]
 ###
 
-from datareader import DataReader, JsonRetriever
+from .datareader import DataReader, JsonRetriever
 from models.%%(self.obName.lower())%%Model import %%(self.obName)%%
 
 """%%(self.description)%%
