@@ -45,9 +45,9 @@ includesKey = True
 RETURN = self.dbVariablesList('"(var)s" : anObject.(var)s', 'var', '', '', 0, includesKey)
 %% }
 		if anObject.%%(self.keyFields[0].dbName)%% is None:
-			self.updateData(json_data)
-		else:
 			anObject.%%(self.keyFields[0].dbName)%% = self.insertData(json_data)
+		else:
+			self.updateData(json_data)
 
 	
 %%allAttributeCode = ""
