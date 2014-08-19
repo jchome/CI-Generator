@@ -82,6 +82,7 @@ class CIObject:
 				aField.sqlType = attributeTag.getAttribute("type")
 			if attributeTag.getAttribute("nullable") != "":
 				aField.nullable = (attributeTag.getAttribute("nullable") == "YES")
+				#print("....%s: nullable:%s" % (aField.dbName,aField.nullable) )
 			if attributeTag.getAttribute("isKey") != "":
 				aField.isKey = (attributeTag.getAttribute("isKey") == "YES")
 			if attributeTag.getAttribute("autoincrement") != "":
