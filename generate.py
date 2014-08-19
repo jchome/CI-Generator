@@ -215,7 +215,7 @@ if __name__ == '__main__':
 	# découpage de generateObjects en liste d'items à générer
 	kindsToGenerate = []
 	if generateObjects.find("all") > -1:
-		kindsToGenerate = "helpers,controllers,views,subViews,baseModels,models,sql,lang,unitTest,json,js".split(",")
+		kindsToGenerate = "helpers,controllers,views,subViews,baseModels,models,sql,lang,unitTest,json,js,doc".split(",")
 	else:
 		for item in generateObjects.split(","):
 			kindsToGenerate.append(item.strip())
@@ -227,7 +227,7 @@ if __name__ == '__main__':
 
 	# recuperation de tous les fichiers template
 	allTemplates = {}
-	for templateFilename in glob.glob(os.path.join("themes", theme, "templates","*.*")):
+	for templateFilename in glob.glob(os.path.join("themes", theme, "templates","*.*")) + glob.glob(os.path.join("themes", theme, "templates","*","*.*")):
 		#DEBUG print (templateFilename)
 		reader = TemplateFileReader()
 		reader.readFile(templateFilename)
@@ -235,7 +235,7 @@ if __name__ == '__main__':
 			if not reader.kind in allTemplates :
 				allTemplates[reader.kind] = []
 			allTemplates[reader.kind].append(reader)
-
+			
 
 	i = 1
 	while i < len(sys.argv):
