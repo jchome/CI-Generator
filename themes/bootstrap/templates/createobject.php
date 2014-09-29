@@ -15,6 +15,7 @@ class Create%%(self.obName)%% extends CI_Controller {
 	function __construct(){
 		parent::__construct();
 		$this->load->model('%%(self.obName)%%_model');
+		$this->load->library('%%(self.obName)%%Service');
 		$this->load->library('session');
 		$this->load->helper('url');
 		$this->load->library('form_validation');
@@ -26,7 +27,8 @@ for field in self.fields:
 	attributeCode = ""
 	if field.referencedObject:
 		attributeCode += """
-		$this->load->model('%s_model');""" % field.referencedObject.obName
+		$this->load->model('%(referencedObject)s_model');
+		$this->load->library('%(referencedObject)sService');""" % {'referencedObject': field.referencedObject.obName}
 	allAttributeCode += attributeCode
 		
 RETURN = allAttributeCode
@@ -46,9 +48,8 @@ for field in self.fields:
 	attributeCode = ""
 	if field.referencedObject and field.access == "default":
 		attributeCode += """
-		$data['%(referencedObjectLower)sCollection'] = %(referencedObject)s_model::getAll%(referencedObject)ss($this->db);""" % {
-			'referencedObjectLower' : field.referencedObject.obName.lower(),
-			'referencedObject' : field.referencedObject.obName
+		$data['%(referencedObjectLower)sCollection'] = $this->%(referencedObjectLower)sservice->getAll($this->db);""" % {
+			'referencedObjectLower' : field.referencedObject.obName.lower()
 		}
 	elif field.sqlType.upper()[0:4] == "ENUM":
 		enumTypes = field.sqlType[5:-1]
@@ -108,7 +109,8 @@ RETURN = allAttributeCode
 includesKey = True;
 RETURN = self.dbAndObVariablesList("$model->(dbVar)s = $this->input->post('(dbVar)s');", 'dbVar', 'obVar', 2, includesKey)
 %%
-		$model->save($this->db);
+		$this->%%(self.obName.lower())%%service->insertNew($this->db, $model);
+		
 %%codeForUploadFile = ""
 useUpload = False
 for field in self.fields:
@@ -143,10 +145,11 @@ for field in self.fields:
 					unlink($path . $uploadDataFile_%(dbName)s['file_name']);
 				}
 			}
-			$model->update($this->db);
+			$this->%(obName_lower)sservice->update($this->db, $model);
 		}""" % { 'dbName' : field.dbName,
 				'desc' : field.description,
 				'obName' : self.obName,
+				'obName_lower' : self.obName.lower(),
 				'keyField' : self.keyFields[0].dbName
 		}
 		codeForUploadFile += attributeCode

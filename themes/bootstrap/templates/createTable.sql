@@ -27,9 +27,11 @@ for field in self.fields:
 
 	if field.sqlType.upper()[0:4] == "FLAG":
 		typeForSQL = "char(1)"
-	if field.sqlType.upper()[0:5] == "COLOR":
+	elif field.sqlType.upper()[0:5] == "COLOR":
 		typeForSQL = "char(7)"
-	if field.sqlType.upper()[0:4] == "DATE":
+	elif field.sqlType.upper()[0:5] == "FLOAT":
+		typeForSQL = "float(%s)" % field.sqlType[6:-1]
+	elif field.sqlType.upper()[0:4] == "DATE":
 		typeForSQL = "date"
 	elif field.sqlType.upper()[0:8] == "PASSWORD":
 		typeForSQL = "varchar" + field.sqlType[8:]

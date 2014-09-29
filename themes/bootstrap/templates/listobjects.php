@@ -15,6 +15,7 @@ class List%%(self.obName)%%s extends CI_Controller {
 	function __construct(){
 		parent::__construct();
 		$this->load->model('%%(self.obName)%%_model');
+		$this->load->library('%%(self.obName)%%Service');
 		$this->load->library('session');
 		$this->load->library('pagination');
 		$this->load->helper('url');
@@ -26,7 +27,8 @@ for field in self.fields:
 	attributeCode = ""
 	if field.referencedObject:
 		attributeCode += """
-		$this->load->model('%s_model');""" % field.referencedObject.obName
+		$this->load->model('%(referencedObject)s_model');
+		$this->load->library('%(referencedObject)sService');""" % {'referencedObject': field.referencedObject.obName}
 	allAttributeCode += attributeCode
 	
 RETURN = allAttributeCode
@@ -50,7 +52,7 @@ RETURN = allAttributeCode
 		
 		// preparer la pagination
 		$config['base_url'] = base_url().'index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index/'.$orderBy.'/'.$asc.'/';
-		$config['total_rows'] = %%(self.obName)%%_model::getCount%%(self.obName)%%s($this->db);
+		$config['total_rows'] = $this->%%(self.obName.lower())%%service->count($this->db);
 		$config['per_page'] = 15;
 		$config['cur_tag_open'] = '<li class="active"><a href="#">';
 		$config['cur_tag_close'] = '</a></li>';
@@ -72,7 +74,7 @@ RETURN = allAttributeCode
 		$data['pagination'] = $this->pagination;
 		
 		// recuperation des donnees
-		$data['%%(self.obName.lower())%%s'] = %%(self.obName)%%_model::getAll%%(self.obName)%%s($this->db, $orderBy, $asc, $config['per_page'], $offset);
+		$data['%%(self.obName.lower())%%s'] = $this->%%(self.obName.lower())%%service->getAll($this->db, $orderBy, $asc, $config['per_page'], $offset);
 		%%allAttributeCode = ""
 # inclure les objets référencés dans l'objet $data
 
@@ -80,9 +82,8 @@ for field in self.fields:
 	attributeCode = ""
 	if field.referencedObject and field.access == "default":
 		attributeCode += """
-		$data['%(referencedObjectLower)sCollection'] = %(referencedObject)s_model::getAll%(referencedObject)ss($this->db);""" % {
-			'referencedObjectLower' : field.referencedObject.obName.lower(),
-			'referencedObject' : field.referencedObject.obName
+		$data['%(referencedObjectLower)sCollection'] = $this->%(referencedObjectLower)sservice->getAll($this->db);""" % {
+			'referencedObjectLower' : field.referencedObject.obName.lower()
 		}
 	elif field.sqlType.upper()[0:4] == "ENUM":
 		enumTypes = field.sqlType[5:-1]
@@ -112,21 +113,22 @@ for field in self.fields:
 	attributeCode = ""
 	if field.sqlType.upper()[0:4] == "FILE":
 		attributeCode += """
-		$model = %(obName)s_model::get%(obName)s($this->db, $%(field_dbName)s);
+		$model = $this->%(obName_lower)sservice->getUnique($this->db, $%(field_dbName)s);
 		$path = realpath('www/uploads/');
 		if( $model->%(field_dbName)s && file_exists( $path . $model->%(field_dbName)s ) ){
 			unlink($path . $model->%(field_dbName)s);
 		}
-""" % { 'obName' : self.obName, 'field_dbName' : field.dbName
+""" % { 'obName' : self.obName,
+		'obName_lower' : self.obName.lower(), 
+		'field_dbName' : field.dbName
 }
 	if attributeCode != "":
 		allAttributeCode += attributeCode
 
 RETURN = allAttributeCode
 %%
-
-		%%(self.obName)%%_model::delete($this->db, $%%(self.keyFields[0].dbName)%%);
-
+		$this->%%(self.obName.lower())%%service->deleteByKey($this->db, $%%(self.keyFields[0].dbName)%%);
+		
 		$this->session->set_flashdata('msg_confirm', $this->lang->line('%%(self.obName.lower())%%.message.confirm.deleted'));
 
 		redirect('%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index'); 

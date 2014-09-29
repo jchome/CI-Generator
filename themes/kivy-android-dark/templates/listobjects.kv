@@ -7,6 +7,7 @@
 
 	BoxLayout:
 		orientation: 'vertical'
+
 		ActionBar:
 			pos_hint: {'top':1}
 			ActionView:
@@ -15,8 +16,6 @@
 					title: '%%(self.displayName)%%'
 					#with_previous: False
 					on_press: root.manager.back()
-					previous_image: "images/ic_action_previous_item.png"
-					app_icon: "images/ic_action_icon.png"
 				
 				ActionOverflow:
 				
@@ -24,8 +23,17 @@
 					text: 'Refresh'
 					icon: "images/ic_action_refresh.png"
 					on_press: root.refresh()
-
 				
+				ActionButton:
+					text: 'New'
+					icon: "images/ic_action_new.png"
+					on_press: root.newItem()
+					
+		# Small Padding
+		Label:
+			text: " "
+			size_hint_y: None
+			height: '6sp'
 			
 		ListView:
 			id: list_id

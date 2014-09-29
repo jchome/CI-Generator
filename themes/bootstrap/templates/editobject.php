@@ -12,6 +12,7 @@ class Edit%%(self.obName)%% extends CI_Controller {
 	function __construct(){
 		parent::__construct();
 		$this->load->model('%%(self.obName)%%_model');
+		$this->load->library('%%(self.obName)%%Service');
 		$this->load->library('session');
 		$this->load->helper('template');
 		$this->load->helper('url');
@@ -24,7 +25,8 @@ for field in self.fields:
 	attributeCode = ""
 	if field.referencedObject:
 		attributeCode += """
-		$this->load->model('%s_model');""" % field.referencedObject.obName
+		$this->load->model('%(referencedObject)s_model');
+		$this->load->library('%(referencedObject)sService');""" % {'referencedObject': field.referencedObject.obName}
 	allAttributeCode += attributeCode
 	
 RETURN = allAttributeCode
@@ -37,7 +39,7 @@ RETURN = allAttributeCode
 	 * Affichage des infos
 	 */
 	public function index($%%(self.keyFields[0].dbName)%%){
-		$model = %%(self.obName)%%_model::get%%(self.obName)%%($this->db, $%%(self.keyFields[0].dbName)%%);
+		$model = $this->%%(self.obName.lower())%%service->getUnique($this->db, $%%(self.keyFields[0].dbName)%%);
 		$data['%%(self.obName.lower())%%'] = $model;
 %%allAttributeCode = ""
 # inclure les objets référencés dans l'objet $data
@@ -46,9 +48,8 @@ for field in self.fields:
 	attributeCode = ""
 	if field.referencedObject and field.access == "default":
 		attributeCode += """
-		$data['%(referencedObjectLower)sCollection'] = %(referencedObject)s_model::getAll%(referencedObject)ss($this->db);""" % {
-			'referencedObjectLower' : field.referencedObject.obName.lower(),
-			'referencedObject' : field.referencedObject.obName
+		$data['%(referencedObjectLower)sCollection'] = $this->%(referencedObjectLower)sservice->getAll($this->db);""" % {
+			'referencedObjectLower' : field.referencedObject.obName.lower()
 		}
 	allAttributeCode += attributeCode
 	
@@ -94,7 +95,7 @@ RETURN = allAttributeCode
 		
 		// Mise a jour des donnees en base
 		$model = new %%(self.obName)%%_model();
-		$oldModel = %%(self.obName)%%_model::get%%(self.obName)%%($this->db, $this->input->post('%%(self.keyFields[0].dbName)%%') );
+		$oldModel = $this->%%(self.obName.lower())%%service->getUnique($this->db, $this->input->post('%%(self.keyFields[0].dbName)%%') );
 		%%
 codeForAttributes = ""
 for field in self.fields:
@@ -103,7 +104,7 @@ for field in self.fields:
 	codeForAttributes += codeForField
 RETURN = codeForAttributes
 %%
-		$model->update($this->db);
+		$this->%%(self.obName.lower())%%service->update($this->db, $model);
 		
 %%codeForUploadFile = ""
 useUpload = False
@@ -145,10 +146,11 @@ for field in self.fields:
 					unlink($path . $uploadDataFile_%(dbName)s['file_name']);
 				}
 			}
-			$model->update($this->db);
+			$this->%(obName_lower)sservice->update($this->db, $model);
 		}""" % {'dbName' : field.dbName, 
 			'desc' : field.description, 
 			'obName' : self.obName,
+			'obName_lower' : self.obName.lower(),
 			'keyField' : self.keyFields[0].dbName
 		}
 	codeForUploadFile += attributeCode
