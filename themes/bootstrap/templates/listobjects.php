@@ -113,15 +113,16 @@ for field in self.fields:
 	attributeCode = ""
 	if field.sqlType.upper()[0:4] == "FILE":
 		attributeCode += """
-		$model = $this->%(obName_lower)sservice->getUnique($this->db, $%(field_dbName)s);
+		$model = $this->%(obName_lower)sservice->getUnique($this->db, $%(keyfield_dbname)s);
 		$path = realpath('www/uploads/');
 		if( $model->%(field_dbName)s && file_exists( $path . $model->%(field_dbName)s ) ){
 			unlink($path . $model->%(field_dbName)s);
 		}
 """ % { 'obName' : self.obName,
 		'obName_lower' : self.obName.lower(), 
-		'field_dbName' : field.dbName
-}
+		'field_dbName' : field.dbName,
+		'keyfield_dbname' : self.keyFields[0].dbName
+	}
 	if attributeCode != "":
 		allAttributeCode += attributeCode
 

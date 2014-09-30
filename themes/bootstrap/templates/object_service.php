@@ -14,7 +14,7 @@ require_once(APPPATH.'libraries/DAOService.php');
 class %%(self.obName)%%Service extends DAOService{
 
 	public function __construct($params = array()){
-		parent::__construct("%%(self.dbTableName)%%");
+		parent::__construct("%%(self.dbTableName)%%", "%%(self.keyFields[0].dbName)%%");
 	}
 
 	public function buildModelFromRow($row){
@@ -180,7 +180,7 @@ RETURN = self.dbVariablesList("'(var)s'=>$aModel->(var)s", 'var',  '', '', 0, no
 includesKey = False
 RETURN = self.dbVariablesList("'(var)s'=>$aModel->(var)s", 'var',  '', '', 0, includesKey)
 %%);
-		$db->where('%%(self.keyFields[0].dbName)%%', %%(self.listOfKeys(fieldPrefix="$", fieldSuffix = ", "))%%);
+		$db->where('%%(self.keyFields[0].dbName)%%', $aModel->%%(self.keyFields[0].dbName)%%);
 		log_message('debug','[%%(self.obName)%%Service.php] : update with data:'. print_r($data, true) );
 		$db->update($this->getTableName(), $data);
 	}
