@@ -9,7 +9,7 @@ from kivy.config import Config
 Config.set('graphics', 'width', '450')
 Config.set('graphics', 'height', '800')
 
-__version__ = '1.5'
+__version__ = '0.1'
 ## install & run with 
 # buildozer android debug deploy run
 
@@ -20,8 +20,8 @@ from kivy.app import App
 from kivy.uix.screenmanager import SlideTransition
 from screens.customscreen import CustomScreenManager, CustomScreen
 
-### import des entités
-#from clients import ClientsApp
+from screens.clientsScreen.listlocalitys import ListClientsApp
+from database.clientdatareader import ClientDataReader
 
 	
 class Welcome(CustomScreen):
@@ -29,8 +29,8 @@ class Welcome(CustomScreen):
 	def do_enter(self):
 		self.manager.go_next()
 		### passer a l'écran clients
-		#aJsonData = ...
-		#self.manager.get_screen("Clients").setItems( aJsonData )
+		clientHelper = ClientDataReader()
+		self.manager.get_screen("Clients").setItems( clientHelper.getAllRecords() )
 
 
 class WelcomeApp(App):
@@ -43,12 +43,11 @@ class WelcomeApp(App):
 		
 		manager.add_screen(welcomeScreen)
 		
-		### ajout de la vue 'Clients'
-		#app = ClientsApp()
-		#app.load_kv()
-		#clientsView = app.build()
-		#manager.add_widget(clientsView)
-		
+		### EXEMPLE : ajout de la vue 'ListClients'
+		app = ListClientsApp()
+		app.load_kv()
+		clientsView = app.build()
+		manager.add_screen(clientsView)
 		
 		manager.transition = SlideTransition(direction="left")
 		return manager

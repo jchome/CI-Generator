@@ -1,9 +1,9 @@
 %[kind : sql]
 %[file : cretab_%%(self.obName.lower())%%.sqlite]
-%[path : sources]
+%[path : database/sources]
 /*
  * Lancer la commande suivante pour insérer les données
- * cat cretab_%%(self.obName.lower())%%.sqlite | sqlite3 database.sdb
+ * cat cretab_%%(self.obName.lower())%%.sqlite | sqlite3 ../database.sdb
  */
  
 CREATE TABLE %%(self.dbTableName)%% (

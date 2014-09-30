@@ -21,10 +21,10 @@ import kivy
 kivy.require('1.0.5')
 
 from kivy.app import App
-from kivy.uix.screenmanager import Screen, SlideTransition
 from kivy.adapters.listadapter import ListAdapter
 from kivy.lang import Builder
 from screens.customscreen import CustomScreen
+from database.%%(self.obName.lower())%%datareader import %%(self.obName)%%DataReader
 
 __all__ = ("List%%(self.obName)%%s", "List%%(self.obName)%%sApp")
 
@@ -71,7 +71,7 @@ Builder.load_string("""
 		halign: 'left'
 		text_size: (self.width , None)
 		color: [1,1,1, 1]
-		text: ctx.text +'\\n[size=14sp][color=bfbfbf]'+ ctx.subtext+'[/color][/size]'
+		text: '%s\\n[size=14sp][color=bfbfbf]%s[/color][/size]' % (ctx.text, ctx.subtext)
 		markup: True
 		font_size: '22sp'
 		
