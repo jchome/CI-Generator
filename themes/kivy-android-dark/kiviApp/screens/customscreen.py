@@ -43,6 +43,10 @@ class CustomScreenManager(ScreenManager):
 		self.current = self.allScreens[self.screenIndex]
 		self.current_screen.post_back()
 		return True
+	
+	def get_previous_screen(self):
+		name_of_previous_screen = self.allScreens[self.screenIndex -1]
+		return self.get_screen(name_of_previous_screen)
 
 class CustomScreen(Screen):
 	def __init__(self, **kwargs):
