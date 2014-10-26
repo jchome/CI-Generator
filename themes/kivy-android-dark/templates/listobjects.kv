@@ -2,8 +2,7 @@
 %[file : list%%(self.obName.lower())%%s.kv]
 %[path : screens/%%(self.obName.lower())%%sScreen]
 <List%%(self.obName)%%s>:
-	logLabel: logLabel_id
-	containerListView: list_id
+	list_items: list_items_id
 
 	BoxLayout:
 		orientation: 'vertical'
@@ -28,7 +27,7 @@
 				ActionButton:
 					text: 'New'
 					icon: "images/ic_action_new.png"
-					on_press: root.newItem()
+					on_press: root.new_item()
 					
 		# Small Padding
 		Label:
@@ -36,15 +35,9 @@
 			size_hint_y: None
 			height: '6sp'
 			
-		ListView:
-			id: list_id
+		ScrollView:
+			GridLayout:
+				id: list_items_id
+				cols: 1
+				size_hint_y: None
 			
-		# Log line
-		Label: 
-			id: logLabel_id
-			text: ""
-			
-			size_hint_y: None
-			height: '20sp'
-			font_size: '12sp'
-		

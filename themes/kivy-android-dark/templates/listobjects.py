@@ -21,7 +21,7 @@ import kivy
 kivy.require('1.0.5')
 
 from kivy.app import App
-from kivy.adapters.listadapter import ListAdapter
+from kvx_widgets.listiconitembutton import ListIconItemButton
 from kivy.lang import Builder
 from screens.customscreen import CustomScreen
 from database.%%(self.obName.lower())%%datareader import %%(self.obName)%%DataReader
@@ -90,42 +90,36 @@ class List%%(self.obName)%%s(CustomScreen):
 		self.%%(self.obName.lower())%% = None
 		
 	def updateDisplay(self):
-		list_item_args_converter = \
-			lambda row_index, obj: {'text': obj.%%(self.keyFields[0].dbName)%%,
-									'subtext': "Lorem ipsum",
-									'index': row_index,
-									'id': "itemindex_%d" % row_index, 
-									'is_selected': False,
-									'size_hint_y': None,
-									'height': 25}
+		self.list_items.clear_widgets()
+		total_height = 0
+		for (index, item) in self.allItems.items():
+			itemButton = ListIconItemButton()
+			itemButton.set_left_icon( "images/ic_action_star.png" )
+			itemButton.set_text(item.my_custom_text )
+			itemButton.set_font_size(sp(22))
+			itemButton.set_index(index)
+			itemButton.height = sp(80)
+			itemButton.left_icon_width = sp(76)
+			itemButton.right_icon_width = sp(40)
+			itemButton.bind(on_press=self.select_item)
+			self.list_items.add_widget(itemButton)
+			total_height += itemButton.height
+		self.list_items.height = total_height
 		
-		my_adapter = ListAdapter(data = self.allItems.itervalues(),
-									args_converter=list_item_args_converter,
-									selection_mode='single',
-									allow_empty_selection=True,
-									template='CustomListItem%%(self.obName)%%')
-		
-		my_adapter.bind(on_selection_change=self.item_changed)
-		self.containerListView.adapter = my_adapter
-		
-	def item_changed(self, adapter, *args):
-		if len(adapter.selection) == 0:
-			return
-		self.%%(self.obName.lower())%% = adapter.data[adapter.selection[0].parent.index]
-		adapter.selection[0].deselect()
-		
+	def select_item(self, anItem):
+		self.%%(self.obName.lower())%% = self.allItems[anItem.get_index()]
 		nextScreen = self.manager.go_next()
-		nextScreen.setItems( ... ) #TODO: ajouter les paramètres pour l'ecran suivant
+		nextScreen.set_items( ... ) #TODO: ajouter les paramètres pour l'ecran suivant
 		
 		
-	def setItems(self, data):
+	def set_items(self, data):
 		self.allItems = data
 		#self.logLabel.text = "count : %s" % len(self.allItems)
 		self.updateDisplay()
 		self.%%(self.obName.lower())%% = None
 		
 		
-	def newItem(self):
+	def new_item(self):
 		pass
 
 	def refresh(self):

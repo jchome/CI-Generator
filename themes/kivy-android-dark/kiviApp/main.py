@@ -30,7 +30,7 @@ class Welcome(CustomScreen):
 		self.manager.go_next()
 		### passer a l'écran clients
 		clientHelper = ClientDataReader()
-		self.manager.get_screen("Clients").setItems( clientHelper.getAllRecords() )
+		self.manager.get_screen("Clients").set_items( clientHelper.getAllRecords() )
 
 
 class WelcomeApp(App):
