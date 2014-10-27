@@ -38,7 +38,19 @@ includesKey = True
 RETURN = self.dbVariablesList('"(var)s" : anObject.(var)s', 'var', '', '', 0, includesKey)
 %% }
 			self.insertData(json_data)
-		
+%%allAttributeCode = ""
+for field in self.fields:
+	if field.sqlType.upper()[0:4] == "FILE":
+		attributeCode = """
+			if anObject.%(dbName)s is not None:
+				%(obName)sJsonRetriever().retrieve_file_%(dbName)s(anObject.%(keyField)s, self.stored_files_path)""" % { 'dbName' : field.dbName,
+			'obName' : self.obName,
+			'keyField' : self.keyFields[0].dbName
+			}
+		allAttributeCode += attributeCode
+RETURN = allAttributeCode
+%%
+
 	def saveOrUpdate(self, anObject):
 		json_data = { %%
 includesKey = True
@@ -108,3 +120,20 @@ for field in self.fields:
 	
 RETURN = allAttributeCode
 %%
+
+%%allAttributeCode = ""
+for field in self.fields:
+	if field.sqlType.upper()[0:4] == "FILE":
+		attributeCode = """
+	def retrieve_file_%(dbName)s(self, key, path_to_save):
+		URL_GET_FILE = "%(objectNameLower)s/get%(objectNameLower)sjson/get_file_%(dbName)s/" + key
+		self.retrieveFile(URL_GET_FILE, "%(dbName)s", path_to_save)
+""" %	{ 'dbName' : field.dbName,
+			'obName' : self.obName,
+			'objectNameLower' : self.obName.lower()
+			}
+		allAttributeCode += attributeCode
+RETURN = allAttributeCode
+%%
+
+	

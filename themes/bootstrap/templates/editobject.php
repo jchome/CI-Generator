@@ -161,7 +161,7 @@ if useUpload:
 		// Chemin de stockage des fichiers : doit etre WRITABLE pour tous
 		$config['upload_path'] = realpath('www/uploads/');
 		// Voir la configuration des types mimes s'il y a un probleme avec l'extension
-		$config['allowed_types'] = 'doc|docx|xls|xlsx|pdf|gif|jpg|png|jpeg|zip|rar|ppt|pptx';
+		$config['allowed_types'] = 'doc|docx|xls|xlsx|pdf|gif|jpg|png|jpeg|zip|rar|ppt|pptx|mp3';
 		$config['max_size']	= '2000';
 		$config['max_width']  = '0';
 		$config['max_height']  = '0';

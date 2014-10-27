@@ -23,7 +23,6 @@ from screens.customscreen import CustomScreenManager, CustomScreen
 from screens.clientsScreen.listlocalitys import ListClientsApp
 from database.clientdatareader import ClientDataReader
 
-	
 class Welcome(CustomScreen):
 
 	def do_enter(self):
