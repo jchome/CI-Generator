@@ -29,37 +29,40 @@ RETURN = self.dbVariablesList('"(var)s"', 'var', '', '', 0, includesKey)
 		fullDict = DataReader.getAllRecords(self)
 		return %%(self.obName)%%.readAllFromDict(fullDict)
 	
-	def refreshData(self):
-		self.purgeTable()
+	def refreshData(self, message_writer = None):
+		self.purgeTable(message_writer)
 		allObjects = %%(self.obName)%%JsonRetriever().retrieveAll()
 		for anObject in allObjects.itervalues():
 			json_data = { %%
 includesKey = True
 RETURN = self.dbVariablesList('"(var)s" : anObject.(var)s', 'var', '', '', 0, includesKey)
 %% }
-			self.insertData(json_data)
+			self.insertData(json_data, message_writer)
 %%allAttributeCode = ""
 for field in self.fields:
 	if field.sqlType.upper()[0:4] == "FILE":
 		attributeCode = """
-			if anObject.%(dbName)s is not None:
-				%(obName)sJsonRetriever().retrieve_file_%(dbName)s(anObject.%(keyField)s, self.stored_files_path)""" % { 'dbName' : field.dbName,
+			if anObject.%(dbName)s is not None and anObject.%(dbName)s != "":
+				message_writer.write("Recuperation de fichier (%(field_obName)s)")
+				%(obName)sJsonRetriever().retrieve_file_%(dbName)s(anObject.%(keyField)s, self.stored_files_path)""" % { 
+			'dbName' : field.dbName,
 			'obName' : self.obName,
-			'keyField' : self.keyFields[0].dbName
+			'keyField' : self.keyFields[0].dbName,
+			'field_obName': field.obName
 			}
 		allAttributeCode += attributeCode
 RETURN = allAttributeCode
 %%
 
-	def saveOrUpdate(self, anObject):
+	def saveOrUpdate(self, anObject, message_writer = None):
 		json_data = { %%
 includesKey = True
 RETURN = self.dbVariablesList('"(var)s" : anObject.(var)s', 'var', '', '', 0, includesKey)
 %% }
 		if anObject.%%(self.keyFields[0].dbName)%% is None:
-			anObject.%%(self.keyFields[0].dbName)%% = self.insertData(json_data)
+			anObject.%%(self.keyFields[0].dbName)%% = self.insertData(json_data, message_writer)
 		else:
-			self.updateData(json_data)
+			self.updateData(json_data, message_writer)
 
 	
 %%allAttributeCode = ""
