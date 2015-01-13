@@ -44,7 +44,7 @@ for field in self.fields:
 		typeForSQL = typeForSQL[:-1]
 		typeForSQL += ")"
 
-	elif field.sqlType.upper() == "FILE":
+	elif field.sqlType.upper()[0:4] == "FILE":
 		typeForSQL = "varchar(4000)" 
 
 	attributeCode = "\t`%(dbName)s` %(sqlType)s " % { 'dbName' : field.dbName,

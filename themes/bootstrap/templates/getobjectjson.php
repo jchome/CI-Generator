@@ -7,15 +7,15 @@
 *
 */
 
-class GetPointOfInterestJson extends CI_Controller {
+class Get%%(self.obName)%%Json extends CI_Controller {
 
 	/**
 	 * Constructeur
 	 */
 	function __construct(){
 		parent::__construct();
-		$this->load->model('PointOfInterest_model');
-		$this->load->library('PointOfInterestService');
+		$this->load->model('%%(self.obName)%%_model');
+		$this->load->library('%%(self.obName)%%Service');
 		$this->load->library('session');
 		$this->load->database();
 

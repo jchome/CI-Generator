@@ -63,7 +63,7 @@ for field in self.fields:
 		attributeCode = "$%(obName)s_insert->%(dbName)s = '#ffffff';" % {'obName' : self.obName.lower(), 'dbName' : field.dbName }
 	elif field.sqlType.upper()[0:8] == "PASSWORD":
 		attributeCode = "$%(obName)s_insert->%(dbName)s = 'p4ssW0rD-%(index)d';" % {'obName' : self.obName.lower(), 'dbName' : field.dbName, 'index': index }
-	elif field.sqlType.upper() == "FILE":
+	elif field.sqlType.upper()[0:4] == "FILE":
 		attributeCode = "$%(obName)s_insert->%(dbName)s = 'file-%(index)d : ...';" % {	'obName' : self.obName.lower(), 'dbName' : field.dbName, 'index': index }
 	elif field.sqlType.upper()[0:3] == "INT":
 		attributeCode = "$%(obName)s_insert->%(dbName)s = %(index)d;" % { 'obName' : self.obName.lower(), 'dbName' : field.dbName, 'index': index }
@@ -117,7 +117,7 @@ for field in self.fields:
 		attributeCode = "$%(obName)s_insert->%(dbName)s = '#ffffff';" % {'obName' : self.obName.lower(), 'dbName' : field.dbName }
 	elif field.sqlType.upper()[0:8] == "PASSWORD":
 		attributeCode = "$%(obName)s_insert->%(dbName)s = 'p4ssW0rD-%(index)d';" % {'obName' : self.obName.lower(), 'dbName' : field.dbName, 'index': index }
-	elif field.sqlType.upper() == "FILE":
+	elif field.sqlType.upper()[0:4] == "FILE":
 		attributeCode = "$%(obName)s_insert->%(dbName)s = 'file-%(index)d : ...';" % {	'obName' : self.obName.lower(), 'dbName' : field.dbName, 'index': index }
 	elif field.sqlType.upper()[0:3] == "INT":
 		attributeCode = "$%(obName)s_insert->%(dbName)s = %(index)d;" % { 'obName' : self.obName.lower(), 'dbName' : field.dbName, 'index': index }
