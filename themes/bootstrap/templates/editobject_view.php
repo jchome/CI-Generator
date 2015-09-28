@@ -45,15 +45,16 @@ echo form_open_multipart('%%(self.obName.lower())%%/edit%%(self.obName.lower())%
 for field in self.fields:
 	attributeCode = ""
 	if field.referencedObject and field.access == "ajax" :
-		attributeCode += """
-$%(dbName)s_%(referencedObject)s = ($%(structureObName)s->%(dbName)s == 0)?(new %(referencedObject)s_model()):(%(referencedObject)s_model::get%(referencedObject)s($this->db, $%(structureObName)s->%(dbName)s));""" % { 
-			'structureObName': self.obName.lower(), 
-			'dbName' : field.dbName, 
-			'referencedObject' : field.referencedObject.obName
+		attributeCode = """
+	$%(dbName)s_text = ($%(structureObName)s->%(dbName)s == 0)?(new %(referencedObject)s_model()):($this->%(referencedObjectLower)sservice->getUnique($this->db, $%(structureObName)s->%(dbName)s));
+""" % {
+		'structureObName' : self.obName.lower(),
+		'referencedObject': field.referencedObject.obName,
+		'referencedObjectLower': field.referencedObject.obName.lower(),
+		'dbName' : field.dbName
 		}
 	allAttributesCode += attributeCode
-			
-RETURN =  allAttributesCode
+RETURN = allAttributesCode
 %%
 ?>
 
@@ -70,14 +71,15 @@ for field in self.fields:
 	
 	valueCode = "<?= $%(structureObName)s->%(dbName)s ?>" % { 'structureObName': self.obName.lower(), 'dbName' : field.dbName }
 	
-	attributeCode += """<div class="control-group"><!-- %(desc)s -->
-	<label class="control-label" for="%(dbName)s">""" % { 'dbName' : field.dbName, 'desc' : field.description }
+	attributeCode += """
+	<div class="form-group"><!-- %(desc)s -->
+		<label class="col-md-2 control-label" for="%(dbName)s">""" % { 'dbName' : field.dbName, 'desc' : field.description }
 
 	if not field.nullable:
 		attributeCode += "* "
 
 	attributeCode += """<?= $this->lang->line('%(objectObName)s.form.%(dbName)s.label') ?> :</label>
-	<div class="controls">
+		<div class="col-md-10">
 		""" % { 'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
 
 	cssClass = "inp-form"
@@ -87,7 +89,7 @@ for field in self.fields:
 		moreAttributes = "required "
 			
 	if field.referencedObject and field.access == "default" :
-		attributeCode += """<select name="%(dbName)s" id="%(dbName)s">
+		attributeCode += """<select name="%(dbName)s" id="%(dbName)s" class="form-control">
 		""" % { 'dbName' : field.dbName }
 		if field.nullable:
 			attributeCode += """	<option value=""></option>
@@ -103,7 +105,7 @@ for field in self.fields:
 				'dbName' : field.dbName}
 				
 	elif field.referencedObject and field.access == "ajax" :
-		attributeCode += """<input type="text" name="%(dbName)s_text" id="%(dbName)s_text" value="<?= $%(dbName)s_%(referencedObject)s->%(display)s ?>" autocomplete="off" %(moreAttributes)s/>
+		attributeCode += """<input type="text" name="%(dbName)s_text" id="%(dbName)s_text" class="form-control" value="<?= $%(dbName)s_text->%(display)s ?>" autocomplete="off" %(moreAttributes)s/>
 		<input type="hidden" name="%(dbName)s" id="%(dbName)s" value="<?= $%(structureObName)s->%(dbName)s ?>">
 		""" % { 'dbName' : field.dbName,
 				'referencedObject' : field.referencedObject.obName, 
@@ -114,7 +116,7 @@ for field in self.fields:
 	elif field.sqlType.upper()[0:4] == "DATE":
 		dateFormat = field.sqlType[5:-1]
 		attributeCode += """<div data-date-format="%(dateFormat)s" id="datepicker_%(dbName)s"
-			class="input-append date"><input type="text" name="%(dbName)s" id="%(dbName)s" size="8" maxlength="10" value="%(valueCode)s" %(moreAttributes)s> 
+			class="input-append date"><input type="text" name="%(dbName)s" id="%(dbName)s" class="form-control" size="8" maxlength="10" value="%(valueCode)s" %(moreAttributes)s> 
 			<span class="add-on"><i class="icon-calendar"></i></span>
 		</div>""" % { 'dbName' : field.dbName, 
 			'valueCode' : valueCode, 
@@ -125,20 +127,20 @@ for field in self.fields:
 	elif field.sqlType.upper()[0:8] == "PASSWORD":
 		attributeCode += """<div class="input-prepend">
 								<span class="add-on"><i class="icon-key"></i></span> <input
-									type="password" placeholder="Password" name="%(dbName)s" id="%(dbName)s" value="%(valueCode)s" %(moreAttributes)s>
+									type="password" placeholder="Password" name="%(dbName)s" class="form-control" id="%(dbName)s" value="%(valueCode)s" %(moreAttributes)s>
 							</div>""" % { 'dbName' : field.dbName, 
 			'valueCode' : valueCode,
 			'moreAttributes' : moreAttributes}
 		
 	elif field.sqlType.upper()[0:4] == "TEXT":
-		attributeCode += """<textarea class="ckeditor" name="%(dbName)s" id="%(dbName)s" %(moreAttributes)s>%(valueCode)s</textarea>""" % { 
+		attributeCode += """<textarea class="ckeditor" name="%(dbName)s" class="form-control" id="%(dbName)s" %(moreAttributes)s>%(valueCode)s</textarea>""" % { 
 			'dbName' : field.dbName, 
 			'valueCode' : valueCode,
 			'moreAttributes' : moreAttributes
 			}
 		
 	elif field.sqlType.upper()[0:4] == "FILE":
-		attributeCode += """<input class="input-file" id="%(dbName)s_file" name="%(dbName)s_file" type="file" %(moreAttributes)s>
+		attributeCode += """<input class="input-file" id="%(dbName)s_file" name="%(dbName)s_file" class="form-control" type="file" %(moreAttributes)s>
 		<input type="hidden" name="%(dbName)s" id="%(dbName)s" value="%(valueCode)s">
 		<?php if($%(structureObName)s->%(dbName)s != "") { ?>
 			<div class="span4" id="%(dbName)s_currentFile"><a href="<?=base_url()?>www/uploads/%(valueCode)s" target="_new"><i class="icon-file"></i> <?= $this->lang->line('form.button.download')?></a></div>
@@ -159,7 +161,7 @@ for field in self.fields:
 				'structureObName' : self.obName.lower() }
 		
 	elif field.sqlType.upper()[0:4] == "ENUM":
-		attributeCode += """<select name="%(dbName)s" id="%(dbName)s" %(moreAttributes)s>
+		attributeCode += """<select name="%(dbName)s" id="%(dbName)s" class="form-control" %(moreAttributes)s>
 		""" % { 
 			'dbName' : field.dbName,
 			'moreAttributes' : moreAttributes }
@@ -180,7 +182,7 @@ for field in self.fields:
 
 	else:
 		# for string, int, ...
-		attributeCode += """<input class="input-xlarge valtype" type="text" name="%(dbName)s" id="%(dbName)s" value="%(valueCode)s" %(moreAttributes)s """ % { 
+		attributeCode += """<input class="input-xlarge valtype form-control" type="text" name="%(dbName)s" id="%(dbName)s" value="%(valueCode)s" %(moreAttributes)s """ % { 
 				'dbName' : field.dbName, 
 				'valueCode' : valueCode,
 				'moreAttributes' : moreAttributes
@@ -192,9 +194,9 @@ for field in self.fields:
 			attributeCode += ">"
 			
 	attributeCode += """
-		<p class="help-block valtype"><?= $this->lang->line('%(objectObName)s.form.%(dbName)s.description')?></p>
-	</div></div>
-	""" % {'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
+			<span class="help-block valtype"><?= $this->lang->line('%(objectObName)s.form.%(dbName)s.description')?></span>
+		</div>
+	</div>""" % {'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
 	
 
 	# ajouter le nouvel attribut, avec indentation si ce n'est pas le premier
@@ -204,14 +206,20 @@ for field in self.fields:
 
 RETURN =  allAttributesCode
 %%
-			
-			<div class="form-actions">
+		
+		
+		<hr>
+		<div class="row">
+			<div class="col-md-offset-2 col-md-2">
 				<button type="submit" class="btn btn-primary"><?= $this->lang->line('form.button.save') ?></button>
-				<a href="<?=base_url()?>index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index" type="button" class="btn"><?= $this->lang->line('form.button.cancel') ?></a>
 			</div>
+			<div class="col-md-offset-2 col-md-2">
+				<a href="<?=base_url()?>index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index" type="button" class="btn btn-default"><?= $this->lang->line('form.button.cancel') ?></a>
+			</div>
+		</div>
 			
 			
-			</fieldset>
+		</fieldset>
 
 <?php
 echo form_close('');

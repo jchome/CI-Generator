@@ -66,7 +66,7 @@ for field in self.fields:
 	 * @return array of data
 	 */
 	public function getAllBy_%(fieldName)s($db, $%(fieldName)s, $orderBy = null, $asc = null, $limit = null, $offset = null){
-		return $this->getAllByCrietria($db, Array( new Criteria('%(fieldName)s', Criteria::$EQ, $%(fieldName)s) ), $orderBy, $asc, $limit, $offset);
+		return $this->getAllByCriteria($db, Array( new Criteria('%(fieldName)s', Criteria::$EQ, $%(fieldName)s) ), $orderBy, $asc, $limit, $offset);
 	}
 """ % { 'keyField' : self.keyFields[0].dbName,
 		'obName' : self.obName,
@@ -87,7 +87,7 @@ for field in self.fields:
 	 * @return array of data
 	 */
 	public function getAllLike_%(fieldName)s($db, $%(fieldName)s, $orderBy = null, $asc = null, $limit = null, $offset = null){
-		return $this->getAllByCrietria($db, Array( new Criteria('%(fieldName)s', Criteria::$LIKE, $%(fieldName)s) ), $orderBy, $asc, $limit, $offset);
+		return $this->getAllByCriteria($db, Array( new Criteria('%(fieldName)s', Criteria::$LIKE, $%(fieldName)s) ), $orderBy, $asc, $limit, $offset);
 	}
 """ % { 'keyField' : self.keyFields[0].dbName,
 		'fieldName' : field.dbName
@@ -139,7 +139,7 @@ for field in self.fields:
 	 * @return int
 	 */
 	public function countBy_%(fieldName)s($db, $%(fieldName)s){
-		return $this->countByCrietria($db, Array( new Criteria('%(fieldName)s',Criteria::$EQ,$%(fieldName)s) ) );
+		return $this->countByCriteria($db, Array( new Criteria('%(fieldName)s',Criteria::$EQ,$%(fieldName)s) ) );
 	}
 """ % { 'keyField' : self.keyFields[0].dbName,
 		'obName' : self.obName,
@@ -158,11 +158,19 @@ RETURN = countAll
 	 */
 	public function insertNew($db, $aModel){
 		$data=array( %%
-includesAutoIncrement = False
-for field in self.keyFields:
-	if field.autoincrement and not includesAutoIncrement:
-		includesAutoIncrement = True
-RETURN = self.dbVariablesList("'(var)s'=>$aModel->(var)s", 'var',  '', '', 0, not includesAutoIncrement)
+allAttributesCode = ""
+for field in self.fields:
+	if field.autoincrement:
+		continue
+	attributeCode = ""
+	if allAttributesCode != "":
+		allAttributesCode += ","
+	if field.sqlType.upper()[0:4] == "DATE":
+		attributeCode = "'%(dbName)s'=>toSQLDate($aModel->%(dbName)s)" % { 'dbName' : field.dbName }
+	else:
+		attributeCode = "'%(dbName)s'=>$aModel->%(dbName)s" % { 'dbName' : field.dbName }
+	allAttributesCode += attributeCode
+RETURN = allAttributesCode
 %%);
 		log_message('debug','[%%(self.obName)%%Service.php] : insert with data:'. print_r($data, true) );
 		$db->insert($this->getTableName(), $data);
@@ -177,8 +185,17 @@ RETURN = self.dbVariablesList("'(var)s'=>$aModel->(var)s", 'var',  '', '', 0, no
 	 */
 	public function update($db, $aModel) {
 		$data = array(%%
-includesKey = False
-RETURN = self.dbVariablesList("'(var)s'=>$aModel->(var)s", 'var',  '', '', 0, includesKey)
+allAttributesCode = ""
+for field in self.fields:
+	attributeCode = ""
+	if allAttributesCode != "":
+		allAttributesCode += ","
+	if field.sqlType.upper()[0:4] == "DATE":
+		attributeCode = "'%(dbName)s'=>toSQLDate($aModel->%(dbName)s)" % { 'dbName' : field.dbName }
+	else:
+		attributeCode = "'%(dbName)s'=>$aModel->%(dbName)s" % { 'dbName' : field.dbName }
+	allAttributesCode += attributeCode
+RETURN = allAttributesCode
 %%);
 		$db->where('%%(self.keyFields[0].dbName)%%', $aModel->%%(self.keyFields[0].dbName)%%);
 		log_message('debug','[%%(self.obName)%%Service.php] : update with data:'. print_r($data, true) );

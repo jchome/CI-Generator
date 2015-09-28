@@ -41,14 +41,17 @@ for field in self.fields:
 		attributeCode = "<!-- AUTO_INCREMENT : DO NOT DISPLAY THIS ATTRIBUTE - " + attributeCode + " -->"
 		continue
 	
-	attributeCode += """<div class="control-group">
-	<label class="control-label" for="%(dbName)s">""" % { 'dbName' : field.dbName }
+	attributeCode += """
+	<div class="form-group"> <!-- %(dbName)s : %(obName)s -->
+		<label class="col-md-3 control-label" for="%(dbName)s">""" % { 'dbName' : field.dbName, 'obName': field.obName }
 
 	if not field.nullable:
 		attributeCode += "* "
 
-	attributeCode += """<?= $this->lang->line('%(objectObName)s.form.%(dbName)s.label') ?> :</label>
-	<div class="controls">""" % { 'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
+	attributeCode += """
+			<?= $this->lang->line('%(objectObName)s.form.%(dbName)s.label') ?> :
+		</label>
+		<div class="col-md-7">""" % { 'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
 
 	cssClass = "inp-form"
 
@@ -57,14 +60,16 @@ for field in self.fields:
 		moreAttributes = "required "
 	
 	if field.referencedObject and field.access == "default":
-		attributeCode += """<select name="%(dbName)s" id="%(dbName)s"> """ % { 'dbName' : field.dbName }
-		if field.nullable:
-			attributeCode += """<option value=""></option>"""
 		attributeCode += """
-					<?php foreach ($%(referencedObject)sCollection as $%(referencedObject)sElt): ?>
-					<option value="<?= $%(referencedObject)sElt->%(keyReference)s ?>" ><?= $%(referencedObject)sElt->%(display)s ?> </option>
-					<?php endforeach;?>
-				</select>
+			<select name="%(dbName)s" id="%(dbName)s"> """ % { 'dbName' : field.dbName }
+		if field.nullable:
+			attributeCode += """
+				<option value=""></option>"""
+		attributeCode += """
+				<?php foreach ($%(referencedObject)sCollection as $%(referencedObject)sElt): ?>
+				<option value="<?= $%(referencedObject)sElt->%(keyReference)s ?>" ><?= $%(referencedObject)sElt->%(display)s ?> </option>
+				<?php endforeach;?>
+			</select>
 		""" % { 'display' : field.display, 
 				'keyReference' : field.referencedObject.keyFields[0].dbName, 
 				'referencedObject' : field.referencedObject.obName.lower(), 
@@ -96,7 +101,8 @@ for field in self.fields:
 			}
 		
 	elif field.sqlType.upper()[0:4] == "TEXT":
-		attributeCode += """<textarea class="ckeditor" name="%(dbName)s" id="%(dbName)s" %(moreAttributes)s></textarea>
+		attributeCode += """
+			<textarea class="editor" name="%(dbName)s" id="%(dbName)s" %(moreAttributes)s></textarea>
 		""" % { 'dbName' : field.dbName ,
 			'moreAttributes' : moreAttributes
 			}
@@ -133,7 +139,7 @@ for field in self.fields:
 
 	else:
 		# for string, int, ...
-		attributeCode += """<input class="input-xlarge valtype" type="text" name="%(dbName)s" id="%(dbName)s" %(moreAttributes)s """ %{
+		attributeCode += """<input class="input-xlarge valtype form-control" type="text" name="%(dbName)s" id="%(dbName)s" %(moreAttributes)s """ %{
 			'dbName' : field.dbName,
 			'moreAttributes' : moreAttributes
 			}
@@ -144,8 +150,9 @@ for field in self.fields:
 			attributeCode += ">"
 			
 	attributeCode += """
-		<p class="help-block valtype"><?= $this->lang->line('%(objectObName)s.form.%(dbName)s.description')?></p>
-	</div></div>""" % {'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
+			<span class="help-block valtype"><?= $this->lang->line('%(objectObName)s.form.%(dbName)s.description')?></span>
+		</div>
+	</div>""" % {'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
 
 
 	# ajouter le nouvel attribut, avec indentation si ce n'est pas le premier
@@ -156,9 +163,13 @@ for field in self.fields:
 RETURN =  allAttributesCode
 %%
 
-		<div class="form-actions">
+		<hr>
+		<div class="row">
+			<div class="col-md-offset-2 col-md-2">
 			<button type="submit" class="btn btn-primary"><?= $this->lang->line('form.button.save') ?></button>
-			<a data-dismiss="modal" href="#" type="button" class="btn"><?= $this->lang->line('form.button.cancel') ?></a>
+		</div>
+		<div class="col-md-offset-2 col-md-2">
+			<a data-dismiss="modal" href="#" type="button" class="btn btn-default"><?= $this->lang->line('form.button.cancel') ?></a>
 		</div>
 			
 		</fieldset>

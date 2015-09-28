@@ -80,10 +80,11 @@ for field in self.fields:
 	attributeCode = ""
 	if field.referencedObject and field.access == "ajax" :
 		attributeCode = """
-	$%(dbName)s_text = ($%(structureObName)s->%(dbName)s == 0)?(new %(referencedObject)s_model()):(%(referencedObject)s_model::get%(referencedObject)s($this->db, $%(structureObName)s->%(dbName)s));
+	$%(dbName)s_text = ($%(structureObName)s->%(dbName)s == 0)?(new %(referencedObject)s_model()):($this->%(referencedObjectLower)sservice->getUnique($this->db, $%(structureObName)s->%(dbName)s));
 """ % {
 		'structureObName' : self.obName.lower(),
 		'referencedObject': field.referencedObject.obName,
+		'referencedObjectLower': field.referencedObject.obName.lower(),
 		'dbName' : field.dbName
 		}
 	allAttributesCode += attributeCode
@@ -142,10 +143,10 @@ for field in self.fields:
 	
 RETURN = allAttributesCode
 %%
-					<td><a class="btn" href="<?=base_url()?>index.php/%%(self.obName.lower())%%/edit%%(self.obName.lower())%%/index/<?=$%%(self.obName.lower())%%->%%(self.keyFields[0].dbName)%%?>" title="<?= $this->lang->line('form.button.edit') ?>"><i class="icon-pencil"> </i></a>
-						<a class="btn" href="#" onclick="if( confirm('<?= $this->lang->line('%%(self.obName.lower())%%.message.askConfirm.deletion')?>')){document.location.href='<?=base_url()?>index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/delete/<?=$%%(self.obName.lower())%%->%%(self.keyFields[0].dbName)%%?>';}" 
+					<td><a class="btn btn-default" href="<?=base_url()?>index.php/%%(self.obName.lower())%%/edit%%(self.obName.lower())%%/index/<?=$%%(self.obName.lower())%%->%%(self.keyFields[0].dbName)%%?>" title="<?= $this->lang->line('form.button.edit') ?>"><i class="glyphicon glyphicon-edit"> </i></a>
+						<a class="btn btn-danger" href="#" onclick="if( confirm('<?= $this->lang->line('%%(self.obName.lower())%%.message.askConfirm.deletion')?>')){document.location.href='<?=base_url()?>index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/delete/<?=$%%(self.obName.lower())%%->%%(self.keyFields[0].dbName)%%?>';}" 
 						title="<?= $this->lang->line('form.button.delete') ?>"
-						><i class="icon-trash"> </i></a></td>
+						><i class="glyphicon glyphicon-remove"> </i></a></td>
 				</tr>
 <?php 
 $even = !$even; 

@@ -38,6 +38,7 @@ echo form_open_multipart('%%(self.obName.lower())%%/create%%(self.obName.lower()
 
 			<fieldset>
 	<!-- list of variables - auto-generated : -->
+	
 %%allAttributesCode = ""
 
 for field in self.fields:
@@ -47,14 +48,15 @@ for field in self.fields:
 		attributeCode = "<!-- AUTO_INCREMENT : DO NOT DISPLAY THIS ATTRIBUTE - " + attributeCode + " -->"
 		continue
 	
-	attributeCode += """<div class="control-group"><!-- %(desc)s -->
-	<label class="control-label" for="%(dbName)s">""" % { 'dbName' : field.dbName, 'desc' : field.description }
+	attributeCode += """
+	<div class="form-group"><!-- %(desc)s -->
+		<label class="col-md-2 control-label" for="%(dbName)s">""" % { 'dbName' : field.dbName, 'desc' : field.description }
 
 	if not field.nullable:
 		attributeCode += "* "
 
 	attributeCode += """<?= $this->lang->line('%(objectObName)s.form.%(dbName)s.label') ?> :</label>
-	<div class="controls">
+		<div class="col-md-10">
 		""" % { 'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
 
 	cssClass = "inp-form"
@@ -64,7 +66,7 @@ for field in self.fields:
 		moreAttributes = "required "
 	
 	if field.referencedObject and field.access == "default":
-		attributeCode += """<select name="%(dbName)s" id="%(dbName)s">
+		attributeCode += """<select name="%(dbName)s" id="%(dbName)s" class="form-control">
 			""" % { 'dbName' : field.dbName }
 		if field.nullable:
 			attributeCode += """<option value=""></option>
@@ -80,7 +82,7 @@ for field in self.fields:
 				'dbName' : field.dbName }
 				
 	elif field.referencedObject and field.access == "ajax" :
-		attributeCode += """<input type="text" name="%(dbName)s_text" id="%(dbName)s_text" autocomplete="off" %(moreAttributes)s/>
+		attributeCode += """<input type="text" name="%(dbName)s_text" id="%(dbName)s_text" autocomplete="off" class="form-control" %(moreAttributes)s/>
 		<input type="hidden" name="%(dbName)s" id="%(dbName)s">
 		""" % { 'dbName' : field.dbName,
 			'moreAttributes' : moreAttributes
@@ -88,7 +90,7 @@ for field in self.fields:
 	elif field.sqlType.upper()[0:4] == "DATE":
 		dateFormat = field.sqlType[5:-1]
 		attributeCode += """<div data-date-format="%(dateFormat)s" id="datepicker_%(dbName)s"
-			class="input-append date"><input type="text" name="%(dbName)s" id="%(dbName)s" size="8" maxlength="10" %(moreAttributes)s> 
+			class="input-append date"><input type="text" name="%(dbName)s" id="%(dbName)s" size="8" maxlength="10" class="form-control" %(moreAttributes)s> 
 			<span class="add-on"><i class="icon-calendar"></i></span>
 		</div>""" % { 'dbName' : field.dbName,
 			'dateFormat' : dateFormat,
@@ -98,19 +100,19 @@ for field in self.fields:
 	elif field.sqlType.upper()[0:8] == "PASSWORD":
 		attributeCode += """<div class="input-prepend">
 								<span class="add-on"><i class="icon-key"></i></span> <input
-									type="password" placeholder="Password" name="%(dbName)s" id="%(dbName)s" %(moreAttributes)s>
+									type="password" placeholder="Password" name="%(dbName)s" id="%(dbName)s" class="form-control" %(moreAttributes)s>
 							</div>""" % { 'dbName' : field.dbName,
 			'moreAttributes' : moreAttributes
 			}
 		
 	elif field.sqlType.upper()[0:4] == "TEXT":
-		attributeCode += """<textarea class="ckeditor" name="%(dbName)s" id="%(dbName)s" %(moreAttributes)s></textarea>
+		attributeCode += """<textarea class="ckeditor" name="%(dbName)s" id="%(dbName)s" class="form-control" %(moreAttributes)s></textarea>
 		""" % { 'dbName' : field.dbName ,
 			'moreAttributes' : moreAttributes
 			}
 		
 	elif field.sqlType.upper()[0:4] == "FILE":
-		attributeCode += """<input class="input-file" id="%(dbName)s_file" name="%(dbName)s_file" type="file" %(moreAttributes)s/>
+		attributeCode += """<input class="input-file" id="%(dbName)s_file" name="%(dbName)s_file" class="form-control" type="file" %(moreAttributes)s/>
 		<input type="hidden" name="%(dbName)s" id="%(dbName)s"/>""" % { 'dbName' : field.dbName, 
 			'structureObName': self.obName.lower(),
 			'moreAttributes' : moreAttributes
@@ -126,7 +128,7 @@ for field in self.fields:
 			}
 		
 	elif field.sqlType.upper()[0:4] == "ENUM":
-		attributeCode += """<select name="%(dbName)s" id="%(dbName)s" %(moreAttributes)s>
+		attributeCode += """<select name="%(dbName)s" id="%(dbName)s" class="form-control" %(moreAttributes)s>
 		""" % { 'dbName' : field.dbName,
 			'moreAttributes' : moreAttributes
 			}
@@ -147,7 +149,7 @@ for field in self.fields:
 
 	else:
 		# for string, int, ...
-		attributeCode += """<input class="input-xlarge valtype" type="text" name="%(dbName)s" id="%(dbName)s" %(moreAttributes)s """ %{
+		attributeCode += """<input class="input-xlarge valtype form-control" type="text" name="%(dbName)s" id="%(dbName)s" %(moreAttributes)s """ %{
 			'dbName' : field.dbName,
 			'moreAttributes' : moreAttributes
 			}
@@ -158,21 +160,28 @@ for field in self.fields:
 			attributeCode += ">"
 			
 	attributeCode += """
-		<p class="help-block valtype"><?= $this->lang->line('%(objectObName)s.form.%(dbName)s.description')?></p>
-	</div></div>""" % {'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
+			<span class="help-block valtype"><?= $this->lang->line('%(objectObName)s.form.%(dbName)s.description')?></span>
+		</div>
+	</div>
+	""" % {'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
 
 
 	# ajouter le nouvel attribut, avec indentation si ce n'est pas le premier
 	if allAttributesCode != "":
-		allAttributesCode += "\n\t" 
+		allAttributesCode += "\n" 
 	allAttributesCode += attributeCode
 
 RETURN =  allAttributesCode
 %%
 
-		<div class="form-actions">
-			<button type="submit" class="btn btn-primary"><?= $this->lang->line('form.button.save') ?></button>
-			<a href="<?=base_url()?>index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index" type="button" class="btn"><?= $this->lang->line('form.button.cancel') ?></a>
+		<hr>
+		<div class="row">
+			<div class="col-md-offset-2 col-md-2">
+				<button type="submit" class="btn btn-primary"><?= $this->lang->line('form.button.save') ?></button>
+			</div>
+			<div class="col-md-offset-2 col-md-2">
+				<a href="<?=base_url()?>index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index" type="button" class="btn btn-default"><?= $this->lang->line('form.button.cancel') ?></a>
+			</div>
 		</div>
 			
 		</fieldset>
