@@ -140,12 +140,30 @@ for field in self.fields:
 			}
 		
 	elif field.sqlType.upper()[0:4] == "FILE":
-		attributeCode += """<input class="input-file" id="%(dbName)s_file" name="%(dbName)s_file" class="form-control" type="file" %(moreAttributes)s>
-		<input type="hidden" name="%(dbName)s" id="%(dbName)s" value="%(valueCode)s">
+		attributeCode += """
 		<?php if($%(structureObName)s->%(dbName)s != "") { ?>
-			<div class="span4" id="%(dbName)s_currentFile"><a href="<?=base_url()?>www/uploads/%(valueCode)s" target="_new"><i class="icon-file"></i> <?= $this->lang->line('form.button.download')?></a></div>
-			<div class="span2" id="%(dbName)s_deleteButton"><a href="#" onclick='deleteFile_%(dbName)s()' class="btn"><i class="icon-trash"></i> <?= $this->lang->line('form.button.delete')?></a></div>
-			<?php } ?>
+		<div class="row">
+			<div class="col-md-2"><i><?= $this->lang->line('form.file.current')?></i></div>
+			<div class="col-md-2" id="%(dbName)s_currentFile">
+				<a href="<?=base_url()?>www/uploads/%(valueCode)s" target="_new" class="btn btn-default btn-xs">
+					<i class="glyphicon glyphicon-file"></i> <?= $this->lang->line('form.button.download')?>
+				</a>
+			</div>
+			<div class="col-md-2" id="%(dbName)s_deleteButton">
+				<a href="#" onclick='deleteFile_%(dbName)s()' class="btn btn-default btn-xs">
+					<i class="glyphicon glyphicon-remove"></i> <?= $this->lang->line('form.button.delete')?>
+				</a>
+			</div>
+		</div>
+		<hr/>
+		<?php } ?>
+		<div class="row">
+			<div class="col-md-2"><i><?= $this->lang->line('form.file.new')?></i></div>
+			<div class="col-md-10">
+				<input class="input-file" id="%(dbName)s_file" name="%(dbName)s_file" class="form-control" type="file" %(moreAttributes)s>
+				<input type="hidden" name="%(dbName)s" id="%(dbName)s" value="%(valueCode)s">
+			</div>
+		</div>
 		""" % { 'dbName' : field.dbName, 
 				'valueCode' : valueCode,
 				'structureObName': self.obName.lower(),
@@ -182,7 +200,7 @@ for field in self.fields:
 
 	else:
 		# for string, int, ...
-		attributeCode += """<input class="input-xlarge valtype form-control" type="text" name="%(dbName)s" id="%(dbName)s" value="%(valueCode)s" %(moreAttributes)s """ % { 
+		attributeCode += """<input class="form-control" type="text" name="%(dbName)s" id="%(dbName)s" value="%(valueCode)s" %(moreAttributes)s """ % { 
 				'dbName' : field.dbName, 
 				'valueCode' : valueCode,
 				'moreAttributes' : moreAttributes
@@ -194,7 +212,7 @@ for field in self.fields:
 			attributeCode += ">"
 			
 	attributeCode += """
-			<span class="help-block valtype"><?= $this->lang->line('%(objectObName)s.form.%(dbName)s.description')?></span>
+			<span class="help-block"><?= $this->lang->line('%(objectObName)s.form.%(dbName)s.description')?></span>
 		</div>
 	</div>""" % {'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
 	
@@ -210,10 +228,10 @@ RETURN =  allAttributesCode
 		
 		<hr>
 		<div class="row">
-			<div class="col-md-offset-2 col-md-2">
+			<div class="col-md-offset-2 col-md-2 col-xs-offset-2 col-xs-2">
 				<button type="submit" class="btn btn-primary"><?= $this->lang->line('form.button.save') ?></button>
 			</div>
-			<div class="col-md-offset-2 col-md-2">
+			<div class="col-md-offset-4 col-md-2 col-xs-offset-4 col-xs-2">
 				<a href="<?=base_url()?>index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index" type="button" class="btn btn-default"><?= $this->lang->line('form.button.cancel') ?></a>
 			</div>
 		</div>

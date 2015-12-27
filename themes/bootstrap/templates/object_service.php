@@ -168,7 +168,7 @@ for field in self.fields:
 	if field.sqlType.upper()[0:4] == "DATE":
 		attributeCode = "'%(dbName)s'=>toSQLDate($aModel->%(dbName)s)" % { 'dbName' : field.dbName }
 	else:
-		attributeCode = "'%(dbName)s'=>$aModel->%(dbName)s" % { 'dbName' : field.dbName }
+		attributeCode = "'%(dbName)s'=>emptyToNull($aModel->%(dbName)s)" % { 'dbName' : field.dbName }
 	allAttributesCode += attributeCode
 RETURN = allAttributesCode
 %%);
@@ -193,7 +193,7 @@ for field in self.fields:
 	if field.sqlType.upper()[0:4] == "DATE":
 		attributeCode = "'%(dbName)s'=>toSQLDate($aModel->%(dbName)s)" % { 'dbName' : field.dbName }
 	else:
-		attributeCode = "'%(dbName)s'=>$aModel->%(dbName)s" % { 'dbName' : field.dbName }
+		attributeCode = "'%(dbName)s'=>emptyToNull($aModel->%(dbName)s)" % { 'dbName' : field.dbName }
 	allAttributesCode += attributeCode
 RETURN = allAttributesCode
 %%);

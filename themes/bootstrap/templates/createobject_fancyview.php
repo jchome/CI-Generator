@@ -165,10 +165,10 @@ RETURN =  allAttributesCode
 
 		<hr>
 		<div class="row">
-			<div class="col-md-offset-2 col-md-2">
+			<div class="col-md-offset-2 col-md-2 col-xs-offset-2 col-xs-2">
 			<button type="submit" class="btn btn-primary"><?= $this->lang->line('form.button.save') ?></button>
 		</div>
-		<div class="col-md-offset-2 col-md-2">
+		<div class="col-md-offset-4 col-md-2 col-xs-offset-4 col-xs-2">
 			<a data-dismiss="modal" href="#" type="button" class="btn btn-default"><?= $this->lang->line('form.button.cancel') ?></a>
 		</div>
 			

@@ -83,7 +83,6 @@ RETURN = allAttributesCode
 
 %%
 allAttributesCode = ""
-
 for field in self.fields:
 	if not field.nullable:
 		fieldname = field.dbName
@@ -97,3 +96,5 @@ for field in self.fields:
 		allAttributesCode += attributeCode
 RETURN = allAttributesCode
 %%
+
+

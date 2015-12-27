@@ -1,4 +1,4 @@
-%[kind : controllers]
+%[kind : json]
 %[file : get%%(self.obName.lower())%%json.php] 
 %[path : controllers/%%(self.obName.lower())%%]
 <?php
