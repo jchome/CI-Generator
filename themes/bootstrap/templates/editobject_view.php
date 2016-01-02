@@ -125,10 +125,10 @@ for field in self.fields:
 		}
 		
 	elif field.sqlType.upper()[0:8] == "PASSWORD":
-		attributeCode += """<div class="input-prepend">
-								<span class="add-on"><i class="icon-key"></i></span> <input
-									type="password" placeholder="Password" name="%(dbName)s" class="form-control" id="%(dbName)s" value="%(valueCode)s" %(moreAttributes)s>
-							</div>""" % { 'dbName' : field.dbName, 
+		attributeCode += """	<div class="input-prepend">
+				<span class="add-on"><i class="icon-key"></i></span> <input
+					type="password" placeholder="Password" name="%(dbName)s" class="form-control" id="%(dbName)s" value="%(valueCode)s" %(moreAttributes)s>
+			</div>""" % { 'dbName' : field.dbName, 
 			'valueCode' : valueCode,
 			'moreAttributes' : moreAttributes}
 		
