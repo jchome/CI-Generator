@@ -72,8 +72,8 @@ for field in self.fields:
 	valueCode = "<?= $%(structureObName)s->%(dbName)s ?>" % { 'structureObName': self.obName.lower(), 'dbName' : field.dbName }
 	
 	attributeCode += """
-	<div class="form-group"><!-- %(desc)s -->
-		<label class="col-md-2 control-label" for="%(dbName)s">""" % { 'dbName' : field.dbName, 'desc' : field.description }
+	<div class="form-group"><!-- %(obName)s : %(desc)s -->
+		<label class="col-md-2 control-label" for="%(dbName)s">""" % { 'dbName' : field.dbName, 'obName' : field.obName,'desc' : field.description }
 
 	if not field.nullable:
 		attributeCode += "* "

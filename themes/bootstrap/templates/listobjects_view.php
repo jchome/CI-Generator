@@ -155,13 +155,15 @@ endforeach; ?>
 			</tbody>
 		</table>
 	
-		<div class="pagination">
+		<div class="pagination row">
 			<ul class="pagination">
 			<?php if(isset($pagination)){ echo $pagination->create_links(); } ?>
 			</ul>
 		</div><!-- .pagination -->
 		
-		<a href="<?=base_url()?>index.php/%%(self.obName.lower())%%/create%%(self.obName.lower())%%/index" class="btn btn-primary"><?= $this->lang->line('%%(self.obName.lower())%%.form.create.title') ?></a>
+		<div class="row">
+			<a href="<?=base_url()?>index.php/%%(self.obName.lower())%%/create%%(self.obName.lower())%%/index" class="btn btn-primary"><?= $this->lang->line('%%(self.obName.lower())%%.form.create.title') ?></a>
+		</div>
 	</div><!-- .container -->
 	
 <?php echo bodyFooter(); ?>
