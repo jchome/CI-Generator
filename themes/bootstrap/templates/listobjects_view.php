@@ -156,7 +156,7 @@ endforeach; ?>
 		</table>
 	
 		<div class="pagination">
-			<ul>
+			<ul class="pagination">
 			<?php if(isset($pagination)){ echo $pagination->create_links(); } ?>
 			</ul>
 		</div><!-- .pagination -->

@@ -48,8 +48,9 @@ for field in self.fields:
 	attributeCode = ""
 	if field.referencedObject and field.access == "default":
 		attributeCode += """
-		$data['%(referencedObjectLower)sCollection'] = $this->%(referencedObjectLower)sservice->getAll($this->db);""" % {
-			'referencedObjectLower' : field.referencedObject.obName.lower()
+		$data['%(referencedObjectLower)sCollection'] = $this->%(referencedObjectLower)sservice->getAll($this->db,'%(fieldDisplay)s');""" % {
+			'referencedObjectLower' : field.referencedObject.obName.lower(),
+			'fieldDisplay': field.display
 		}
 	allAttributeCode += attributeCode
 	

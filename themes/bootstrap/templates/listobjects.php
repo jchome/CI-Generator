@@ -42,7 +42,7 @@ RETURN = allAttributeCode
 	public function index($orderBy = null, $asc = null, $offset = 0){
 		// preparer le tri
 		if($orderBy == null) {
-			$orderBy = '%%(self.keyFields[0].dbName)%%';
+			$orderBy = '%%(self.nonKeyFields[0].dbName)%%';
 		}
 		if($asc == null) {
 			$asc = 'asc';
