@@ -116,7 +116,7 @@ for field in self.fields:
 					'dbName' : field.dbName }
 		elif field.sqlType.upper()[0:4] == "FLAG":
 			label = field.sqlType[5:-1].replace('"','').replace("'","")
-			attributeCode += """<?= ($%(structureObName)s->%(dbName)s == "O")?("%(label)s"):("")?>""" % {'label' : label,
+			attributeCode += """<?= ($%(structureObName)s->%(dbName)s == "O")?("%(label)s"):("")?>""" % {'label' : field.obName,
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
 		elif field.sqlType.upper()[0:4] == "ENUM":
