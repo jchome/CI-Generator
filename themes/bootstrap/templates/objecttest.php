@@ -76,6 +76,8 @@ for field in self.fields:
 	elif field.sqlType.upper()[0:4] == "CHAR":
 		# TODO : taille limite
 		attributeCode = "$%(obName)s_insert->%(dbName)s = 'c-%(index)d';" % {'obName' : self.obName.lower(), 'dbName' : field.dbName, 'index': index }
+	elif field.sqlType.upper()[0:9] == "TIMESTAMP":
+		attributeCode = "$%(obName)s_insert->%(dbName)s = '';" % {'obName' : self.obName.lower(), 'dbName' : field.dbName, 'index': index }
 	else:
 		attributeCode = "//[ERROR] type [%s] not generated." % field.sqlType
 		
@@ -85,7 +87,7 @@ for field in self.fields:
 	
 RETURN = allAttributesCode
 %%
-		$%%(self.obName.lower())%%_insert->save($this->db);
+		$%%(self.obName.lower())%%_insert->insertNew($this->db);
 		// $%%(self.obName.lower())%%_insert->%%(self.keyFields[0].dbName)%% est maintenant affecté
 	
 		$%%(self.obName.lower())%%_select = %%(self.obName)%%_model::get%%(self.obName)%%($this->db, $%%(self.obName.lower())%%_insert->%%(self.keyFields[0].dbName)%%);

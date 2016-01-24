@@ -40,7 +40,7 @@ for field in self.fields:
 		enumTypes = field.sqlType[5:-1]
 		for enum in enumTypes.split(','):
 			valueAndText = enum.replace('"','').replace("'","").split(':')
-			typeForSQL += """"%(value)s",""" % {'value': valueAndText[0].strip()}
+			typeForSQL += """'%(value)s',""" % {'value': valueAndText[0].strip()}
 		typeForSQL = typeForSQL[:-1]
 		typeForSQL += ")"
 
