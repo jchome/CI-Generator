@@ -103,6 +103,7 @@ for field in self.fields:
 	
 		if($codeErrors != null && $codeErrors != "NO_FILE") {
 			$this->session->set_flashdata('msg_error', $codeErrors);
+			$this->%(obName_lower)sservice->delete($this->db, $model);
 		} else {
 			$model->%(dbName)s = "";
 			if($uploadDataFile_%(dbName)s['file_name'] != null && $uploadDataFile_%(dbName)s['file_name'] != "") {
@@ -114,6 +115,11 @@ for field in self.fields:
 				}
 			}
 			$this->%(obName_lower)sservice->update($this->db, $model);
+			$this->session->set_flashdata('msg_info', $this->lang->line('%(obName_lower)s.message.confirm.added'));
+		
+			// renvoie vers la jsonification du modèle
+			$data['%(obName_lower)s'] = $model;
+				
 		}""" % { 'dbName' : field.dbName,
 				'desc' : field.description,
 				'obName' : self.obName,
@@ -139,10 +145,6 @@ if useUpload:
 RETURN = codeForUploadFile
 %%
 	
-		$this->session->set_flashdata('msg_info', $this->lang->line('%%(self.obName.lower())%%.message.confirm.added'));
-	
-		// renvoie vers la jsonification du modèle
-		$data['%%(self.obName.lower())%%'] = $model;
 		$this->load->view('%%(self.obName.lower())%%/jsonifyUnique_view', $data);
 	}
 }
