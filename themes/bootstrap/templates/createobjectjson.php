@@ -115,7 +115,6 @@ for field in self.fields:
 				}
 			}
 			$this->%(obName_lower)sservice->update($this->db, $model);
-			$this->session->set_flashdata('msg_info', $this->lang->line('%(obName_lower)s.message.confirm.added'));
 		
 			// renvoie vers la jsonification du modèle
 			$data['%(obName_lower)s'] = $model;
