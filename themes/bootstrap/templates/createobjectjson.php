@@ -116,7 +116,7 @@ for field in self.fields:
 			}
 			$this->%(obName_lower)sservice->update($this->db, $model);
 		
-			// renvoie vers la jsonification du modèle
+			// renvoie vers la jsonification du modele
 			$data['%(obName_lower)s'] = $model;
 				
 		}""" % { 'dbName' : field.dbName,
