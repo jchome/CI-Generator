@@ -12,3 +12,14 @@ for field in self.fields:
 """ % { 'dbName' : field.dbName }
 RETURN = jsCode
 %%
+
+/**
+ * Envoi du form : intercepter l'envoi pour mettre à jour la liste et fermer la modale
+ */
+$('#AddForm%%(self.obName)%%').ajaxForm(function(data){
+	// recuperation de l'objet sauvegardé en JSON
+	// var objectSaved = JSON.parse(data);
+	
+	// fermeture de la modale
+	$('#modal_create%%(self.obName.lower())%%').modal('hide');
+});
