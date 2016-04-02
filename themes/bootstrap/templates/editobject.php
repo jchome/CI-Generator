@@ -123,14 +123,13 @@ for field in self.fields:
 		// Upload du nouveau fichier %(dbName)s : %(desc)s
 		$codeErrors = null;
 		if ( ! $this->upload->do_upload('%(dbName)s_file')) {
-			$uploadDataFile_%(dbName)s = $this->upload->data('%(dbName)s_file');
-			$codeErrors = $this->upload->display_errors() . "ext: [" . $uploadDataFile_%(dbName)s['file_ext'] ."] type mime: [" . $uploadDataFile_%(dbName)s['file_type'] . "]";
+			$codeErrors = $this->upload->display_errors() . "ext: [" . $this->upload->data('file_ext') ."] type mime: [" . $this->upload->data('file_type') . "]";
 			if($this->upload->display_errors() == '<p>'.$this->lang->line('upload_no_file_selected').'</p>'
 				|| $this->upload->display_errors() == '<p>upload_no_file_selected</p>'){ // if not translated
 				$codeErrors = "NO_FILE";
 			}
 		}else{
-			$uploadDataFile_%(dbName)s = $this->upload->data('%(dbName)s_file');
+			$uploadDataFile_%(dbName)s = $this->upload->data('file_name');
 		}
 	
 		if($codeErrors != null && $codeErrors != "NO_FILE") {
@@ -139,12 +138,12 @@ for field in self.fields:
 			// rien a faire
 		}else{
 			$model->%(dbName)s = "";
-			if($uploadDataFile_%(dbName)s['file_name'] != null && $uploadDataFile_%(dbName)s['file_name'] != "") {
-				$model->%(dbName)s = '%(obName)s_%(dbName)s_' . $model->%(keyField)s . '_file' . $uploadDataFile_%(dbName)s['file_ext'];
-				rename($path . $uploadDataFile_%(dbName)s['file_name'], $path . $model->%(dbName)s);
+			if($uploadDataFile_%(dbName)s != null && $uploadDataFile_%(dbName)s != "") {
+				$model->%(dbName)s = '%(obName)s_%(dbName)s_' . $model->%(keyField)s . '_file' . $this->upload->data('file_ext');
+				rename($path . $uploadDataFile_%(dbName)s, $path . $model->%(dbName)s);
 				// suppression du fichier temporaire telecharge
-				if( file_exists( $path . $uploadDataFile_%(dbName)s['file_name'] ) ){
-					unlink($path . $uploadDataFile_%(dbName)s['file_name']);
+				if( file_exists( $path . $uploadDataFile_%(dbName)s ) ){
+					unlink($path . $uploadDataFile_%(dbName)s);
 				}
 			}
 			$this->%(obName_lower)sservice->update($this->db, $model);
