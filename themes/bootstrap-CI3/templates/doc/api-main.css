@@ -1,0 +1,108 @@
+@CHARSET "UTF-8";
+
+.pageContainer{
+	float: left;
+	clear: both;
+	width: 100%;
+}
+
+.content{
+	margin-left: 250px;
+}
+
+body{
+	font-size: 14px;
+}
+
+h1, h2, h3, h4, h5 {
+	color: #414141;
+	font-weight: normal;
+	font-family: Verdana, 'Arial', 'Helvetica', 'Sans-serif';
+}
+h1{
+	border-bottom: 1px solid #E0E0E0;
+	font-weight: bold;
+}
+
+h2{
+	border-bottom: 1px solid #E0E0E0;
+}
+
+h3.api{
+	background-color: #E0E0E0;
+	font-family: monospace;
+	padding: 10px;
+	margin-top: 20px;
+}
+
+.detail{
+	margin-left: 30px;
+	font-family: 'Arial', 'Helvetica', 'Sans-serif';
+	font-size: 14px;
+	color: #444;
+	line-height: 17px;
+}
+
+code.prettyprint{
+	border: 1px solid #aaa;
+	margin: 10px;
+	
+}
+
+.presenter{
+	float: left;
+	clear: both;
+	margin: 20px 50px;
+	font-family: 'Arial', 'Helvetica', 'Sans-serif';
+	width: 90%;
+}
+
+
+.sidebar{
+	float: left;
+	width: 230px;
+	position: fixed;
+	background-color: #F0F0F0;
+	font-family: Verdana,'Arial','Helvetica','Sans-serif';
+}
+
+.sidebar h1, .sidebar h2{
+	background-color: #E0E0E0;
+	font-size: 20px;
+	font-weight: normal;
+	padding: 5px 10px;
+	margin: 0;
+}
+.sidebar h2 {
+	font-size: 16px;
+	margin: 1px 0;
+}
+
+.sidebar a {
+	text-decoration: none;
+	color: #222;
+}
+
+.sidebar ul{
+	padding: 0 0 0 8px;
+	margin: 0;
+}
+.sidebar li{
+	list-style-type: none;
+	margin: 0;
+	padding: 3px 0;
+	font-size: 12px;
+	color: #515151;
+	border-bottom: 1px solid #fff;
+}
+
+.scrollable{
+	display: block; 
+	height: 450px;
+	overflow: auto;
+}
+
+hr{
+	height: 2px;
+	border: 1px solid #444;
+}

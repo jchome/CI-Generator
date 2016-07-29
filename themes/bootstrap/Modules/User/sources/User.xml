@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object shortName="sysusr" displayName="Utilisateur" obName="User">
+	<description>Utilisateur de l'application</description>
+	<attribute id="usridusr" name="Identifiant" nullable="NO" isKey="YES" autoincrement="YES" type="int" >
+		<description>Identifiant systeme</description>
+	</attribute>
+	<attribute id="usrlbnom" name="Nom" nullable="NO" type="varchar(255)" >
+		<description>Nom de l'utilisateur</description>
+	</attribute>
+	<attribute id="usrlblgn" name="Login" nullable="NO" type="varchar(32)" >
+		<description>Identifiant de connexion à l'application</description>
+	</attribute>
+	<attribute id="usrlbpwd" name="Password" nullable="NO" type="password(32)" >
+		<description>Mot de passe de connexion à l'application</description>
+	</attribute>
+	<attribute id="usrlbmai" name="Email" nullable="NO" type="varchar(255)" >
+		<description>Adresse email de contact</description>
+	</attribute>
+	<attribute id="usrfipho" name="Photo" nullable="YES" type="file" >
+		<description>Photo ou avatar de l'utilisateur</description>
+	</attribute>
+</object>

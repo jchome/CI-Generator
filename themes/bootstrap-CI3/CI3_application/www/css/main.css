@@ -1,0 +1,200 @@
+/** MAIN.CSS **/
+/* use for custom CSS */
+.brand-logo{
+	background: url(../images/logo-small.png) no-repeat top left;
+	width: 332px;
+	height: 40px;
+	margin-right: 10px;
+	float: left;
+}
+
+#login-bg{
+	background-color: #ccc;
+}
+
+.login-holder{
+	background-color: #fff;
+}
+
+.login-box{
+	margin-left: auto; 
+	margin-right: auto;
+	width: 400px;
+	border: 1px solid #999;
+	-moz-box-shadow: 0px 0px 12px 0px #555555;
+	-webkit-box-shadow: 0px 0px 12px 0px #555555;
+	-o-box-shadow: 0px 0px 12px 0px #555555;
+	box-shadow: 0px 0px 12px 0px #555555;
+	filter:progid:DXImageTransform.Microsoft.Shadow(color=#555555, Direction=NaN, Strength=12);
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;	
+}
+
+.login-holder{
+	padding: 20px 50px 20px 50px;
+	width: 300px;
+}
+
+.brand-login{
+	padding-left: 10px;
+	height: 42px;
+	background-color: #1B1B1B;
+    background-image: linear-gradient(to bottom, #222222, #111111);
+    background-repeat: repeat-x;
+    border-color: #252525;    
+	-moz-border-radius: 5px 5px 0px 0px;
+	-webkit-border-radius: 5px 5px 0px 0px;
+	border-radius: 5px 5px 0px 0px;	
+	font-size: 20px;
+    font-weight: 200;
+    color: #999999;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+
+.brand-login .brand-logo{
+	line-height: 44px;
+	padding-left: 45px;
+}
+
+.bandeau{
+	background-image: url('../images/bandeau.png?v2');
+	background-repeat: no-repeat;
+	background-position: top center;
+}
+
+@media ( max-width :990px) {
+	.bandeau{
+		background-image: url('../images/bandeau-S.png?v2');
+		background-position: top left;
+}
+}
+
+/* ************************************* */
+/* SENSOR */
+.thing{
+	border: 1px solid #41637E;
+	width: 400px;
+	margin: 10px;
+	float: left;
+	
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.thing-short{
+	border: 1px solid #41637E;
+	width: 400px;
+	margin: 10px;
+	float: left;
+	
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.thing:HOVER{
+	box-shadow: 0px 0px 5px #41637E;
+	cursor: pointer;
+}
+
+.thing .header {
+	background-color: #B4CBED;
+	height: 64px;
+	width: 100%;
+}
+
+.thing .sensor-logo{
+	margin-left: 4px;
+	width: 64px;
+	height: 64px;
+	background-image: url('../images/sensor.png');
+	background-size: contain;
+	float: left;
+}
+
+.thing .title{
+	margin-left: 10px;
+	float: left;
+	font-size: 2em;
+	line-height: 2em;
+	
+}
+
+.thing .picto-thing{
+	margin-left: 50px;;
+	width: 100px;
+	height: 100px;
+	background-size: contain;
+	background-repeat: no-repeat;
+	float: left;
+}
+
+.thing .description, .thing-short .description{
+	clear: both;
+	color: #555;
+	font-style: italic;
+	font-size: 0.7em;
+	padding-left: 10px;
+	padding-bottom: 10px;
+}
+
+
+.thing .group, .thing-short .group{
+	float: left;
+	text-align: center;
+	align: center;
+	padding-bottom: 6px;
+	
+}
+
+.thing .group .title-group, .thing-short .group .title-group{
+	color: #41637E;
+	font-style: italic;
+	padding-bottom: 6px;
+	float: left;
+	line-height: 2.5em;
+}
+
+.thing .group .picto-group, .thing-short .group .picto-group{
+	margin-left: 50px;
+	height: 50px;
+	background-size: contain;
+	background-repeat: no-repeat;
+	float: left;
+	width: 70px;
+}
+
+
+.thing .category, .thing-short .category{
+	float: left;
+	text-align: center;
+	align: center;
+	padding-bottom: 6px;
+}
+
+.thing .category .title-category, .thing-short .category .title-category{
+	color: #41637E;
+	font-style: italic;
+	padding-bottom: 6px;
+	float: left;
+	line-height: 2.5em;
+}
+.thing .category .picto-category, .thing-short .category .picto-category{
+	margin-left: 50px;
+	width: 50px;
+	height: 50px;
+	float: left;
+	margin-right: 20px;
+	
+	background-size: contain;
+	background-repeat: no-repeat;
+	-webkit-border-radius: 50px;
+	-moz-border-radius: 50px;
+	border-radius: 50px;
+	border: 2px solid #41637E;
+	box-shadow: 0px 0px 5px #41637E; 
+}
+
+
