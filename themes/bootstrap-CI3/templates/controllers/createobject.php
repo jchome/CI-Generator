@@ -120,6 +120,7 @@ for field in self.fields:
 		useUpload = True
 		attributeCode += """
 		
+		log_message('debug','[Create%(obName_lower)s.php] : DEMARRAGE de l\'upload');
 		$this->upload->initialize($config); // RAZ des erreurs
 		// Upload du fichier %(dbName)s : %(desc)s
 		$codeErrors = null;
@@ -130,29 +131,29 @@ for field in self.fields:
 				$codeErrors = "NO_FILE";
 			}
 		}else{
+			log_message('debug','[Create%(obName_lower)s.php] : PAS d \'erreur sur le nouveau fichier');
 			$uploadDataFile_%(dbName)s = $this->upload->data('file_name');
 		}
 	
 		if($codeErrors != null && $codeErrors != "NO_FILE") {
 			$this->session->set_flashdata('msg_error', $codeErrors);
-		}else if( $codeErrors == "NO_FILE" ){
-			// rien a faire
 		}else{
 			$model->%(dbName)s = "";
 			if($uploadDataFile_%(dbName)s != null && $uploadDataFile_%(dbName)s != "") {
 				$model->%(dbName)s = '%(obName)s_%(dbName)s_' . $model->%(keyField)s . '_file' . $this->upload->data('file_ext');
+				log_message('debug','[Create%(obName_lower)s.php] : RENOMMAGE du nouveau fichier');
 				rename($path . $uploadDataFile_%(dbName)s, $path . $model->%(dbName)s);
 				// suppression du fichier temporaire telecharge
-				if( file_exists( $path . $uploadDataFile_%(dbName)s['file_name'] ) ){
-					unlink($path . $uploadDataFile_%(dbName)s['file_name']);
+				if( file_exists( $path . $uploadDataFile_%(dbName)s ) ){
+					log_message('debug','[Create%(obName_lower)s.php] : SUPPRESSION du fichier temporaire');
+					unlink($path . $uploadDataFile_%(dbName)s);
 				}
 			}
 			$this->%(obName_lower)sservice->update($this->db, $model);
-			$this->session->set_flashdata('msg_info', $this->lang->line('%(obName_lower)s.message.confirm.added'));
+		}
 		
-			// renvoie vers la jsonification du modele
-			$data['%(obName_lower)s'] = $model;
-		}""" % { 'dbName' : field.dbName,
+		$this->session->set_flashdata('msg_info', $this->lang->line('%(obName_lower)s.message.confirm.added'));
+		""" % { 'dbName' : field.dbName,
 				'desc' : field.description,
 				'obName' : self.obName,
 				'obName_lower' : self.obName.lower(),
@@ -176,7 +177,7 @@ if useUpload:
 	
 RETURN = codeForUploadFile
 %%
-	
+		
 		// Recharge la page avec les nouvelles infos
 		redirect('%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index');
 	}

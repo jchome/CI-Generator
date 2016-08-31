@@ -14,6 +14,7 @@ class %%(self.obName.title())%%Test extends Toast {
 		parent::__construct();
 		$this->load->database('test');
 		
+		$this->load->library('%%(self.obName)%%Service');
 		$this->load->model('%%(self.obName)%%_model');
 		
 	}
@@ -23,9 +24,9 @@ class %%(self.obName.title())%%Test extends Toast {
 	 * Good for doing cleanup: resetting sessions, renewing objects, etc.
 	 */
 	function _pre() {
-		$%%(self.obName.lower())%%s = %%(self.obName)%%_model::getAll%%(self.obName)%%s($this->db);
+		$%%(self.obName.lower())%%s = $this->%%(self.obName.lower())%%service->getAll($this->db);
 		foreach ($%%(self.obName.lower())%%s as $%%(self.obName.lower())%%) {
-			%%(self.obName)%%_model::delete($this->db, $%%(self.obName.lower())%%->%%(self.keyFields[0].dbName)%%);
+			$this->%%(self.obName.lower())%%service->deleteByKey($this->db, $%%(self.obName.lower())%%->%%(self.keyFields[0].dbName)%%);
 		}
 	}
 	
@@ -35,9 +36,9 @@ class %%(self.obName.title())%%Test extends Toast {
 	 * I use it for setting $this->message = $this->My_model->getError();
 	 */
 	function _post() {
-		$%%(self.obName.lower())%%s = %%(self.obName)%%_model::getAll%%(self.obName)%%s($this->db);
+		$%%(self.obName.lower())%%s = $this->%%(self.obName.lower())%%service->getAll($this->db);
 		foreach ($%%(self.obName.lower())%%s as $%%(self.obName.lower())%%) {
-			%%(self.obName)%%_model::delete($this->db, $%%(self.obName.lower())%%->%%(self.keyFields[0].dbName)%%);
+			$this->%%(self.obName.lower())%%service->deleteByKey($this->db, $%%(self.obName.lower())%%->%%(self.keyFields[0].dbName)%%);
 		}
 	}
 	
@@ -53,8 +54,7 @@ for field in self.fields:
 	if field.autoincrement:
 		attributeCode = "// Nothing for field %s" % field.dbName
 	elif field.sqlType.upper()[0:4] == "ENUM":
-		# TODO : recuperer les valeurs possibles
-		pass
+		attributeCode = "$%(obName)s_insert->%(dbName)s = 'TODO';" % { 'obName' : self.obName.lower(), 'dbName' : field.dbName }
 	elif field.sqlType.upper()[0:4] == "DATE":
 		attributeCode = "$%(obName)s_insert->%(dbName)s = fromSQLDate('31/12/2050');" % { 'obName' : self.obName.lower(), 'dbName' : field.dbName }
 	elif field.sqlType.upper()[0:4] == "FLAG":
@@ -87,20 +87,20 @@ for field in self.fields:
 	
 RETURN = allAttributesCode
 %%
-		$%%(self.obName.lower())%%_insert->insertNew($this->db);
+		$this->%%(self.obName.lower())%%service->insertNew($this->db, $%%(self.obName.lower())%%_insert);
 		// $%%(self.obName.lower())%%_insert->%%(self.keyFields[0].dbName)%% est maintenant affecté
 	
-		$%%(self.obName.lower())%%_select = %%(self.obName)%%_model::get%%(self.obName)%%($this->db, $%%(self.obName.lower())%%_insert->%%(self.keyFields[0].dbName)%%);
+		$%%(self.obName.lower())%%_select = $this->%%(self.obName.lower())%%service->getUnique($this->db, $%%(self.obName.lower())%%_insert->%%(self.keyFields[0].dbName)%%);
 	
 		$this->_assert_equals($%%(self.obName.lower())%%_select->%%(self.keyFields[0].dbName)%%, $%%(self.obName.lower())%%_insert->%%(self.keyFields[0].dbName)%%);
-		%%(self.obName)%%_model::delete($this->db, $%%(self.obName.lower())%%_select->%%(self.keyFields[0].dbName)%%);
+		$this->%%(self.obName.lower())%%service->deleteByKey($this->db, $%%(self.obName.lower())%%_select->%%(self.keyFields[0].dbName)%%);
 	}
 	
 	
 	public function test_update(){
 		$this->message = "Tested methods: save, update, get%%(self.obName)%%, delete";
-		$%%(self.obName.lower())%%_insert = new %%(self.obName)%%_model();
 
+		$%%(self.obName.lower())%%_insert = new %%(self.obName)%%_model();
 		%%
 allAttributesCode = ""
 index = 0
@@ -109,8 +109,7 @@ for field in self.fields:
 	if field.autoincrement:
 		attributeCode = "// Nothing for field %s" % field.dbName
 	elif field.sqlType.upper()[0:4] == "ENUM":
-		# TODO : recuperer les valeurs possibles
-		pass
+		attributeCode = "$%(obName)s_insert->%(dbName)s = 'TODO';" % { 'obName' : self.obName.lower(), 'dbName' : field.dbName }
 	elif field.sqlType.upper()[0:4] == "DATE":
 		attributeCode = "$%(obName)s_insert->%(dbName)s = fromSQLDate('31/12/2050');" % { 'obName' : self.obName.lower(), 'dbName' : field.dbName }
 	elif field.sqlType.upper()[0:4] == "FLAG":
@@ -139,8 +138,9 @@ for field in self.fields:
 	
 RETURN = allAttributesCode
 %%
-		$%%(self.obName.lower())%%_insert->save($this->db);
+		$this->%%(self.obName.lower())%%service->insertNew($this->db, $%%(self.obName.lower())%%_insert);
 	
+		$%%(self.obName.lower())%%_update = $this->%%(self.obName.lower())%%service->getUnique($this->db, $%%(self.obName.lower())%%_insert->%%(self.keyFields[0].dbName)%%);
 		%%
 allAttributesCode = ""
 index = 0
@@ -149,29 +149,28 @@ for field in self.fields:
 	if field.autoincrement:
 		attributeCode = "// Nothing for field %s" % field.dbName
 	elif field.sqlType.upper()[0:4] == "ENUM":
-		# TODO : recuperer les valeurs possibles
-		pass
+		attributeCode = "$%(obName)s_update->%(dbName)s = 'TODO';" % { 'obName' : self.obName.lower(), 'dbName' : field.dbName }
 	elif field.sqlType.upper()[0:4] == "DATE":
-		attributeCode = "$%(obName)s_insert->%(dbName)s = fromSQLDate('31/01/2051');" % { 'obName' : self.obName.lower(), 'dbName' : field.dbName }
+		attributeCode = "$%(obName)s_update->%(dbName)s = fromSQLDate('31/01/2051');" % { 'obName' : self.obName.lower(), 'dbName' : field.dbName }
 	elif field.sqlType.upper()[0:4] == "FLAG":
-		attributeCode = "$%(obName)s_insert->%(dbName)s = '1';" % {'obName' : self.obName.lower(), 'dbName' : field.dbName }
+		attributeCode = "$%(obName)s_update->%(dbName)s = '1';" % {'obName' : self.obName.lower(), 'dbName' : field.dbName }
 	elif field.sqlType.upper()[0:5] == "COLOR":
-		attributeCode = "$%(obName)s_insert->%(dbName)s = '#fffff1';" % {'obName' : self.obName.lower(), 'dbName' : field.dbName }
+		attributeCode = "$%(obName)s_update->%(dbName)s = '#fffff1';" % {'obName' : self.obName.lower(), 'dbName' : field.dbName }
 	elif field.sqlType.upper()[0:8] == "PASSWORD":
-		attributeCode = "$%(obName)s_insert->%(dbName)s = 'pwd1-%(index)d';" % {'obName' : self.obName.lower(), 'dbName' : field.dbName, 'index': index }
+		attributeCode = "$%(obName)s_update->%(dbName)s = 'pwd1-%(index)d';" % {'obName' : self.obName.lower(), 'dbName' : field.dbName, 'index': index }
 	elif field.sqlType.upper() == "FILE":
-		attributeCode = "$%(obName)s_insert->%(dbName)s = 'file1-%(index)d : ...';" % {	'obName' : self.obName.lower(), 'dbName' : field.dbName, 'index': index }
+		attributeCode = "$%(obName)s_update->%(dbName)s = 'file1-%(index)d : ...';" % {	'obName' : self.obName.lower(), 'dbName' : field.dbName, 'index': index }
 	elif field.sqlType.upper()[0:3] == "INT":
-		attributeCode = "$%(obName)s_insert->%(dbName)s = 9%(index)d;" % { 'obName' : self.obName.lower(), 'dbName' : field.dbName, 'index': index }
+		attributeCode = "$%(obName)s_update->%(dbName)s = 9%(index)d;" % { 'obName' : self.obName.lower(), 'dbName' : field.dbName, 'index': index }
 	elif field.sqlType.upper()[0:7] == "VARCHAR":
 		# TODO : taille limite
-		attributeCode = "$%(obName)s_insert->%(dbName)s = 'test1_%(index)d';" % { 'obName' : self.obName.lower(), 'dbName' : field.dbName, 'index': index }
+		attributeCode = "$%(obName)s_update->%(dbName)s = 'test1_%(index)d';" % { 'obName' : self.obName.lower(), 'dbName' : field.dbName, 'index': index }
 	elif field.sqlType.upper()[0:4] == "TEXT":
 		# TODO : taille limite
-		attributeCode = "$%(obName)s_insert->%(dbName)s = 'text1-%(index)d : ...';" % {'obName' : self.obName.lower(), 'dbName' : field.dbName, 'index': index }
+		attributeCode = "$%(obName)s_update->%(dbName)s = 'text1-%(index)d : ...';" % {'obName' : self.obName.lower(), 'dbName' : field.dbName, 'index': index }
 	elif field.sqlType.upper()[0:4] == "CHAR":
 		# TODO : taille limite
-		attributeCode = "$%(obName)s_insert->%(dbName)s = 'b-%(index)d';" % {'obName' : self.obName.lower(), 'dbName' : field.dbName, 'index': index }
+		attributeCode = "$%(obName)s_update->%(dbName)s = 'b-%(index)d';" % {'obName' : self.obName.lower(), 'dbName' : field.dbName, 'index': index }
 
 	if allAttributesCode != "":
 		allAttributesCode += "\n\t\t"
@@ -179,9 +178,9 @@ for field in self.fields:
 	
 RETURN = allAttributesCode
 %%
-		$%%(self.obName.lower())%%_insert->update($this->db);
+		$this->%%(self.obName.lower())%%service->update($this->db, $%%(self.obName.lower())%%_insert);
 	
-		$%%(self.obName.lower())%%_update = %%(self.obName)%%_model::get%%(self.obName)%%($this->db, $%%(self.obName.lower())%%_insert->%%(self.keyFields[0].dbName)%%);
+		$%%(self.obName.lower())%%_update = $this->%%(self.obName.lower())%%service->getUnique($this->db, $%%(self.obName.lower())%%_insert->%%(self.keyFields[0].dbName)%%);
 		
 		%%
 RETURN = self.dbVariablesList("""if(!$this->_assert_equals($%s_insert->(instVar)s, $%s_update->(instVar)s)) {
@@ -189,15 +188,15 @@ RETURN = self.dbVariablesList("""if(!$this->_assert_equals($%s_insert->(instVar)
 		}""" % (self.obName.lower(), self.obName.lower()), 'instVar',  'typeVar', 'descrVar', 2, includesKey=True)
 %%
 
-		%%(self.obName)%%_model::delete($this->db, $%%(self.obName.lower())%%_insert->%%(self.keyFields[0].dbName)%%);
+		$this->%%(self.obName.lower())%%service->deleteByKey($this->db, $%%(self.obName.lower())%%_insert->%%(self.keyFields[0].dbName)%%);
 	}
 	
 	
 	public function test_count(){
-		$this->message = "Tested methods: getCount%%(self.obName)%%s, save, get%%(self.obName)%%, delete";
+		$this->message = "Tested methods: count, save, getUnique, deleteByKey";
 	
 		// comptage pour vérification : avant
-		$count%%(self.obName)%%sAvant = %%(self.obName)%%_model::getCount%%(self.obName)%%s($this->db);
+		$count%%(self.obName)%%sAvant = $this->%%(self.obName.lower())%%service->count($this->db);
 	
 		// création d'un enregistrement
 		$%%(self.obName.lower())%% = new %%(self.obName)%%_model();
@@ -209,8 +208,7 @@ for field in self.fields:
 	if field.autoincrement:
 		attributeCode = "// Nothing for field %s" % field.dbName
 	elif field.sqlType.upper()[0:4] == "ENUM":
-		# TODO : recuperer les valeurs possibles
-		pass
+		attributeCode = "$%(obName)s->%(dbName)s = 'TODO';" % { 'obName' : self.obName.lower(), 'dbName' : field.dbName }
 	elif field.sqlType.upper()[0:4] == "DATE":
 		attributeCode = "$%(obName)s->%(dbName)s = fromSQLDate('31/12/2050');" % { 'obName' : self.obName.lower(), 'dbName' : field.dbName }
 	elif field.sqlType.upper()[0:4] == "FLAG":
@@ -239,29 +237,29 @@ for field in self.fields:
 	
 RETURN = allAttributesCode
 %%
-		$%%(self.obName.lower())%%->save($this->db);
+		$this->%%(self.obName.lower())%%service->insertNew($this->db, $%%(self.obName.lower())%%);
 	
 		// comptage pour vérification : après insertion
-		$count%%(self.obName)%%sApres = %%(self.obName)%%_model::getCount%%(self.obName)%%s($this->db);
+		$count%%(self.obName)%%sApres = $this->%%(self.obName.lower())%%service->count($this->db);
 	
 		// verification d'ajout d'un enregistrement
 		$this->_assert_equals($count%%(self.obName)%%sAvant +1, $count%%(self.obName)%%sApres);
 	
 		// recupération de l'objet par son  %%(self.keyFields[0].dbName)%%
-		$%%(self.obName.lower())%% = %%(self.obName)%%_model::get%%(self.obName)%%($this->db, $%%(self.obName.lower())%%->%%(self.keyFields[0].dbName)%%);
+		$%%(self.obName.lower())%% = $this->%%(self.obName.lower())%%service->getUnique($this->db, $%%(self.obName.lower())%%->%%(self.keyFields[0].dbName)%%);
 	
 		// suppression de l'enregistrement
-		%%(self.obName)%%_model::delete($this->db, $%%(self.obName.lower())%%->%%(self.keyFields[0].dbName)%%);
+		$this->%%(self.obName.lower())%%service->deleteByKey($this->db, $%%(self.obName.lower())%%->%%(self.keyFields[0].dbName)%%);
 	
 		// comptage pour vérification : après suppression
-		$count%%(self.obName)%%sFinal = %%(self.obName)%%_model::getCount%%(self.obName)%%s($this->db);
+		$count%%(self.obName)%%sFinal = $this->%%(self.obName.lower())%%service->count($this->db);
 		$this->_assert_equals($count%%(self.obName)%%sAvant, $count%%(self.obName)%%sFinal);
 	
 	}
 	
 	
 	function test_list(){
-		$this->message = "Tested methods: save, getAll%%(self.obName)%%s, delete";
+		$this->message = "Tested methods: save, getAll, delete";
 	
 		$%%(self.obName.lower())%%_insert = new %%(self.obName)%%_model();
 		%%
@@ -272,8 +270,7 @@ for field in self.fields:
 	if field.autoincrement:
 		attributeCode = "// Nothing for field %s" % field.dbName
 	elif field.sqlType.upper()[0:4] == "ENUM":
-		# TODO : recuperer les valeurs possibles
-		pass
+		attributeCode = "$%(obName)s_insert->%(dbName)s = 'TODO';" % { 'obName' : self.obName.lower(), 'dbName' : field.dbName }
 	elif field.sqlType.upper()[0:4] == "DATE":
 		attributeCode = "$%(obName)s_insert->%(dbName)s = fromSQLDate('31/12/2050');" % { 'obName' : self.obName.lower(), 'dbName' : field.dbName }
 	elif field.sqlType.upper()[0:4] == "FLAG":
@@ -302,11 +299,12 @@ for field in self.fields:
 	
 RETURN = allAttributesCode
 %%
-		$%%(self.obName.lower())%%_insert->save($this->db);
+		$this->%%(self.obName.lower())%%service->insertNew($this->db, $%%(self.obName.lower())%%_insert);
 	
-		$%%(self.obName.lower())%%s = %%(self.obName)%%_model::getAll%%(self.obName)%%s($this->db);
+		$%%(self.obName.lower())%%s = $this->%%(self.obName.lower())%%service->getAll($this->db);
 		if( ! $this->_assert_not_empty($%%(self.obName.lower())%%s) ) {
-			return FALSE;
+			log_message('DEBUG', '[UNIT TEST / %%(self.obName.title())%%test.php)] #test_list : getAll after insert != 1');
+			return $this->_fail('getAll after insert != 1');
 		}
 		$found = 0;
 		foreach ($%%(self.obName.lower())%%s as $%%(self.obName.lower())%%) {
@@ -319,10 +317,12 @@ RETURN = self.dbVariablesList("""$this->_assert_equals($%s->(instVar)s, $%s_inse
 			}
 		}
 		if( $found == 1 ){
-			%%(self.obName)%%_model::delete($this->db, $%%(self.obName.lower())%%->%%(self.keyFields[0].dbName)%%);
-			return TRUE;
+			$this->%%(self.obName.lower())%%service->deleteByKey($this->db, $%%(self.obName.lower())%%->%%(self.keyFields[0].dbName)%%);
+			log_message('DEBUG', '[UNIT TEST / %%(self.obName.title())%%test.php)] #test_list : OK');
+			return $this->_assert_true(True);
 		}else{
-			return FALSE;
+			log_message('DEBUG', '[UNIT TEST / %%(self.obName.title())%%test.php)] #test_list : found != 1');
+			return $this->_fail('found != 1');
 		}
 	}
 

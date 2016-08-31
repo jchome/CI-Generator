@@ -106,12 +106,12 @@ for field in self.fields:
 			$this->%(obName_lower)sservice->delete($this->db, $model);
 		} else {
 			$model->%(dbName)s = "";
-			if($uploadDataFile_%(dbName)s['file_name'] != null && $uploadDataFile_%(dbName)s['file_name'] != "") {
+			if($uploadDataFile_%(dbName)s != null && $uploadDataFile_%(dbName)s != "") {
 				$model->%(dbName)s = '%(obName)s_%(dbName)s_' . $model->%(keyField)s . '_file' . $uploadDataFile_%(dbName)s['file_ext'];
-				rename($path . $uploadDataFile_%(dbName)s['file_name'], $path . $model->%(dbName)s);
+				rename($path . $uploadDataFile_%(dbName)s, $path . $model->%(dbName)s);
 				// suppression du fichier temporaire telecharge
-				if( file_exists( $path . $uploadDataFile_%(dbName)s['file_name'] ) ){
-					unlink($path . $uploadDataFile_%(dbName)s['file_name']);
+				if( file_exists( $path . $uploadDataFile_%(dbName)s ) ){
+					unlink($path . $uploadDataFile_%(dbName)s);
 				}
 			}
 			$this->%(obName_lower)sservice->update($this->db, $model);

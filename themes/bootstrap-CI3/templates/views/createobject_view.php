@@ -25,7 +25,7 @@ if($this->session->userdata('user_name') == "") {
 
 	<?= htmlNavigation("%%(self.obName.lower())%%","create", $this->session); ?>
 	
-	<div class="container">
+	<div class="container-fluid">
 	
 		<h2><?= $this->lang->line('%%(self.obName.lower())%%.form.create.title') ?></h2>
 			

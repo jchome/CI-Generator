@@ -25,7 +25,7 @@ if($this->session->userdata('user_name') == "") {
 
 	<?= htmlNavigation("%%(self.obName.lower())%%","edit", $this->session); ?>
 	
-	<div class="container">
+	<div class="container-fluid">
 	
 		<h2><?= $this->lang->line('%%(self.obName.lower())%%.form.edit.title') ?></h2>
 			<?php

@@ -115,6 +115,7 @@ for field in self.fields:
 		useUpload = True
 		attributeCode += """
 		
+		log_message('debug','[Edit%(obName_lower)s.php] : DEMARRAGE de l\'upload');
 		$this->upload->initialize($config); // RAZ des erreurs
 		// Suppression de l'ancien fichier %(dbName)s : %(desc)s
 		if( $oldModel->%(dbName)s != "" && $model->%(dbName)s == ""){
@@ -129,6 +130,7 @@ for field in self.fields:
 				$codeErrors = "NO_FILE";
 			}
 		}else{
+			log_message('debug','[Edit%(obName_lower)s.php] : PAS d \'erreur sur le nouveau fichier');
 			$uploadDataFile_%(dbName)s = $this->upload->data('file_name');
 		}
 	
@@ -136,9 +138,12 @@ for field in self.fields:
 			$this->session->set_flashdata('msg_error', $codeErrors);
 		}else if( $codeErrors == "NO_FILE" ){
 			// rien a faire
+			log_message('debug','[Edit%(obName_lower)s.php] : PAS de fichier');
 		}else{
+			log_message('debug','[Edit%(obName_lower)s.php] : TRAITEMENT du fichier');
 			$model->%(dbName)s = "";
 			if($uploadDataFile_%(dbName)s != null && $uploadDataFile_%(dbName)s != "") {
+				log_message('debug','[Edit%(obName_lower)s.php] : RENOMMAGE du nouveau fichier');
 				$model->%(dbName)s = '%(obName)s_%(dbName)s_' . $model->%(keyField)s . '_file' . $this->upload->data('file_ext');
 				rename($path . $uploadDataFile_%(dbName)s, $path . $model->%(dbName)s);
 				// suppression du fichier temporaire telecharge
