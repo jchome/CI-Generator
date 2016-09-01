@@ -65,7 +65,7 @@ for field in self.keyFields:
 	PRIMARY KEY (%s) """ % field.dbName
 
 content += primaryKeys + """
-);"""
+) ENGINE=InnoDB ;"""
 
 RETURN = content
 %%
