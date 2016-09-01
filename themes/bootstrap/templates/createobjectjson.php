@@ -142,7 +142,7 @@ if useUpload:
 RETURN = codeForUploadFile
 %%
 
-		$data['%(obName_lower)s'] = $model;
+		$data['%%(self.obName.lower())%%'] = $model;
 		$this->load->view('%%(self.obName.lower())%%/jsonifyUnique_view', $data);
 	}
 }
