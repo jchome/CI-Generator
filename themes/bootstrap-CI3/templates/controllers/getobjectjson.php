@@ -19,6 +19,19 @@ class Get%%(self.obName)%%Json extends CI_Controller {
 		$this->load->library('session');
 		$this->load->library('form_validation');
 		$this->load->database();
+%%allAttributeCode = ""
+# inclure les modeles des objets référencés
+
+for field in self.fields:
+	attributeCode = ""
+	if field.referencedObject:
+		attributeCode += """
+		$this->load->model('%(referencedObject)s_model');
+		$this->load->library('%(referencedObject)sService');""" % {'referencedObject': field.referencedObject.obName}
+	allAttributeCode += attributeCode
+	
+RETURN = allAttributeCode
+%%
 
 	}
 
@@ -200,6 +213,36 @@ if useUpload:
 		
 RETURN = codeForUploadFile
 %%
+		$data['%%(self.obName.lower())%%'] = $model;
+		$this->load->view('%%(self.obName.lower())%%/jsonifyUnique_view', $data);
+	}
+
+	/**
+	 * Suppression d'un %%(self.obName)%%
+	 * @param $%%(self.keyFields[0].dbName)%% identifiant a supprimer
+	 */
+	function delete($%%(self.keyFields[0].dbName)%%){
+		$model = $this->%%(self.obName.lower())%%service->getUnique($this->db, $%%(self.keyFields[0].dbName)%%);
+
+%%allAttributeCode = ""
+for field in self.fields:
+	attributeCode = ""
+	if field.sqlType.upper()[0:4] == "FILE":
+		attributeCode += """
+		$path = realpath('www/uploads/');
+		if( $model->%(field_dbName)s && file_exists( $path . $model->%(field_dbName)s ) ){
+			unlink($path . $model->%(field_dbName)s);
+		}
+""" % { 'field_dbName' : field.dbName,
+		'keyfield_dbname' : self.keyFields[0].dbName
+	}
+	if attributeCode != "":
+		allAttributeCode += attributeCode
+
+RETURN = allAttributeCode
+%%
+		$this->%%(self.obName.lower())%%service->deleteByKey($this->db, $%%(self.keyFields[0].dbName)%%);
+		
 		$data['%%(self.obName.lower())%%'] = $model;
 		$this->load->view('%%(self.obName.lower())%%/jsonifyUnique_view', $data);
 	}
