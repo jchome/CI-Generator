@@ -1,5 +1,5 @@
 %[kind : helpers]
-%[file : %%(self.obName.title())%%Service.php] 
+%[file : %%(self.obName)%%Service.php] 
 %[path : libraries]
 <?php
 
@@ -38,19 +38,19 @@ RETURN = allAttributesCode
 		return $model;
 	}
 	
-	public function getUnique($db, $value){
-		return parent::getUnique($db, '%%(self.keyFields[0].dbName)%%', $value);
+	public function getUnique($db, $value, $dummy = null){
+		return parent::getUniqueKeyValue($db, '%%(self.keyFields[0].dbName)%%', $value);
 	}
 	
-	public function deleteByKey($db, $value){
-		return parent::deleteByKey($db, '%%(self.keyFields[0].dbName)%%', $value);
+	public function deleteByKey($db, $value, $dummy = null){
+		return parent::deleteByKeyValue($db, '%%(self.keyFields[0].dbName)%%', $value);
 	}
 
 	public function delete($db, $aModel){
 		if( $aModel == null) {
 			throw new Exception('Error while calling the [delete] method on a null object.');
 		}
-		return parent::deleteByKey($db, '%%(self.keyFields[0].dbName)%%', $aModel->%%(self.keyFields[0].dbName)%%);
+		return parent::deleteByKeyValue($db, '%%(self.keyFields[0].dbName)%%', $aModel->%%(self.keyFields[0].dbName)%%);
 	}
 
 %%getterAll = ""

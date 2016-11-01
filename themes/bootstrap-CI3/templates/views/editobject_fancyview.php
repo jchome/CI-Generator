@@ -15,7 +15,7 @@ $this->load->helper('views');
 if($this->session->userdata('user_name') == "") {
 	redirect('welcome/index');
 }
-?><
+?>
 
 	<?= htmlNavigation("%%(self.obName.lower())%%","edit", $this->session); ?>
 	
@@ -25,9 +25,9 @@ if($this->session->userdata('user_name') == "") {
 			
 		<div class="row-fluid">
 <?php
-$attributes_info = array('name' => 'EditForm', 'id' => 'EditForm%%(self.obName)%%', 'class' => 'form-horizontal');
+$attributes_info = array('name' => 'EditForm%%(self.obName)%%', 'id' => 'EditForm%%(self.obName)%%', 'class' => 'form-horizontal');
 $fields_info = array('%%(self.keyFields[0].dbName)%%' => $%%(self.obName.lower())%%->%%(self.keyFields[0].dbName)%%);
-echo form_open_multipart('%%(self.obName.lower())%%/get%%(self.obName.lower())%%json/save', $attributes_info, $fields_info );
+echo form_open_multipart('%%(self.obName.lower())%%/edit%%(self.obName.lower())%%json/save', $attributes_info, $fields_info );
 %%allAttributesCode = ""
 
 for field in self.fields:

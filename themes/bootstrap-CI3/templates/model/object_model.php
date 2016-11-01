@@ -1,5 +1,5 @@
 %[kind : models]
-%[file : %%(self.obName.title())%%_model.php]
+%[file : %%(self.obName)%%_model.php]
 %[path : models]
 <?php
 /*

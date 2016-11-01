@@ -141,8 +141,9 @@ if useUpload:
 	
 RETURN = codeForUploadFile
 %%
-
-		$data['%(obName_lower)s'] = $model;
+%%
+RETURN = """		$data['%(obName_lower)s'] = $model;""" % { 'obName_lower' : self.obName.lower() }
+%%
 		$this->load->view('%%(self.obName.lower())%%/jsonifyUnique_view', $data);
 	}
 }
