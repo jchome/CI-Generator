@@ -60,14 +60,14 @@ for field in self.fields:
 	valueCode = "<?= $%(structureObName)s->%(dbName)s ?>" % { 'structureObName': self.obName.lower(), 'dbName' : field.dbName }
 	
 	attributeCode += """
-	<div class="form-group"><!-- %(obName)s : %(desc)s -->
+	<div class="control-group"><!-- %(obName)s : %(desc)s -->
 		<label class="col-md-2 control-label" for="%(dbName)s">""" % { 'dbName' : field.dbName, 'obName' : field.obName,'desc' : field.description }
 
 	if not field.nullable:
 		attributeCode += "* "
 
 	attributeCode += """<?= $this->lang->line('%(objectObName)s.form.%(dbName)s.label') ?> :</label>
-		<div class="col-md-10">
+		<div class="controls">
 		""" % { 'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
 
 	cssClass = "inp-form"
@@ -104,8 +104,9 @@ for field in self.fields:
 	elif field.sqlType.upper()[0:4] == "DATE":
 		dateFormat = field.sqlType[5:-1]
 		attributeCode += """<div data-date-format="%(dateFormat)s" id="datepicker_%(dbName)s"
-			class="input-append date"><input type="text" name="%(dbName)s" id="%(dbName)s" class="form-control" size="8" maxlength="10" value="%(valueCode)s" %(moreAttributes)s> 
-			<span class="add-on"><i class="icon-calendar"></i></span>
+			class="input-append date">
+				<input type="text" name="%(dbName)s" id="%(dbName)s" class="form-control" size="8" maxlength="10" value="%(valueCode)s" %(moreAttributes)s> 
+				<span class="add-on"><i class="icon-calendar"></i></span>
 		</div>""" % { 'dbName' : field.dbName, 
 			'valueCode' : valueCode, 
 			'dateFormat' : dateFormat,

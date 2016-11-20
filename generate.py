@@ -33,6 +33,7 @@ Syntaxe:
 import sys, os, glob, string, ConfigParser, re, codecs
 from code import InteractiveInterpreter, InteractiveConsole
 import traceback, inspect
+from shutil import copyfile
 
 from objects import CIObject
 
@@ -179,6 +180,8 @@ class PythonLine:
 		return result
 
 
+
+
 def generateTemplates(rootFiles, readerTemplates, kind):
 	# generation du fichier a partir du template
 	if not kind in readerTemplates:
@@ -189,14 +192,55 @@ def generateTemplates(rootFiles, readerTemplates, kind):
 		myDirectory = os.path.join(rootFiles, reader.generateSegmentObjectFor(reader.filePath, structure) )
 		if not os.path.exists(myDirectory):
 			os.makedirs(myDirectory)
-		content = reader.generateSegmentsFor(structure)
-
-		#print ("fileOut : %s" % reader.fileOut)
-		#print (reader.generateSegmentObjectFor(reader.fileOut, structure))
 		filename = os.path.join(myDirectory, reader.generateSegmentObjectFor(reader.fileOut, structure) )
-		file = open(filename,'w')
+		baseFilename = os.path.basename(filename)
+		destinationFolder = os.path.join( os.path.dirname(filename), '.dd')
+		backupFilename = os.path.join( destinationFolder, baseFilename)
+		diffFilename = backupFilename + ".diff"
+
+		if not os.path.exists(destinationFolder):
+			os.makedirs(destinationFolder)
+
+		#####################################
+		# 1. DIFF PROCESS
+		if os.path.exists(filename):
+			os.system("diff -u %(backupFilename)s %(filename)s > %(diffFilename)s" % {
+				"filename":filename, 
+				"backupFilename":backupFilename, 
+				"diffFilename":diffFilename} )
+		# /DIFF PROCESS
+		#####################################
+		
+		
+		#####################################
+		# 2. GENERATION PROCESS
+		# (in the backup file)
+		content = reader.generateSegmentsFor(structure)
+		file = open(backupFilename,'w')
 		file.write( content.encode("utf-8") )
 		file.close()
+		#/ GENERATION PROCESS
+		#####################################
+		
+
+
+		#####################################
+		# 3. MERGE PROCESS
+		if os.path.exists(diffFilename):
+			os.system("patch %(backupFilename)s -i %(diffFilename)s -o %(filename)s" % {
+				"filename":filename, 
+				"backupFilename":backupFilename, 
+				"diffFilename":diffFilename} )
+		else:
+		# 3.bis -- or copy as the real true file, if no merge to do
+			copyfile(backupFilename, filename)
+
+		#/ MERGE PROCESS
+		#####################################
+		
+
+
+
 		print ("    File <%s> successfully generated:" % filename)
 
 if __name__ == '__main__':	

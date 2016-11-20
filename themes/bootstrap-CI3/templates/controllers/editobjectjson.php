@@ -1,5 +1,5 @@
 %[kind : controllers]
-%[file : Edit%%(self.obName.lower())%%.php] 
+%[file : Edit%%(self.obName.lower())%%json.php] 
 %[path : controllers/%%(self.obName.lower())%%]
 <?php
 /*

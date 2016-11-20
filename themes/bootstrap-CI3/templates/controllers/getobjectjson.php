@@ -164,14 +164,14 @@ for field in self.fields:
 		// Upload du nouveau fichier %(dbName)s : %(desc)s
 		$codeErrors = null;
 		if ( ! $this->upload->do_upload('%(dbName)s_file')) {
-			$uploadDataFile_%(dbName)s = $this->upload->data('%(dbName)s_file');
+			$uploadDataFile_%(dbName)s = $this->upload->data();
 			$codeErrors = $this->upload->display_errors() . "ext: [" . $uploadDataFile_%(dbName)s['file_ext'] ."] type mime: [" . $uploadDataFile_%(dbName)s['file_type'] . "]";
 			if($this->upload->display_errors() == '<p>'.$this->lang->line('upload_no_file_selected').'</p>'
 				|| $this->upload->display_errors() == '<p>upload_no_file_selected</p>'){ // if not translated
 				$codeErrors = "NO_FILE";
 			}
 		}else{
-			$uploadDataFile_%(dbName)s = $this->upload->data('%(dbName)s_file');
+			$uploadDataFile_%(dbName)s = $this->upload->data();
 		}
 	
 		if($codeErrors != null && $codeErrors != "NO_FILE") {
