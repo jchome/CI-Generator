@@ -1,4 +1,4 @@
-%[kind : json]
+%[kind : json0]
 %[file : jsonifyCount_view.php] 
 %[path : views/%%(self.obName.lower())%%]
 <?php

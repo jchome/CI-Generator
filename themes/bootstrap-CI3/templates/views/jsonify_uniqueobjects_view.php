@@ -1,5 +1,5 @@
-%[kind : json]
-%[file : jsonifyUnique_view.php] 
+%[kind : json0]
+%[file : jsonifyUnique_view0.php] 
 %[path : views/%%(self.obName.lower())%%]
 <?php
 /*
