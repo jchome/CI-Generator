@@ -89,18 +89,18 @@ for field in self.fields:
 		 	}
 	elif field.sqlType.upper()[0:4] == "DATE":
 		dateFormat = field.sqlType[5:-1]
-		attributeCode += """<div data-date-format="%(dateFormat)s" id="datepicker_%(dbName)s"
-			class="input-append date"><input type="text" name="%(dbName)s" id="%(dbName)s" size="8" maxlength="10" class="form-control" %(moreAttributes)s> 
-			<span class="add-on"><i class="icon-calendar"></i></span>
+		attributeCode += """<div class="input-group input-append date" data-date-format="%(dateFormat)s" id="datepicker_%(dbName)s">
+			<input type="text" name="%(dbName)s" id="%(dbName)s" size="8" maxlength="10" class="form-control" %(moreAttributes)s> 
+			<span class="input-group-addon glyphicon glyphicon-calendar"></span>
 		</div>""" % { 'dbName' : field.dbName,
 			'dateFormat' : dateFormat,
 			'moreAttributes' : moreAttributes
 			}
 		
 	elif field.sqlType.upper()[0:8] == "PASSWORD":
-		attributeCode += """	<div class="input-prepend">
-				<span class="add-on"><i class="icon-key"></i></span> <input
-					type="password" placeholder="Password" name="%(dbName)s" id="%(dbName)s" class="form-control" %(moreAttributes)s>
+		attributeCode += """<div class="input-group">
+				<span class="input-group-addon glyphicon glyphicon-lock"></span>
+				<input type="password" placeholder="Password" name="%(dbName)s" id="%(dbName)s" class="form-control" %(moreAttributes)s>
 			</div>""" % { 'dbName' : field.dbName,
 			'moreAttributes' : moreAttributes
 			}
