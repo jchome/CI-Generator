@@ -64,8 +64,8 @@ for field in self.fields:
 		}
 		$objectData["%(dbName)s"] = Array( "id" => $model->%(dbName)s , "data" => $json_data );
 	
-		$data['%(obName_lower)s'] = $objectData;
-		$this->load->view('%(obName_lower)s/jsonifyUnique_view', $data);
+		$data['data'] = $objectData;
+		$this->load->view('json/jsonifyData_view', $data);
 	}
 	""" % { 'dbName' : field.dbName,
 			'obName' : self.obName,
@@ -105,7 +105,7 @@ RETURN = allAttributeCode
 	 * Sauvegarde des modifications
 	 */
 	public function save(){
-		$this->form_validation->set_error_delimiters('<div class="error">', '</div>');
+		$this->form_validation->set_error_delimiters('', '');
 %%allAttributeCode = ""
 for field in self.fields:
 	rule = "trim"
@@ -132,7 +132,10 @@ RETURN = allAttributeCode
 %%
 		
 		if($this->form_validation->run() == FALSE){
-			$this->load->view('%%(self.obName.lower())%%/edit%%(self.obName.lower())%%_view');
+			$data = Array();
+			$data['data'] = Array('errors' => validation_errors());
+			$this->load->view('json/jsonifyData_view', $data);
+			return;
 		}
 		
 		// Mise a jour des donnees en base
@@ -213,8 +216,8 @@ if useUpload:
 		
 RETURN = codeForUploadFile
 %%
-		$data['%%(self.obName.lower())%%'] = $model;
-		$this->load->view('%%(self.obName.lower())%%/jsonifyUnique_view', $data);
+		$data['data'] = $model;
+		$this->load->view('json/jsonifyData_view', $data);
 	}
 
 	/**
@@ -242,9 +245,9 @@ for field in self.fields:
 RETURN = allAttributeCode
 %%
 		$this->%%(self.obName.lower())%%service->deleteByKey($this->db, $%%(self.keyFields[0].dbName)%%);
-		
-		$data['%%(self.obName.lower())%%'] = $model;
-		$this->load->view('%%(self.obName.lower())%%/jsonifyUnique_view', $data);
+
+		$data['data'] = $model;
+		$this->load->view('json/jsonifyData_view', $data);
 	}
 
 }
