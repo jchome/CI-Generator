@@ -55,7 +55,6 @@ RETURN = self.dbAndObVariablesList("""<th class=\"sortable\"><!-- (dbVar)s -->
 			</thead>
 			<tbody>
 <?php
-$even = false;
 %%allAttributes = "" 
 for field in self.fields:
 	if field.dbName != self.keyFields[0].dbName:
@@ -149,7 +148,6 @@ RETURN = allAttributesCode
 						><i class="glyphicon glyphicon-remove"> </i></a></td>
 				</tr>
 <?php 
-$even = !$even; 
 endforeach; ?>
 
 			</tbody>
