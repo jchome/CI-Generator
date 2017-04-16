@@ -115,7 +115,7 @@ for field in self.fields:
 		useUpload = True
 		attributeCode += """
 		
-		log_message('debug','[Edit%(obName_lower)s.php] : DEMARRAGE de l\'upload');
+		log_message('debug','[Edit%(obName_lower)s.php] : DEMARRAGE de l\\\'upload');
 		$this->upload->initialize($config); // RAZ des erreurs
 		// Suppression de l'ancien fichier %(dbName)s : %(desc)s
 		if( $oldModel->%(dbName)s != "" && $model->%(dbName)s == ""){
@@ -130,7 +130,7 @@ for field in self.fields:
 				$codeErrors = "NO_FILE";
 			}
 		}else{
-			log_message('debug','[Edit%(obName_lower)s.php] : PAS d \'erreur sur le nouveau fichier');
+			log_message('debug','[Edit%(obName_lower)s.php] : PAS d\\\'erreur sur le nouveau fichier');
 			$uploadDataFile_%(dbName)s = $this->upload->data('file_name');
 		}
 	

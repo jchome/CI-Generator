@@ -20,8 +20,9 @@ class List%%(self.obName)%%s extends CI_Controller {
 		$this->load->library('pagination');
 		$this->load->helper('url');
 		$this->load->database();
+		
+		# inclure les modeles des objets référencés
 %%allAttributeCode = ""
-# inclure les modeles des objets référencés
 
 for field in self.fields:
 	attributeCode = ""
@@ -75,8 +76,9 @@ RETURN = allAttributeCode
 		
 		// recuperation des donnees
 		$data['%%(self.obName.lower())%%s'] = $this->%%(self.obName.lower())%%service->getAll($this->db, $orderBy, $asc, $config['per_page'], $offset);
-		%%allAttributeCode = ""
-# inclure les objets référencés dans l'objet $data
+		
+		# inclure les objets référencés dans l'objet $data
+%%allAttributeCode = ""
 
 for field in self.fields:
 	attributeCode = ""

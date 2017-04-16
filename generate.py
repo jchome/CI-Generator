@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 # coding: utf-8
 
 """
@@ -45,16 +46,19 @@ class TemplateFileReader:
 		self.segments = []
 
 	def readFile(self, templateFilename):
-		f = codecs.open(templateFilename, 'r', sys.getfilesystemencoding())
+		#f = codecs.open(templateFilename, 'r', sys.getfilesystemencoding())
+		f = codecs.open(templateFilename, 'r', encoding='utf-8')
 		print ("templateFilename : %s" % templateFilename)
 
 		# detection des infos meta sur les premieres lignes
 		regexpMetaSpliter = re.compile('^%\[\s*(?P<key>.+)\s*:\s*(?P<value>.+)\s*\]\s*$')
-		rawContent = ""
+		rawContent = u""
 		metaIfFinished = False
 		metaInfos = {}
 
 		for line in f:
+			#DEBUG
+			#print("---%s" % type(line))
 			matchGroupMeta = regexpMetaSpliter.match(line)
 			if matchGroupMeta and not metaIfFinished:
 				#DEBUG print (matchGroupMeta.groupdict())
@@ -81,13 +85,14 @@ class TemplateFileReader:
 		else:
 			self.filePath = ""
 
-		self.segments = self.extractSegments(rawContent)
+		self.segments = self.extractSegments(rawContent.encode('utf-8'))
 
 
 	def extractSegments(self, rawContent):
 		# recuperaton des segments de code
 		wasCode = False
 		segments = []
+		
 		for item in rawContent.split("%%"):
 			if wasCode:
 				if re.match("\(.*\)", item):
@@ -116,14 +121,27 @@ class TemplateFileReader:
 
 class StringSegment:
 	def __init__(self, data):
-		self.data = data
+		try:
+			self.data = data.decode('utf8')
+		except Exception as e :
+			print("XXXXXXXXXXXXXXXX")
+			print(data)
+			print("XXXXXXXXXXXXXXXX")
+			raise e
 
 	def toString(self, structure):
 		return self.data
 
 class PythonSegment:
 	def __init__(self, data, aTemplateFileReader):
-		self.data = data.strip()
+		try:
+			self.data = (data.strip()).decode('utf8')
+		except Exception as e :
+			print("XXXXXXXXXXXXXXXX")
+			print(data)
+			print("XXXXXXXXXXXXXXXX")
+			raise e
+
 		self.template = aTemplateFileReader
 	
 	def toString(self, structure):
@@ -140,14 +158,14 @@ class PythonSegment:
 		console = InteractiveConsole(localVars, filename)
 
 		try:
-			code_object = compile(self.data, '<string>', 'exec')
+			code_object = compile(self.data.encode('ascii','ignore'), '<string>', 'exec')
 			exec code_object in localVars
 		except Exception as e :
 			print ("-  ERR --Kind:%s---------------------------------------" % (self.template.kind) )
 			InteractiveInterpreter.showsyntaxerror(console, filename)
 			frames = inspect.trace()
 			lineNumber = frames[1][2]
-			print "At line %s" % lineNumber
+			print ("At line %s" % lineNumber)
 			print ("- /ERR -----------------------------------------")
 
 			print ("-  CODE -----------------------------------------")
@@ -163,11 +181,11 @@ class PythonSegment:
 
 class PythonLine:
 	def __init__(self, data, aTemplateFileReader):
-		self.data = data.strip()
+		self.data = unicode(data).strip()
 		self.template = aTemplateFileReader
 	
 	def toString(self, structure):
-		result = ""
+		result = u""
 		try:
 			result = eval(self.data, {"self" : structure} )
 		except Exception as e:

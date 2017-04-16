@@ -25,6 +25,8 @@ Copyright (C) 2011 julien CORON - http://julien.coron.free.fr
 from xml.dom.minidom import *
 import os
 
+"""This class is the result of the XML parsing.
+"""
 class Field:
 	def __init__(self, dbName= "", obName = "", isKey = False):
 		self.dbName = dbName
@@ -48,6 +50,8 @@ class Field:
 	def getAttribute(this, attrName):
 		return this.node.getAttribute(attrName)
 		
+"""This class is the result of the XML parsing.
+"""
 class CIObject:
 	def __init__(self, dbTableName = "", obName = ""):
 		self.dbTableName = dbTableName

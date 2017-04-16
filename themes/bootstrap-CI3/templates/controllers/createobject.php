@@ -20,8 +20,8 @@ class Create%%(self.obName)%% extends CI_Controller {
 		$this->load->helper('url');
 		$this->load->library('form_validation');
 		$this->load->database();
-%%allAttributeCode = ""
 # inclure les modeles des objets référencés
+%%allAttributeCode = ""
 		
 for field in self.fields:
 	attributeCode = ""
@@ -41,8 +41,8 @@ RETURN = allAttributeCode
 	 */	
 	public function index(){
 		$data = Array();
-%%allAttributeCode = "		// Recuperation des objets references"
 # inclure les objets référencés dans l'objet $data
+%%allAttributeCode = "		// Recuperation des objets references"
 
 for field in self.fields:
 	attributeCode = ""
@@ -120,7 +120,7 @@ for field in self.fields:
 		useUpload = True
 		attributeCode += """
 		
-		log_message('debug','[Create%(obName_lower)s.php] : DEMARRAGE de l\'upload');
+		log_message('debug','[Create%(obName_lower)s.php] : DEMARRAGE de l\\\'upload');
 		$this->upload->initialize($config); // RAZ des erreurs
 		// Upload du fichier %(dbName)s : %(desc)s
 		$codeErrors = null;
@@ -131,7 +131,7 @@ for field in self.fields:
 				$codeErrors = "NO_FILE";
 			}
 		}else{
-			log_message('debug','[Create%(obName_lower)s.php] : PAS d \'erreur sur le nouveau fichier');
+			log_message('debug','[Create%(obName_lower)s.php] : PAS d\\\'erreur sur le nouveau fichier');
 			$uploadDataFile_%(dbName)s = $this->upload->data('file_name');
 		}
 	
