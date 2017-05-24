@@ -11,21 +11,21 @@ class Edit%%(self.obName)%% extends CI_Controller {
 
 	function __construct(){
 		parent::__construct();
-		$this->load->model('%%(self.obName)%%_model');
+		$this->load->model('%%(self.obName)%%Model');
 		$this->load->library('%%(self.obName)%%Service');
 		$this->load->library('session');
 		$this->load->helper('template');
 		$this->load->helper('url');
 		$this->load->library('form_validation');
 		$this->load->database();
-%%allAttributeCode = ""
 # inclure les modeles des objets référencés
+%%allAttributeCode = ""
 
 for field in self.fields:
 	attributeCode = ""
 	if field.referencedObject:
 		attributeCode += """
-		$this->load->model('%(referencedObject)s_model');
+		$this->load->model('%(referencedObject)sModel');
 		$this->load->library('%(referencedObject)sService');""" % {'referencedObject': field.referencedObject.obName}
 	allAttributeCode += attributeCode
 	
@@ -41,8 +41,8 @@ RETURN = allAttributeCode
 	public function index($%%(self.keyFields[0].dbName)%%){
 		$model = $this->%%(self.obName.lower())%%service->getUnique($this->db, $%%(self.keyFields[0].dbName)%%);
 		$data['%%(self.obName.lower())%%'] = $model;
-%%allAttributeCode = ""
 # inclure les objets référencés dans l'objet $data
+%%allAttributeCode = ""
 
 for field in self.fields:
 	attributeCode = ""
@@ -95,7 +95,7 @@ RETURN = allAttributeCode
 		}
 		
 		// Mise a jour des donnees en base
-		$model = new %%(self.obName)%%_model();
+		$model = new %%(self.obName)%%Model();
 		$oldModel = $this->%%(self.obName.lower())%%service->getUnique($this->db, $this->input->post('%%(self.keyFields[0].dbName)%%') );
 		%%
 codeForAttributes = ""

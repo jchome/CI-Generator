@@ -14,7 +14,7 @@ class Create%%(self.obName)%%Json extends CI_Controller {
 	 */
 	function __construct(){
 		parent::__construct();
-		$this->load->model('%%(self.obName)%%_model');
+		$this->load->model('%%(self.obName)%%Model');
 		$this->load->library('%%(self.obName)%%Service');
 		$this->load->library('session');
 		$this->load->helper('url');
@@ -26,7 +26,7 @@ for field in self.fields:
 	attributeCode = ""
 	if field.referencedObject:
 		attributeCode += """
-		$this->load->model('%(referencedObject)s_model');
+		$this->load->model('%(referencedObject)sModel');
 		$this->load->library('%(referencedObject)sService');""" % {'referencedObject': field.referencedObject.obName}
 	allAttributeCode += attributeCode
 		
@@ -73,7 +73,7 @@ RETURN = allAttributeCode
 	public function add(){
 	
 		// Insertion en base
-		$model = new %%(self.obName)%%_model();
+		$model = new %%(self.obName)%%Model();
 		%%
 includesKey = True;
 RETURN = self.dbAndObVariablesList("$model->(dbVar)s = $this->input->post('(dbVar)s'); ", 'dbVar', 'obVar', 2, includesKey)

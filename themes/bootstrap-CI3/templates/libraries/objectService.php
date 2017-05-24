@@ -21,7 +21,7 @@ class %%(self.obName)%%Service extends DAOService{
 		if($row == null){
 			return null;
 		}
-		$model = new %%(self.obName)%%_model();
+		$model = new %%(self.obName)%%Model();
 		%%
 allAttributesCode = ""
 for field in self.fields:

@@ -14,7 +14,7 @@ class Import%%(self.obName)%%s extends CI_Controller {
 	 */
 	function __construct(){
 		parent::__construct();
-		$this->load->model('%%(self.obName)%%_model');
+		$this->load->model('%%(self.obName)%%Model');
 		$this->load->library('session');
 		$this->load->helper('url');
 		$this->load->database();
@@ -68,7 +68,7 @@ class Import%%(self.obName)%%s extends CI_Controller {
 	 * Charge le fichier CSV et importe les donnees
 	 * @param String $filename
 	 * @param String $separator
-	 * @return multitype:%%(self.obName)%%_model
+	 * @return multitype:%%(self.obName)%%Model
 	 */
 	private function parseFile($filename, $separator){
 		// lecture de l'entete
@@ -86,7 +86,7 @@ class Import%%(self.obName)%%s extends CI_Controller {
 				}
 	
 				// Insertion en base
-				$model = new %%(self.obName)%%_model();
+				$model = new %%(self.obName)%%Model();
 %%allAttributeCode = ""
 rank = 0
 for field in self.fields:

@@ -14,21 +14,21 @@ class List%%(self.obName)%%s extends CI_Controller {
 	 */
 	function __construct(){
 		parent::__construct();
-		$this->load->model('%%(self.obName)%%_model');
+		$this->load->model('%%(self.obName)%%Model');
 		$this->load->library('%%(self.obName)%%Service');
 		$this->load->library('session');
 		$this->load->library('pagination');
 		$this->load->helper('url');
 		$this->load->database();
 		
-		# inclure les modeles des objets référencés
 %%allAttributeCode = ""
+# inclure les modeles des objets référencés
 
 for field in self.fields:
 	attributeCode = ""
 	if field.referencedObject:
 		attributeCode += """
-		$this->load->model('%(referencedObject)s_model');
+		$this->load->model('%(referencedObject)sModel');
 		$this->load->library('%(referencedObject)sService');""" % {'referencedObject': field.referencedObject.obName}
 	allAttributeCode += attributeCode
 	
@@ -77,8 +77,8 @@ RETURN = allAttributeCode
 		// recuperation des donnees
 		$data['%%(self.obName.lower())%%s'] = $this->%%(self.obName.lower())%%service->getAll($this->db, $orderBy, $asc, $config['per_page'], $offset);
 		
-		# inclure les objets référencés dans l'objet $data
 %%allAttributeCode = ""
+# inclure les objets référencés dans l'objet $data
 
 for field in self.fields:
 	attributeCode = ""

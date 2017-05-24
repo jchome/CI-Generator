@@ -1,5 +1,5 @@
 %[kind : models]
-%[file : %%(self.obName)%%_model.php]
+%[file : %%(self.obName)%%Model.php]
 %[path : models]
 <?php
 /*
@@ -11,7 +11,7 @@
  * DO NOT MODIFY THIS FILE, IT IS GENERATED
  ***************************************************************************/
 
-class %%(self.obName.title())%%_model extends CI_Model {
+class %%(self.obName.title())%%Model extends CI_Model {
 	
 	%%
 RETURN = self.dbVariablesList("""/**

@@ -15,7 +15,7 @@ class %%(self.obName.title())%%Test extends Toast {
 		$this->load->database('test');
 		
 		$this->load->library('%%(self.obName)%%Service');
-		$this->load->model('%%(self.obName)%%_model');
+		$this->load->model('%%(self.obName)%%Model');
 		
 	}
 	
@@ -33,7 +33,7 @@ class %%(self.obName.title())%%Test extends Toast {
 	
 	/**
 	 * OPTIONAL; Anything in this function will be run after each test
-	 * I use it for setting $this->message = $this->My_model->getError();
+	 * I use it for setting $this->message = $this->MyModel->getError();
 	 */
 	function _post() {
 		$%%(self.obName.lower())%%s = $this->%%(self.obName.lower())%%service->getAll($this->db);
@@ -45,7 +45,7 @@ class %%(self.obName.title())%%Test extends Toast {
 	public function test_insert(){
 		$this->message = "Tested methods: save, get%%(self.obName)%%, delete";
 		// création d'un enregistrement
-		$%%(self.obName.lower())%%_insert = new %%(self.obName)%%_model();
+		$%%(self.obName.lower())%%_insert = new %%(self.obName)%%Model();
 		%%
 allAttributesCode = ""
 index = 0
@@ -100,7 +100,7 @@ RETURN = allAttributesCode
 	public function test_update(){
 		$this->message = "Tested methods: save, update, get%%(self.obName)%%, delete";
 
-		$%%(self.obName.lower())%%_insert = new %%(self.obName)%%_model();
+		$%%(self.obName.lower())%%_insert = new %%(self.obName)%%Model();
 		%%
 allAttributesCode = ""
 index = 0
@@ -199,7 +199,7 @@ RETURN = self.dbVariablesList("""if(!$this->_assert_equals($%s_insert->(instVar)
 		$count%%(self.obName)%%sAvant = $this->%%(self.obName.lower())%%service->count($this->db);
 	
 		// création d'un enregistrement
-		$%%(self.obName.lower())%% = new %%(self.obName)%%_model();
+		$%%(self.obName.lower())%% = new %%(self.obName)%%Model();
 		%%
 allAttributesCode = ""
 index = 0
@@ -261,7 +261,7 @@ RETURN = allAttributesCode
 	function test_list(){
 		$this->message = "Tested methods: save, getAll, delete";
 	
-		$%%(self.obName.lower())%%_insert = new %%(self.obName)%%_model();
+		$%%(self.obName.lower())%%_insert = new %%(self.obName)%%Model();
 		%%
 allAttributesCode = ""
 index = 0

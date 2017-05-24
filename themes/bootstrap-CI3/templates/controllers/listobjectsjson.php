@@ -14,7 +14,7 @@ class List%%(self.obName)%%sJson extends CI_Controller {
 	 */
 	function __construct(){
 		parent::__construct();
-		$this->load->model('%%(self.obName)%%_model');
+		$this->load->model('%%(self.obName)%%Model');
 		$this->load->library('%%(self.obName)%%Service');
 		$this->load->library('session');
 		$this->load->database();
@@ -25,7 +25,7 @@ for field in self.fields:
 	attributeCode = ""
 	if field.referencedObject:
 		attributeCode += """
-		$this->load->model('%(referencedObject)s_model');
+		$this->load->model('%(referencedObject)sModel');
 		$this->load->library('%(referencedObject)sService');""" % {'referencedObject': field.referencedObject.obName}
 	allAttributeCode += attributeCode
 	
