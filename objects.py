@@ -84,6 +84,8 @@ class CIObject:
 			aField.obName = attributeTag.getAttribute("name")
 			if attributeTag.getAttribute("type") != "":
 				aField.sqlType = attributeTag.getAttribute("type")
+				aField.sqlType = aField.sqlType.replace("&lt;","<").replace("&gt;",">")
+				#print("-------%s" % aField.sqlType)
 			if attributeTag.getAttribute("nullable") != "":
 				aField.nullable = (attributeTag.getAttribute("nullable") == "YES")
 				#print("....%s: nullable:%s" % (aField.dbName,aField.nullable) )

@@ -18,19 +18,6 @@ class List%%(self.obName)%%sJson extends CI_Controller {
 		$this->load->library('%%(self.obName)%%Service');
 		$this->load->library('session');
 		$this->load->database();
-%%allAttributeCode = ""
-# inclure les modeles des objets référencés
-
-for field in self.fields:
-	attributeCode = ""
-	if field.referencedObject:
-		attributeCode += """
-		$this->load->model('%(referencedObject)sModel');
-		$this->load->library('%(referencedObject)sService');""" % {'referencedObject': field.referencedObject.obName}
-	allAttributeCode += attributeCode
-	
-RETURN = allAttributeCode
-%%
 	}
 
 	/**

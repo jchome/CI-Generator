@@ -203,7 +203,7 @@ class PythonLine:
 def generateTemplates(rootFiles, readerTemplates, kind):
 	# generation du fichier a partir du template
 	if not kind in readerTemplates:
-		print ("No kind <%s>:" % kind)
+		print ("No kind <%s>." % kind)
 		return
 	print ("  Generating files of kind <%s>:" % kind)
 	for reader in readerTemplates[kind]:
