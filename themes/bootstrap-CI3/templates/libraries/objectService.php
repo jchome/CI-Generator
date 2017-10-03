@@ -87,10 +87,11 @@ for field in self.fields:
 	 * @return array of data
 	 */
 	public function getAllLike_%(fieldName)s($db, $%(fieldName)s, $orderBy = null, $asc = null, $limit = null, $offset = null){
-		return $this->getAllByCriteria($db, Array( new Criteria('%(fieldName)s', Criteria::$LIKE, $%(fieldName)s) ), $orderBy, $asc, $limit, $offset);
+		return $this->getAllByCriteria($db, Array( new Criteria('%(fieldName)s', Criteria::$LIKE, '%(percent)s' . $%(fieldName)s . '%(percent)s') ), $orderBy, $asc, $limit, $offset);
 	}
 """ % { 'keyField' : self.keyFields[0].dbName,
-		'fieldName' : field.dbName
+		'fieldName' : field.dbName,
+		'percent' : '%'
 	}
 	getterAll += getter
 RETURN = getterAll
