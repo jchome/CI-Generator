@@ -18,8 +18,8 @@ class Edit%%(self.obName)%% extends CI_Controller {
 		$this->load->helper('url');
 		$this->load->library('form_validation');
 		$this->load->database();
-# inclure les modeles des objets référencés
 %%allAttributeCode = ""
+# inclure les modeles des objets référencés
 
 for field in self.fields:
 	attributeCode = ""
@@ -41,8 +41,8 @@ RETURN = allAttributeCode
 	public function index($%%(self.keyFields[0].dbName)%%){
 		$model = $this->%%(self.obName.lower())%%service->getUnique($this->db, $%%(self.keyFields[0].dbName)%%);
 		$data['%%(self.obName.lower())%%'] = $model;
-# inclure les objets référencés dans l'objet $data
 %%allAttributeCode = ""
+# inclure les objets référencés dans l'objet $data
 
 for field in self.fields:
 	attributeCode = ""
