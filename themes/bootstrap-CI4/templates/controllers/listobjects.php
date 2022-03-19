@@ -55,7 +55,7 @@ class List%%(self.obName)%%s extends \App\Controllers\BaseController {
 
 		$data['%%(self.obName.lower())%%s'] = $this->%%(self.obName.lower())%%Model->orderBy($orderBy, $asc)->findAll($limit, $offset);
 
-		return $this->view('%%(self.obName.lower())%%/list%%(self.obName.lower())%%s_view', $data);
+		return $this->view('list%%(self.obName.lower())%%s', $data);
 	}
 
 	
@@ -72,17 +72,15 @@ class List%%(self.obName)%%s extends \App\Controllers\BaseController {
 		redirect('%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index'); 
 	}
 
-	public function view($page)
+	public function view($page, $data)
 	{
-		if (! is_file(APPPATH . 'Views/pages/' . $page . '.php')) {
+		if (! is_file(APPPATH . 'Views/%%(self.obName.title())%%/' . $page . '.php')) {
 			// Whoops, we don't have a page for that!
 			throw new \CodeIgniter\Exceptions\PageNotFoundException($page);
 		}
 
-		$data['title'] = ucfirst($page); // Capitalize the first letter
-
 		echo view('templates/header', $data);
-		echo view('pages/' . $page, $data);
+		echo view('%%(self.obName.title())%%/' . $page, $data);
 		echo view('templates/footer', $data);
 	}
 

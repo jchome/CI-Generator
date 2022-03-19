@@ -7,12 +7,7 @@
  *
  */
 
-$this->load->helper('form');
-$this->load->helper('url');
-$this->load->helper('template');
-$this->load->helper('views');
-
-if($this->session->userdata('user_name') == "") {
+if(session()->get('user_name') == "") {
 	redirect('welcome/index');
 }
 ?>
@@ -21,7 +16,7 @@ if($this->session->userdata('user_name') == "") {
 	
 	<div class="container-fluid">
 	
-		<h2><?= $this->lang->line('%%(self.obName.lower())%%.form.create.title') ?></h2>
+		<h2><?= lang('%%(self.obName.lower())%%.form.create.title') ?></h2>
 			
 		<div class="row-fluid">
 <?php
@@ -49,7 +44,7 @@ for field in self.fields:
 		attributeCode += "* "
 
 	attributeCode += """
-			<?= $this->lang->line('%(objectObName)s.form.%(dbName)s.label') ?> :
+			<?= lang('%(objectObName)s.form.%(dbName)s.label') ?> :
 		</label>
 		<div class="controls">""" % { 'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
 
@@ -150,7 +145,7 @@ for field in self.fields:
 			attributeCode += ">"
 			
 	attributeCode += """
-			<span class="help-block valtype"><?= $this->lang->line('%(objectObName)s.form.%(dbName)s.description')?></span>
+			<span class="help-block valtype"><?= lang('%(objectObName)s.form.%(dbName)s.description')?></span>
 		</div>
 	</div>""" % {'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
 
@@ -166,10 +161,10 @@ RETURN =  allAttributesCode
 		<hr>
 		<div class="row">
 			<div class="col-md-offset-2 col-md-2 col-xs-offset-2 col-xs-2">
-    			<button type="submit" class="btn btn-primary"><?= $this->lang->line('form.button.save') ?></button>
+    			<button type="submit" class="btn btn-primary"><?= lang('form.button.save') ?></button>
     		</div>
     		<div class="col-md-offset-4 col-md-2 col-xs-offset-4 col-xs-2">
-    			<a data-dismiss="modal" href="#" type="button" class="btn btn-default"><?= $this->lang->line('form.button.cancel') ?></a>
+    			<a data-dismiss="modal" href="#" type="button" class="btn btn-default"><?= lang('form.button.cancel') ?></a>
     		</div>
     	</div>
 			

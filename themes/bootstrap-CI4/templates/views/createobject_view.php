@@ -1,5 +1,5 @@
 %[kind : views]
-%[file : create%%(self.obName.lower())%%_view.php]
+%[file : create%%(self.obName.lower())%%.php]
 %[path : Views/%%(self.obName.title())%%]
 <?php
 /*
@@ -7,34 +7,19 @@
  *
  */
 
-$this->load->helper('form');
-$this->load->helper('url');
-$this->load->helper('template');
-$this->load->helper('views');
-
-if($this->session->userdata('user_name') == "") {
+if(session()->get('user_name') == "") {
 	redirect('welcome/index');
 }
-?><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<?php echo htmlHeader($this->lang->line('%%(self.obName.lower())%%.form.create.title') ); ?>
+?>
 
-</head>
-<body>
-
-	<?= htmlNavigation("%%(self.obName.lower())%%","create", $this->session); ?>
-	
 	<div class="container-fluid">
 	
-		<h2><?= $this->lang->line('%%(self.obName.lower())%%.form.create.title') ?></h2>
+		<h2><?= lang('%%(self.obName.title())%%.form.create.title') ?></h2>
 			
 		<div class="row-fluid">
-<?php
-$attributes_info = array('name' => 'AddForm', 'class' => 'form-horizontal');
-$fields_info = array();
-echo form_open_multipart('%%(self.obName.lower())%%/create%%(self.obName.lower())%%/add', $attributes_info, $fields_info );
-?>
+
+			<form action="/%%(self.obName.lower())%%/create%%(self.obName.lower())%%/add" 
+				method="post" name="AddForm" class="form-horizontal">
 
 			<fieldset>
 	<!-- list of variables - auto-generated : -->
@@ -55,9 +40,9 @@ for field in self.fields:
 	if not field.nullable:
 		attributeCode += "* "
 
-	attributeCode += """<?= $this->lang->line('%(objectObName)s.form.%(dbName)s.label') ?> :</label>
+	attributeCode += """<?= lang('%(objectObName)s.form.%(dbName)s.label') ?> :</label>
 		<div class="col-md-10">
-		""" % { 'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
+		""" % { 'dbName' : field.dbName, 'objectObName' : self.obName.title() }
 
 	cssClass = "inp-form"
 
@@ -160,10 +145,10 @@ for field in self.fields:
 			attributeCode += ">"
 			
 	attributeCode += """
-			<span class="help-block valtype"><?= $this->lang->line('%(objectObName)s.form.%(dbName)s.description')?></span>
+			<span class="help-block valtype"><?= lang('%(objectObName)s.form.%(dbName)s.description')?></span>
 		</div>
 	</div>
-	""" % {'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
+	""" % {'dbName' : field.dbName, 'objectObName' : self.obName.title() }
 
 
 	# ajouter le nouvel attribut, avec indentation si ce n'est pas le premier
@@ -177,26 +162,18 @@ RETURN =  allAttributesCode
 		<hr>
 		<div class="row">
 			<div class="col-md-offset-2 col-md-2 col-xs-offset-2 col-xs-2">
-				<button type="submit" class="btn btn-primary"><?= $this->lang->line('form.button.save') ?></button>
+				<button type="submit" class="btn btn-primary"><?= lang('App.form.button.save') ?></button>
 			</div>
 			<div class="col-md-offset-4 col-md-2 col-xs-offset-4 col-xs-2">
-				<a href="<?=base_url()?>index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index" type="button" class="btn btn-default"><?= $this->lang->line('form.button.cancel') ?></a>
+				<a href="/index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index" type="button" class="btn btn-default"><?= lang('App.form.button.cancel') ?></a>
 			</div>
 		</div>
 			
 		</fieldset>
 
-<?php
-echo form_close('');
-?>
+		</form>
 
 		</div> <!-- .row-fluid -->
 	</div> <!-- .container -->
 
-<?php echo bodyFooter(); ?>
-
-
 <script src="<?= base_url() ?>www/js/views/%%(self.obName.lower())%%/create%%(self.obName.lower())%%.js"></script>
-
-</body>
-</html>

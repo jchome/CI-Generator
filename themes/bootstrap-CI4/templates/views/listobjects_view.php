@@ -7,34 +7,20 @@
  *
  */
 
-$this->load->helper('form');
-$this->load->helper('url');
-$this->load->helper('template');
-$this->load->helper('views');
-
-if($this->session->userdata('user_name') == "") {
+if(session()->get('user_name') == "") {
 	redirect('welcome/index');
 }
 
-?><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head><!-- Liste des %%(self.displayName)%%s -->
-<?php echo htmlHeader($this->lang->line('%%(self.obName.lower())%%.form.list.title')); ?>
-
-</head>
-<body>
-
-	<?= htmlNavigation("%%(self.obName.lower())%%","list", $this->session); ?>
-	
+?>
 	<div class="container">
 
-		<h2><?= $this->lang->line('%%(self.obName.lower())%%.form.list.title') ?></h2>
-			<?php
+		<h2><?= lang('%%(self.obName.title())%%.form.list.title') ?></h2>
+			<?php /*
 				$msg = $this->session->flashdata('msg_info');    if($msg != ""){echo formatInfo($msg);} 
 				$msg = $this->session->flashdata('msg_confirm'); if($msg != ""){echo formatConfirm($msg);}
 				$msg = $this->session->flashdata('msg_warn');    if($msg != ""){echo formatWarn($msg);}
 				$msg = $this->session->flashdata('msg_error');   if($msg != ""){echo formatError($msg);}
-			?>
+			*/ ?>
 		
 		<table class="table table-striped table-bordered table-condensed">
 			<thead>
@@ -42,15 +28,15 @@ if($this->session->userdata('user_name') == "") {
 		<!-- table header auto-generated : -->
 					%%
 RETURN = self.dbAndObVariablesList("""<th class=\"sortable\"><!-- (dbVar)s -->
-						<a href="<?=base_url()?>index.php/%(obName)s/list%(obName)ss/index/(dbVar)s/<?= ($orderBy == '(dbVar)s'&& $asc == 'asc')?('desc'):('asc') ?>"
+						<a href="/index.php/%(obName_lower)s/list%(obName_lower)ss/index/(dbVar)s/<?= ($orderBy == '(dbVar)s'&& $asc == 'asc')?('desc'):('asc') ?>"
 						<?php if($orderBy == '(dbVar)s'&& $asc == 'asc') {?>
 							class=" sortAsc"
 						<?php }else if($orderBy == '(dbVar)s'&& $asc == 'desc') {?>
 							class=" sortDesc"
 						<?php }?>
-						><?= $this->lang->line('%(obName)s.form.(dbVar)s.label') ?></a></th>""" % {'obName':self.obName.lower()}, 'dbVar', 'obVar', 5, False)
+						><?= lang('%(obName)s.form.(dbVar)s.label') ?></a></th>""" % {'obName':self.obName.title(), 'obName_lower':self.obName.lower(), }, 'dbVar', 'obVar', 5, False)
 %%
-					<th><?= $this->lang->line('object.tableheader.actions') ?></th>
+					<th><?= lang('App.object.tableheader.actions') ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -123,7 +109,7 @@ for field in self.fields:
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
 		elif field.sqlType.upper()[0:4] == "FILE":
-			attributeCode += """<a href="<?=base_url()?>www/uploads/<?=$%(structureObName)s->%(dbName)s?>" target="_new" class="downloadFile">
+			attributeCode += """<a href="/www/uploads/<?=$%(structureObName)s->%(dbName)s?>" target="_new" class="downloadFile">
 				<?=$%(structureObName)s->%(dbName)s?></a>""" % {
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
@@ -142,9 +128,9 @@ for field in self.fields:
 	
 RETURN = allAttributesCode
 %%
-					<td><a class="btn btn-default" href="<?=base_url()?>index.php/%%(self.obName.lower())%%/edit%%(self.obName.lower())%%/index/<?=$%%(self.obName.lower())%%->%%(self.keyFields[0].dbName)%%?>" title="<?= $this->lang->line('form.button.edit') ?>"><i class="glyphicon glyphicon-edit"> </i></a>
-						<a class="btn btn-danger" href="#" onclick="if( confirm('<?= $this->lang->line('%%(self.obName.lower())%%.message.askConfirm.deletion')?>')){document.location.href='<?=base_url()?>index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/delete/<?=$%%(self.obName.lower())%%->%%(self.keyFields[0].dbName)%%?>';}" 
-						title="<?= $this->lang->line('form.button.delete') ?>"
+					<td><a class="btn btn-default" href="/index.php/%%(self.obName.lower())%%/edit%%(self.obName.lower())%%/index/<?=$%%(self.obName.lower())%%->%%(self.keyFields[0].dbName)%%?>" title="<?= lang('form.button.edit') ?>"><i class="glyphicon glyphicon-edit"> </i></a>
+						<a class="btn btn-danger" href="#" onclick="if( confirm('<?= lang('%%(self.obName.title())%%.message.askConfirm.deletion')?>')){document.location.href='/index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/delete/<?=$%%(self.obName.lower())%%->%%(self.keyFields[0].dbName)%%?>';}" 
+						title="<?= lang('form.button.delete') ?>"
 						><i class="glyphicon glyphicon-remove"> </i></a></td>
 				</tr>
 <?php 
@@ -160,14 +146,9 @@ endforeach; ?>
 		</div><!-- .pagination -->
 		
 		<div class="row">
-			<a href="<?=base_url()?>index.php/%%(self.obName.lower())%%/create%%(self.obName.lower())%%/index" class="btn btn-primary"><?= $this->lang->line('%%(self.obName.lower())%%.form.create.title') ?></a>
+			<a href="/index.php/%%(self.obName.lower())%%/create%%(self.obName.lower())%%/index" class="btn btn-primary"><?= lang('%%(self.obName.title())%%.form.create.title') ?></a>
 		</div>
 	</div><!-- .container -->
 	
-<?php echo bodyFooter(); ?>
 
 <script src="<?= base_url() ?>www/js/views/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s.js"></script>
-
-
-</body>
-</html>

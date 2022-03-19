@@ -7,12 +7,7 @@
  *
  */
 
-$this->load->helper('form');
-$this->load->helper('url');
-$this->load->helper('template');
-$this->load->helper('views');
-
-if($this->session->userdata('user_name') == "") {
+if(session()->get('user_name') == "") {
 	redirect('welcome/index');
 }
 ?>
@@ -21,7 +16,7 @@ if($this->session->userdata('user_name') == "") {
 	
 	<div class="container-fluid">
 	
-		<h2><?= $this->lang->line('%%(self.obName.lower())%%.form.edit.title') ?></h2>
+		<h2><?= lang('%%(self.obName.lower())%%.form.edit.title') ?></h2>
 			
 		<div class="row-fluid">
 <?php
@@ -66,7 +61,7 @@ for field in self.fields:
 	if not field.nullable:
 		attributeCode += "* "
 
-	attributeCode += """<?= $this->lang->line('%(objectObName)s.form.%(dbName)s.label') ?> :</label>
+	attributeCode += """<?= lang('%(objectObName)s.form.%(dbName)s.label') ?> :</label>
 		<div class="controls">
 		""" % { 'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
 
@@ -131,22 +126,22 @@ for field in self.fields:
 		attributeCode += """
 		<?php if($%(structureObName)s->%(dbName)s != "") { ?>
 		<div class="row">
-			<div class="col-md-2"><i><?= $this->lang->line('form.file.current')?></i></div>
+			<div class="col-md-2"><i><?= lang('form.file.current')?></i></div>
 			<div class="col-md-2" id="%(dbName)s_currentFile">
 				<a href="<?=base_url()?>www/uploads/%(valueCode)s" target="_new" class="btn btn-default btn-xs">
-					<i class="glyphicon glyphicon-file"></i> <?= $this->lang->line('form.button.download')?>
+					<i class="glyphicon glyphicon-file"></i> <?= lang('form.button.download')?>
 				</a>
 			</div>
 			<div class="col-md-2" id="%(dbName)s_deleteButton">
 				<a href="#" onclick='deleteFile_%(dbName)s()' class="btn btn-default btn-xs">
-					<i class="glyphicon glyphicon-remove"></i> <?= $this->lang->line('form.button.delete')?>
+					<i class="glyphicon glyphicon-remove"></i> <?= lang('form.button.delete')?>
 				</a>
 			</div>
 		</div>
 		<hr/>
 		<?php } ?>
 		<div class="row">
-			<div class="col-md-2"><i><?= $this->lang->line('form.file.new')?></i></div>
+			<div class="col-md-2"><i><?= lang('form.file.new')?></i></div>
 			<div class="col-md-10">
 				<input class="input-file" id="%(dbName)s_file" name="%(dbName)s_file" class="form-control" type="file" %(moreAttributes)s>
 				<input type="hidden" name="%(dbName)s" id="%(dbName)s" value="%(valueCode)s">
@@ -200,7 +195,7 @@ for field in self.fields:
 			attributeCode += ">"
 			
 	attributeCode += """
-			<span class="help-block"><?= $this->lang->line('%(objectObName)s.form.%(dbName)s.description')?></span>
+			<span class="help-block"><?= lang('%(objectObName)s.form.%(dbName)s.description')?></span>
 		</div>
 	</div>""" % {'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
 	
@@ -217,10 +212,10 @@ RETURN =  allAttributesCode
 		<hr>
 		<div class="row">
 			<div class="col-md-offset-2 col-md-2 col-xs-offset-2 col-xs-2">
-				<button type="submit" class="btn btn-primary"><?= $this->lang->line('form.button.save') ?></button>
+				<button type="submit" class="btn btn-primary"><?= lang('form.button.save') ?></button>
 			</div>
 			<div class="col-md-offset-4 col-md-2 col-xs-offset-4 col-xs-2">
-				<a data-dismiss="modal" href="#" type="button" class="btn btn-default"><?= $this->lang->line('form.button.cancel') ?></a>
+				<a data-dismiss="modal" href="#" type="button" class="btn btn-default"><?= lang('form.button.cancel') ?></a>
 			</div>
 		</div>
 			
