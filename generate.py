@@ -216,20 +216,23 @@ def generateTemplates(rootFiles, readerTemplates, kind):
 			os.makedirs(myDirectory)
 		filename = os.path.join(myDirectory, reader.generateSegmentObjectFor(reader.fileOut, structure) )
 		baseFilename = os.path.basename(filename)
-		destinationFolder = os.path.join( os.path.dirname(filename), '.dd')
-		backupFilename = os.path.join( destinationFolder, baseFilename)
-		diffFilename = backupFilename + ".diff"
+		## Desactivate diff
+		backupFilename = filename
+		#destinationFolder = os.path.join( os.path.dirname(filename), '.dd')
+		#backupFilename = os.path.join( destinationFolder, baseFilename)
+		#diffFilename = backupFilename + ".diff"
 
-		if not os.path.exists(destinationFolder):
-			os.makedirs(destinationFolder)
+		#if not os.path.exists(destinationFolder):
+		#	os.makedirs(destinationFolder)
 
 		#####################################
 		# 1. DIFF PROCESS
 		if os.path.exists(filename):
-			os.system("diff -u %(backupFilename)s %(filename)s > %(diffFilename)s" % {
-				"filename":filename, 
-				"backupFilename":backupFilename, 
-				"diffFilename":diffFilename} )
+			#os.system("diff -u %(backupFilename)s %(filename)s > %(diffFilename)s" % {
+			#	"filename":filename, 
+			#	"backupFilename":backupFilename, 
+			#	"diffFilename":diffFilename} )
+			pass
 		# /DIFF PROCESS
 		#####################################
 		
@@ -248,14 +251,14 @@ def generateTemplates(rootFiles, readerTemplates, kind):
 
 		#####################################
 		# 3. MERGE PROCESS
-		if os.path.exists(diffFilename):
-			os.system("patch %(backupFilename)s -i %(diffFilename)s -o %(filename)s" % {
-				"filename":filename, 
-				"backupFilename":backupFilename, 
-				"diffFilename":diffFilename} )
-		else:
+		#if os.path.exists(diffFilename):
+		#	os.system("patch %(backupFilename)s -i %(diffFilename)s -o %(filename)s" % {
+		#		"filename":filename, 
+		#		"backupFilename":backupFilename, 
+		#		"diffFilename":diffFilename} )
+		#else:
 		# 3.bis -- or copy as the real true file, if no merge to do
-			copyfile(backupFilename, filename)
+		#	copyfile(backupFilename, filename)
 
 		#/ MERGE PROCESS
 		#####################################
