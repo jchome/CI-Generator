@@ -31,7 +31,7 @@ Syntaxe:
 
 """
 
-import sys, os, glob, string, ConfigParser, re, codecs
+import sys, os, glob, string, configparser, re, codecs
 from code import InteractiveInterpreter, InteractiveConsole
 import traceback, inspect
 from shutil import copyfile
@@ -47,7 +47,8 @@ class TemplateFileReader:
 
 	def readFile(self, templateFilename):
 		#f = codecs.open(templateFilename, 'r', sys.getfilesystemencoding())
-		f = codecs.open(templateFilename, 'r', encoding='utf-8')
+		#f = codecs.open(templateFilename, 'r', encoding='utf-8')
+		f = open(templateFilename, encoding='utf-8')
 		print ("templateFilename : %s" % templateFilename)
 
 		# detection des infos meta sur les premieres lignes
@@ -58,7 +59,7 @@ class TemplateFileReader:
 
 		for line in f:
 			#DEBUG
-			#print("---%s" % type(line))
+			#print("---%s" % line)
 			matchGroupMeta = regexpMetaSpliter.match(line)
 			if matchGroupMeta and not metaIfFinished:
 				#DEBUG print (matchGroupMeta.groupdict())
@@ -87,13 +88,16 @@ class TemplateFileReader:
 
 		self.segments = self.extractSegments(rawContent.encode('utf-8'))
 
-
 	def extractSegments(self, rawContent):
 		# recuperaton des segments de code
 		wasCode = False
 		segments = []
-		
-		for item in rawContent.split("%%"):
+		## Python3 compatibility
+		if type(rawContent) == bytes:
+			rawContent = rawContent.decode("utf-8")
+
+		for item in (rawContent).split("%%"):
+			#print("%s" % item )
 			if wasCode:
 				if re.match("\(.*\)", item):
 					segments.append( PythonLine(item, self) )
@@ -122,7 +126,7 @@ class TemplateFileReader:
 class StringSegment:
 	def __init__(self, data):
 		try:
-			self.data = data.decode('utf8')
+			self.data = str(data)
 		except Exception as e :
 			print("XXXXXXXXXXXXXXXX")
 			print(data)
@@ -135,7 +139,7 @@ class StringSegment:
 class PythonSegment:
 	def __init__(self, data, aTemplateFileReader):
 		try:
-			self.data = (data.strip()).decode('utf8')
+			self.data = str(data.strip())
 		except Exception as e :
 			print("XXXXXXXXXXXXXXXX")
 			print(data)
@@ -159,7 +163,7 @@ class PythonSegment:
 
 		try:
 			code_object = compile(self.data.encode('ascii','ignore'), '<string>', 'exec')
-			exec code_object in localVars
+			exec(code_object, localVars)
 		except Exception as e :
 			print ("-  ERR --Kind:%s---------------------------------------" % (self.template.kind) )
 			InteractiveInterpreter.showsyntaxerror(console, filename)
@@ -171,8 +175,8 @@ class PythonSegment:
 			print ("-  CODE -----------------------------------------")
 			lines = self.data.split('\n')
 			for i in range(0,lineNumber):
-				print lines[i]
-			print "^"*20
+				print(lines[i])
+			print("^"*20)
 			
 			print ("- /CODE -----------------------------------------")
 			print ("")
@@ -181,7 +185,7 @@ class PythonSegment:
 
 class PythonLine:
 	def __init__(self, data, aTemplateFileReader):
-		self.data = unicode(data).strip()
+		self.data = data.strip() #unicode(data).strip()
 		self.template = aTemplateFileReader
 	
 	def toString(self, structure):
@@ -235,7 +239,7 @@ def generateTemplates(rootFiles, readerTemplates, kind):
 		# (in the backup file)
 		content = reader.generateSegmentsFor(structure)
 		file = open(backupFilename,'w')
-		file.write( content.encode("utf-8") )
+		file.write( "%s" % content )
 		file.close()
 		#/ GENERATION PROCESS
 		#####################################
@@ -264,8 +268,8 @@ def generateTemplates(rootFiles, readerTemplates, kind):
 if __name__ == '__main__':	
 
 	# lecture du fichier de config
-	config = ConfigParser.ConfigParser()
-	config.readfp(open('theme.cfg'))
+	config = configparser.ConfigParser()
+	config.read_file(open('theme.cfg'))
 	theme = config.get('global', 'theme').strip()
 	CIRootFiles = config.get('generation', 'outDirFor_Classes').strip()
 	generateObjects = config.get('generation','generate').strip()
