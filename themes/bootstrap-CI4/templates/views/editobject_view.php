@@ -8,7 +8,7 @@
  */
 
 if(session()->get('user_name') == "") {
-	redirect('welcome/index');
+	return redirect()->to('welcome/index');
 }
 ?>
 
@@ -131,22 +131,22 @@ for field in self.fields:
 		attributeCode += """
 		<?php if($%(structureObName)s['%(dbName)s'] != "") { ?>
 		<div class="row">
-			<div class="col-md-2"><i><?= lang('form.file.current')?></i></div>
+			<div class="col-md-2"><i><?= lang('App.form.file.current')?></i></div>
 			<div class="col-md-2" id="%(dbName)s_currentFile">
-				<a href="/www/uploads/%(valueCode)s" target="_new" class="btn btn-default btn-xs">
-					<i class="glyphicon glyphicon-file"></i> <?= lang('form.button.download')?>
+				<a href="/uploads/%(valueCode)s" target="_new" class="btn btn-default btn-xs">
+					<i class="glyphicon glyphicon-file"></i> <?= lang('App.form.button.download')?>
 				</a>
 			</div>
 			<div class="col-md-2" id="%(dbName)s_deleteButton">
 				<a href="#" onclick='deleteFile_%(dbName)s()' class="btn btn-default btn-xs">
-					<i class="glyphicon glyphicon-remove"></i> <?= lang('form.button.delete')?>
+					<i class="glyphicon glyphicon-remove"></i> <?= lang('App.form.button.delete')?>
 				</a>
 			</div>
 		</div>
 		<hr/>
 		<?php } ?>
 		<div class="row">
-			<div class="col-md-2"><i><?= lang('form.file.new')?></i></div>
+			<div class="col-md-2"><i><?= lang('App.form.file.new')?></i></div>
 			<div class="col-md-10">
 				<input class="input-file" id="%(dbName)s_file" name="%(dbName)s_file" class="form-control" type="file" %(moreAttributes)s>
 				<input type="hidden" name="%(dbName)s" id="%(dbName)s" value="%(valueCode)s">

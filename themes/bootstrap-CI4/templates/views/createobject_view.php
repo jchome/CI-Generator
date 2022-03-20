@@ -8,7 +8,7 @@
  */
 
 if(session()->get('user_name') == "") {
-	redirect('welcome/index');
+	return redirect()->to('welcome/index');
 }
 ?>
 

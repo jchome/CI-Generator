@@ -109,7 +109,6 @@ RETURN = allAttributeCode
 		}
 
 		// Mise a jour des donnees en base
-
 		$this->%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
 		$key = $this->request->getPost('%%(self.keyFields[0].dbName)%%');
 
@@ -121,7 +120,7 @@ RETURN = self.dbAndObVariablesList("\t'(dbVar)s' => $this->request->getPost('(db
 		];
 
 		$this->%%(self.obName.lower())%%Model->update($key, $data);
-		/*
+		
 %%codeForUploadFile = ""
 useUpload = False
 for field in self.fields:
@@ -131,69 +130,43 @@ for field in self.fields:
 		attributeCode += """
 		
 		log_message('debug','[Edit%(obName_lower)s.php] : DEMARRAGE de l\\\'upload');
-		$this->upload->initialize($config); // RAZ des erreurs
+		/*$this->upload->initialize($config); // RAZ des erreurs
 		// Suppression de l'ancien fichier %(dbName)s : %(desc)s
 		if( $oldModel->%(dbName)s != "" && $model->%(dbName)s == ""){
 			unlink($path . $oldModel->%(dbName)s);
-		}
+		}*/
 		// Upload du nouveau fichier %(dbName)s : %(desc)s
-		$codeErrors = null;
-		if ( ! $this->upload->do_upload('%(dbName)s_file')) {
-			$codeErrors = $this->upload->display_errors() . "ext: [" . $this->upload->data('file_ext') ."] type mime: [" . $this->upload->data('file_type') . "]";
-			if($this->upload->display_errors() == '<p>'.$this->lang->line('upload_no_file_selected').'</p>'
-				|| $this->upload->display_errors() == '<p>upload_no_file_selected</p>'){ // if not translated
-				$codeErrors = "NO_FILE";
-			}
-		}else{
-			log_message('debug','[Edit%(obName_lower)s.php] : PAS d\\\'erreur sur le nouveau fichier');
-			$uploadDataFile_%(dbName)s = $this->upload->data('file_name');
-		}
-	
-		if($codeErrors != null && $codeErrors != "NO_FILE") {
-			$this->session->set_flashdata('msg_error', $codeErrors);
-		}else if( $codeErrors == "NO_FILE" ){
-			// rien a faire
-			log_message('debug','[Edit%(obName_lower)s.php] : PAS de fichier');
-		}else{
-			log_message('debug','[Edit%(obName_lower)s.php] : TRAITEMENT du fichier');
-			$model->%(dbName)s = "";
-			if($uploadDataFile_%(dbName)s != null && $uploadDataFile_%(dbName)s != "") {
-				log_message('debug','[Edit%(obName_lower)s.php] : RENOMMAGE du nouveau fichier');
-				$model->%(dbName)s = '%(obName)s_%(dbName)s_' . $model->%(keyField)s . '_file' . $this->upload->data('file_ext');
-				rename($path . $uploadDataFile_%(dbName)s, $path . $model->%(dbName)s);
-				// suppression du fichier temporaire telecharge
-				if( file_exists( $path . $uploadDataFile_%(dbName)s ) ){
-					unlink($path . $uploadDataFile_%(dbName)s);
+		$%(dbName)s_file = $this->request->getFile('%(dbName)s_file');
+		if($%(dbName)s_file != "") {
+			$%(dbName)s_ext = $%(dbName)s_file->guessExtension();
+			if (! $%(dbName)s_file->hasMoved()) {
+				$filepath = WRITEPATH . 'uploads/' . $%(dbName)s_file->store();
+				// Rename file to match with this object
+				$data['%(dbName)s'] = '%(obName_lower)s_' . $data['%(keyField)s'] . '_%(dbName)s.' . $%(dbName)s_ext;
+				rename($filepath, PUBLIC_PATH . '/uploads/' . $data['%(dbName)s']);
+
+				// Remove uploaded file temp name
+				if( file_exists($filepath) ){
+					unlink($filepath);
 				}
+			} else {
+				session()->setFlashData('msg_error', lang('App.message.upload-failed'));
+				$this->view('%(obName_title)s/edit%(obName_lower)s');
 			}
-			$this->%(obName_lower)sservice->update($this->db, $model);
 		}""" % {'dbName' : field.dbName, 
 			'desc' : field.description, 
-			'obName' : self.obName,
+			'obName_title' : self.obName.title(),
 			'obName_lower' : self.obName.lower(),
 			'keyField' : self.keyFields[0].dbName
 		}
 	codeForUploadFile += attributeCode
 
-if useUpload:
-	codeForUploadFile = """
-		// Configuration pour chargement des fichiers 
-		// Chemin de stockage des fichiers : doit etre WRITABLE pour tous
-		$config['upload_path'] = realpath('www/uploads/');
-		// Voir la configuration des types mimes s'il y a un probleme avec l'extension
-		$config['allowed_types'] = 'doc|docx|xls|xlsx|pdf|gif|jpg|png|jpeg|zip|rar|ppt|pptx|mp3';
-		$config['max_size']	= '2000';
-		$config['max_width']  = '0';
-		$config['max_height']  = '0';
-		$this->load->library('upload', $config);
-		$path = $config['upload_path'] . "/";
-""" + codeForUploadFile
 		
 RETURN = codeForUploadFile
 %%
-*/
-		session()->setFlashData('msg_confirm', lang('%%(self.obName.title())%%.message.confirm.modified'));
 
+		$this->userModel->update($key, $data);
+		session()->setFlashData('msg_confirm', lang('%%(self.obName.title())%%.message.confirm.modified'));
 		return redirect()->to('%%(self.obName.title())%%/list%%(self.obName.lower())%%s/index');
 	}
 
