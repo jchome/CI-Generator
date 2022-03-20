@@ -15,12 +15,13 @@ if(session()->get('user_name') == "") {
 	<div class="container">
 
 		<h2><?= lang('%%(self.obName.title())%%.form.list.title') ?></h2>
-			<?php /*
-				$msg = $this->session->flashdata('msg_info');    if($msg != ""){echo formatInfo($msg);} 
-				$msg = $this->session->flashdata('msg_confirm'); if($msg != ""){echo formatConfirm($msg);}
-				$msg = $this->session->flashdata('msg_warn');    if($msg != ""){echo formatWarn($msg);}
-				$msg = $this->session->flashdata('msg_error');   if($msg != ""){echo formatError($msg);}
-			*/ ?>
+			<?php 
+			$msg = session()->getFlashdata('msg_info');    if($msg != ""){echo '<div class="alert alert-info" role="alert">' . $msg . '</div>';}
+			$msg = session()->getFlashdata('msg_confirm'); if($msg != ""){echo '<div class="alert alert-success" role="alert">' . $msg . '</div>';}
+			$msg = session()->getFlashdata('msg_warn');    if($msg != ""){echo '<div class="alert alert-warning" role="alert">' . $msg . '</div>';}
+			$msg = session()->getFlashdata('msg_error');   if($msg != ""){echo '<div class="alert alert-danger" role="alert">' . $msg . '</div>';}
+			
+		?>
 		
 		<table class="table table-striped table-bordered table-condensed">
 			<thead>
@@ -90,37 +91,37 @@ for field in self.fields:
 				<td valign="top">"""
 		if field.referencedObject and field.access == "default":
 			# si pas de lien, le champ vaut 0 (et la sequence commence à 1)
-			attributeCode += """<?=($%(structureObName)s->%(dbName)s == 0)?(""):($%(referencedObject)sCollection[$%(structureObName)s->%(dbName)s]->%(display)s)?>
+			attributeCode += """<?=($%(structureObName)s['%(dbName)s'] == 0)?(""):($%(referencedObject)sCollection[$%(structureObName)s->%(dbName)s]->%(display)s)?>
 			""" % { 'display' : field.display, 
 					'referencedObject' : field.referencedObject.obName.lower(),
 					'structureObName' : self.obName.lower(),
 					'dbName' : field.dbName}
 		elif field.referencedObject and field.access == 'ajax':
-			attributeCode += """<?=$%(dbName)s_text->%(display)s?>""" % {
+			attributeCode += """<?=$%(dbName)s_text['%(display)s']?>""" % {
 					'display' : field.display, 
 					'dbName' : field.dbName }
 		elif field.sqlType.upper()[0:4] == "FLAG":
 			label = field.sqlType[5:-1].replace('"','').replace("'","")
-			attributeCode += """<?= ($%(structureObName)s->%(dbName)s == "O")?("%(label)s"):("")?>""" % {'label' : field.obName,
+			attributeCode += """<?= ($%(structureObName)s['%(dbName)s'] == "O")?("%(label)s"):("")?>""" % {'label' : field.obName,
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
 		elif field.sqlType.upper()[0:4] == "ENUM":
-			attributeCode += """<?=($%(structureObName)s->%(dbName)s == "")?(""):($enum_%(dbName)s[$%(structureObName)s->%(dbName)s])?>""" % {
+			attributeCode += """<?=($%(structureObName)s['%(dbName)s'] == "")?(""):($enum_%(dbName)s[$%(structureObName)s->%(dbName)s])?>""" % {
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
 		elif field.sqlType.upper()[0:4] == "FILE":
-			attributeCode += """<a href="/www/uploads/<?=$%(structureObName)s->%(dbName)s?>" target="_new" class="downloadFile">
-				<?=$%(structureObName)s->%(dbName)s?></a>""" % {
+			attributeCode += """<a href="/www/uploads/<?=$%(structureObName)s['%(dbName)s']?>" target="_new" class="downloadFile">
+				<?=$%(structureObName)s['%(dbName)s']?></a>""" % {
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
 		elif field.sqlType.upper()[0:8] == "PASSWORD":
-			attributeCode += """<input type="hidden" name="%(dbName)s" id="%(dbName)s" value="<?=$%(structureObName)s->%(dbName)s?>">
-			<span title="<?=$%(structureObName)s->%(dbName)s?>">&#9733;&#9733;&#9733;&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+			attributeCode += """<input type="hidden" name="%(dbName)s" id="%(dbName)s" value="<?=$%(structureObName)s['%(dbName)s']?>">
+			<span title="<?=$%(structureObName)s['%(dbName)s']?>">&#9733;&#9733;&#9733;&#9733;&#9733;&#9733;&#9733;&#9733;</span>
 			""" % {
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
 		else:
-			attributeCode += """<?=$%(structureObName)s->%(dbName)s?>""" % {
+			attributeCode += """<?=$%(structureObName)s['%(dbName)s']?>""" % {
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
 			 
@@ -128,10 +129,18 @@ for field in self.fields:
 	
 RETURN = allAttributesCode
 %%
-					<td><a class="btn btn-default" href="/index.php/%%(self.obName.lower())%%/edit%%(self.obName.lower())%%/index/<?=$%%(self.obName.lower())%%->%%(self.keyFields[0].dbName)%%?>" title="<?= lang('form.button.edit') ?>"><i class="glyphicon glyphicon-edit"> </i></a>
-						<a class="btn btn-danger" href="#" onclick="if( confirm('<?= lang('%%(self.obName.title())%%.message.askConfirm.deletion')?>')){document.location.href='/index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/delete/<?=$%%(self.obName.lower())%%->%%(self.keyFields[0].dbName)%%?>';}" 
-						title="<?= lang('form.button.delete') ?>"
-						><i class="glyphicon glyphicon-remove"> </i></a></td>
+					<td>
+						<a class="btn btn-default" 
+							href="/index.php/%%(self.obName.lower())%%/edit%%(self.obName.lower())%%/index/<?=$%%(self.obName.lower())%%['%%(self.keyFields[0].dbName)%%']?>" 
+							title="<?= lang('App.form.button.edit') ?>">
+							<i class="glyphicon glyphicon-edit"> </i>
+						</a>
+						<a class="btn btn-danger" href="#" 
+							onclick="if( confirm('<?= lang('%%(self.obName.title())%%.message.askConfirm.deletion')?>')){document.location.href='/index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/delete/<?=$%%(self.obName.lower())%%['%%(self.keyFields[0].dbName)%%']?>';}" 
+							title="<?= lang('App.form.button.delete') ?>"
+							><i class="glyphicon glyphicon-remove"> </i>
+						</a>
+					</td>
 				</tr>
 <?php 
 endforeach; ?>
@@ -146,9 +155,10 @@ endforeach; ?>
 		</div><!-- .pagination -->
 		
 		<div class="row">
-			<a href="/index.php/%%(self.obName.lower())%%/create%%(self.obName.lower())%%/index" class="btn btn-primary"><?= lang('%%(self.obName.title())%%.form.create.title') ?></a>
+			<a href="<?= base_url('%%(self.obName.lower())%%/create%%(self.obName.lower())%%/index')?>"
+			 	class="btn btn-primary"><?= lang('%%(self.obName.title())%%.form.create.title') ?></a>
 		</div>
 	</div><!-- .container -->
 	
 
-<script src="<?= base_url() ?>www/js/views/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s.js"></script>
+<script src="/www/js/views/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s.js"></script>

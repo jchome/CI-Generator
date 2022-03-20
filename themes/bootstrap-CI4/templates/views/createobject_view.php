@@ -15,11 +15,18 @@ if(session()->get('user_name') == "") {
 	<div class="container-fluid">
 	
 		<h2><?= lang('%%(self.obName.title())%%.form.create.title') ?></h2>
-			
+		
+		<div class="row text-center ">
+			<div class="col-md-12">
+				<?= session()->getFlashdata('error') ?>
+				<?= service('validation')->listErrors('errors_list') ?>
+				<br />
+			</div>
+		</div>
 		<div class="row-fluid">
-
-			<form action="/%%(self.obName.lower())%%/create%%(self.obName.lower())%%/add" 
-				method="post" name="AddForm" class="form-horizontal">
+<?php
+echo form_open('%%(self.obName.lower())%%/create%%(self.obName.lower())%%/add', 'class="form-horizontal"');
+?>
 
 			<fieldset>
 	<!-- list of variables - auto-generated : -->

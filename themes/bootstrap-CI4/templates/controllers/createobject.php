@@ -17,6 +17,8 @@ class Create%%(self.obName)%% extends \App\Controllers\BaseController {
 	public function index(){
 		helper(['form', 'url']);
 		$data = Array();
+
+
 %%allAttributeCode = "		// Recuperation des objets references"
 # inclure les objets référencés dans l'objet $data
 
@@ -41,7 +43,8 @@ for field in self.fields:
 	
 RETURN = allAttributeCode
 %%
-		return $this->view('create%%(self.obName.lower())%%', $data);
+
+		return $this->view('%%(self.obName.title())%%/create%%(self.obName.lower())%%', $data);
 	}
 	
 	/**
@@ -49,25 +52,30 @@ RETURN = allAttributeCode
 	 */
 	public function add(){
 	
-		$this->form_validation->set_error_delimiters('<div class="error">', '</div>');
+		helper(['form', 'url']);
+		$validation =  \Config\Services::validation();
+/*
 %%allAttributeCode = ""
 for field in self.fields:
 	rule = "trim"
 	if not field.nullable:
 		rule += "|required"
 	
+	if field.autoincrement:
+		continue
+
 	if field.sqlType.upper()[0:4] == "FILE":
 		attributeCode = """
-		$this->form_validation->set_rules('%(dbName)s_file', 'lang:%(objectObName)s.form.%(dbName)s.label', '%(rule)s');""" % {
+		$validation->setRule('%(dbName)s_file', '%(objectObName)s.form.%(dbName)s.label', '%(rule)s');""" % {
 			'dbName': field.dbName,
-			'objectObName': self.obName.lower(),
+			'objectObName': self.obName.title(),
 			'rule': rule
 		}
 	else:	
 		attributeCode = """
-		$this->form_validation->set_rules('%(dbName)s', 'lang:%(objectObName)s.form.%(dbName)s.label', '%(rule)s');""" % {
+		$validation->setRule('%(dbName)s', '%(objectObName)s.form.%(dbName)s.label', '%(rule)s');""" % {
 			'dbName': field.dbName,
-			'objectObName': self.obName.lower(),
+			'objectObName': self.obName.title(),
 			'rule': rule
 		}
 	if attributeCode != "":
@@ -75,18 +83,51 @@ for field in self.fields:
 RETURN = allAttributeCode
 %%
 		
-		if($this->form_validation->run() == FALSE){
-			$this->load->view('%%(self.obName.lower())%%/create%%(self.obName.lower())%%_view');
+		if(! $validation->run()){
+			$this->view('%%(self.obName.title())%%/create%%(self.obName.lower())%%');
+		}*/
+		if (! $this->validate([
+%%allAttributeCode = ""
+for field in self.fields:
+	rule = "trim"
+	if not field.nullable:
+		rule += "|required"
+	
+	if field.autoincrement:
+		continue
+
+	if field.sqlType.upper()[0:4] == "FILE":
+		attributeCode = """
+		'%(dbName)s_file' => '%(rule)s',""" % {
+			'dbName': field.dbName,
+			'objectObName': self.obName.title(),
+			'rule': rule
+		}
+	else:	
+		attributeCode = """
+		'%(dbName)s' => '%(rule)s',""" % {
+			'dbName': field.dbName,
+			'objectObName': self.obName.title(),
+			'rule': rule
+		}
+	if attributeCode != "":
+		allAttributeCode += attributeCode
+RETURN = allAttributeCode
+%%
+		])) {
+			$this->view('%%(self.obName.title())%%/create%%(self.obName.lower())%%');
 		}
 		
 		// Insertion en base
-		$model = new %%(self.obName)%%Model();
-		%%
-includesKey = True;
-RETURN = self.dbAndObVariablesList("$model->(dbVar)s = $this->input->post('(dbVar)s');", 'dbVar', 'obVar', 2, includesKey)
+		$data = [
 %%
-		$this->%%(self.obName.lower())%%service->insertNew($this->db, $model);
-		
+includesKey = False;
+RETURN = self.dbAndObVariablesList("\t'(dbVar)s' => $this->request->getPost('(dbVar)s'),", 'dbVar', 'obVar', 2, includesKey)
+%%
+		];
+		$this->%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
+		$this->%%(self.obName.lower())%%Model->insert($data);
+		/*
 %%codeForUploadFile = ""
 useUpload = False
 for field in self.fields:
@@ -152,21 +193,25 @@ if useUpload:
 	
 RETURN = codeForUploadFile
 %%
+*/
 		
 		// Recharge la page avec les nouvelles infos
-		redirect('%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index');
+		session()->setFlashData('msg_confirm', lang('%%(self.obName.title())%%.message.confirm.added'));
+
+		return redirect()->to('%%(self.obName.title())%%/list%%(self.obName.lower())%%s/index');
 	}
 
 
-	public function view($page, $data)
+	public function view($page, $data = [])
 	{
-		if (! is_file(APPPATH . 'Views/%%(self.obName.title())%%/' . $page . '.php')) {
+		if (! is_file(APPPATH . 'Views/' . $page . '.php')) {
+			print("Cannot open view to ". $page);
 			// Whoops, we don't have a page for that!
 			throw new \CodeIgniter\Exceptions\PageNotFoundException($page);
 		}
 
 		echo view('templates/header', $data);
-		echo view('%%(self.obName.title())%%/' . $page, $data);
+		echo view($page, $data);
 		echo view('templates/footer', $data);
 	}
 }

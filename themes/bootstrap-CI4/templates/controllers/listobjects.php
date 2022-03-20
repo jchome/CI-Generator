@@ -55,7 +55,7 @@ class List%%(self.obName)%%s extends \App\Controllers\BaseController {
 
 		$data['%%(self.obName.lower())%%s'] = $this->%%(self.obName.lower())%%Model->orderBy($orderBy, $asc)->findAll($limit, $offset);
 
-		return $this->view('list%%(self.obName.lower())%%s', $data);
+		return $this->view('%%(self.obName.title())%%/list%%(self.obName.lower())%%s', $data);
 	}
 
 	
@@ -64,23 +64,22 @@ class List%%(self.obName)%%s extends \App\Controllers\BaseController {
 	 * @param $%%(self.keyFields[0].dbName)%% identifiant a supprimer
 	 */
 	function delete($%%(self.keyFields[0].dbName)%%){
-
-		$this->%%(self.obName.lower())%%service->deleteByKey($this->db, $%%(self.keyFields[0].dbName)%%);
-		
-		$this->session->set_flashdata('msg_confirm', $this->lang->line('%%(self.obName.lower())%%.message.confirm.deleted'));
-
-		redirect('%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index'); 
+		$this->%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
+		$this->%%(self.obName.lower())%%Model->delete($%%(self.keyFields[0].dbName)%%);
+		session()->setFlashData('msg_confirm', lang('%%(self.obName.title())%%.message.confirm.deleted'));
+		return redirect()->to('%%(self.obName.title())%%/list%%(self.obName.lower())%%s/index'); 
 	}
 
-	public function view($page, $data)
+	public function view($page, $data = [])
 	{
-		if (! is_file(APPPATH . 'Views/%%(self.obName.title())%%/' . $page . '.php')) {
+		if (! is_file(APPPATH . 'Views/' . $page . '.php')) {
+			print("Cannot open view to ". $page);
 			// Whoops, we don't have a page for that!
 			throw new \CodeIgniter\Exceptions\PageNotFoundException($page);
 		}
 
 		echo view('templates/header', $data);
-		echo view('%%(self.obName.title())%%/' . $page, $data);
+		echo view($page, $data);
 		echo view('templates/footer', $data);
 	}
 
