@@ -161,4 +161,4 @@ endforeach; ?>
 	</div><!-- .container -->
 	
 
-<script src="/www/js/views/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s.js"></script>
+<script src="<?= base_url() ?>/js/views/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s.js"></script>

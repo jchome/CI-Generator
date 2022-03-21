@@ -234,4 +234,4 @@ echo form_close('');
 		</div> <!-- .row-fluid -->
 	</div> <!-- .container -->
 
-<script src="<?= base_url() ?>www/js/views/%%(self.obName.lower())%%/edit%%(self.obName.lower())%%.js"></script>
+<script src="<?= base_url() ?>/js/views/%%(self.obName.lower())%%/edit%%(self.obName.lower())%%.js"></script>

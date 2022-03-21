@@ -1,6 +1,6 @@
 %[kind : js]
 %[file : edit%%(self.obName.lower())%%.fancy.js]
-%[path : ../www/js/views/%%(self.obName.lower())%%]
+%[path : ../public/js/views/%%(self.obName.lower())%%]
 /* Javascript for create%%(self.obName.lower())%%_fancyview.php */
 
 %%
