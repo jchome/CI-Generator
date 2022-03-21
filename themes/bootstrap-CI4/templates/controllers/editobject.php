@@ -111,6 +111,7 @@ RETURN = allAttributeCode
 		// Mise a jour des donnees en base
 		$this->%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
 		$key = $this->request->getPost('%%(self.keyFields[0].dbName)%%');
+		$oldModel = $this->%%(self.obName.lower())%%Model->find($key);
 
 		$data = [
 %%
@@ -130,15 +131,15 @@ for field in self.fields:
 		attributeCode += """
 		
 		log_message('debug','[Edit%(obName_lower)s.php] : DEMARRAGE de l\\\'upload');
-		/*$this->upload->initialize($config); // RAZ des erreurs
 		// Suppression de l'ancien fichier %(dbName)s : %(desc)s
-		if( $oldModel->%(dbName)s != "" && $model->%(dbName)s == ""){
-			unlink($path . $oldModel->%(dbName)s);
-		}*/
+		if( $oldModel['%(dbName)s'] != "" && $data['%(dbName)s'] == ""){
+			unlink(PUBLIC_PATH . '/uploads/' . $oldModel['%(dbName)s']);
+		}
 		// Upload du nouveau fichier %(dbName)s : %(desc)s
 		$%(dbName)s_file = $this->request->getFile('%(dbName)s_file');
 		if($%(dbName)s_file != "") {
 			$%(dbName)s_ext = $%(dbName)s_file->guessExtension();
+
 			if (! $%(dbName)s_file->hasMoved()) {
 				$filepath = WRITEPATH . 'uploads/' . $%(dbName)s_file->store();
 				// Rename file to match with this object
@@ -148,6 +149,10 @@ for field in self.fields:
 				// Remove uploaded file temp name
 				if( file_exists($filepath) ){
 					unlink($filepath);
+				}
+				// Autre fichier à télécharger (autre extension)
+				if($oldModel['%(dbName)s'] != $data['%(dbName)s']){
+					unlink(PUBLIC_PATH . '/uploads/' . $oldModel['%(dbName)s']);
 				}
 			} else {
 				session()->setFlashData('msg_error', lang('App.message.upload-failed'));

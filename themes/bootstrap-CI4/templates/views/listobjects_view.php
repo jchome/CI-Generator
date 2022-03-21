@@ -131,12 +131,12 @@ RETURN = allAttributesCode
 %%
 					<td>
 						<a class="btn btn-default" 
-							href="/index.php/%%(self.obName.lower())%%/edit%%(self.obName.lower())%%/index/<?=$%%(self.obName.lower())%%['%%(self.keyFields[0].dbName)%%']?>" 
+							href="<?= base_url() ?>/index.php/%%(self.obName.lower())%%/edit%%(self.obName.lower())%%/index/<?=$%%(self.obName.lower())%%['%%(self.keyFields[0].dbName)%%']?>" 
 							title="<?= lang('App.form.button.edit') ?>">
 							<i class="glyphicon glyphicon-edit"> </i>
 						</a>
 						<a class="btn btn-danger" href="#" 
-							onclick="if( confirm('<?= lang('%%(self.obName.title())%%.message.askConfirm.deletion')?>')){document.location.href='/index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/delete/<?=$%%(self.obName.lower())%%['%%(self.keyFields[0].dbName)%%']?>';}" 
+							onclick="if( confirm('<?= lang('%%(self.obName.title())%%.message.askConfirm.deletion')?>')){document.location.href='<?= base_url() ?>/index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/delete/<?=$%%(self.obName.lower())%%['%%(self.keyFields[0].dbName)%%']?>';}" 
 							title="<?= lang('App.form.button.delete') ?>"
 							><i class="glyphicon glyphicon-remove"> </i>
 						</a>
