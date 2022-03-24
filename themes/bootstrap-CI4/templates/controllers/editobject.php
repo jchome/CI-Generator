@@ -14,6 +14,11 @@ class Edit%%(self.obName)%% extends \App\Controllers\BaseController {
 	 * Affichage des infos
 	 */
 	public function index($%%(self.keyFields[0].dbName)%%){
+
+		if(session()->get('user_name') == "") {
+			return redirect()->to('welcome/index');
+		}
+		
 		helper('form');
 		$this->%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
 		$model = $this->%%(self.obName.lower())%%Model->find($%%(self.keyFields[0].dbName)%%);
@@ -166,11 +171,13 @@ for field in self.fields:
 		}
 	codeForUploadFile += attributeCode
 
-		
+if useUpload:
+	codeForUploadFile = codeForUploadFile + """
+		$this->userModel->update($key, $data);
+"""
 RETURN = codeForUploadFile
 %%
 
-		$this->userModel->update($key, $data);
 		session()->setFlashData('msg_confirm', lang('%%(self.obName.title())%%.message.confirm.modified'));
 		return redirect()->to('%%(self.obName.title())%%/list%%(self.obName.lower())%%s/index');
 	}

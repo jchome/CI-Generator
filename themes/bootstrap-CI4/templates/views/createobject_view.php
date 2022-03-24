@@ -7,9 +7,6 @@
  *
  */
 
-if(session()->get('user_name') == "") {
-	return redirect()->to('welcome/index');
-}
 ?>
 
 	<div class="container-fluid">

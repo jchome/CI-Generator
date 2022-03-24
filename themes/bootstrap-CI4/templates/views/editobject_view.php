@@ -7,9 +7,6 @@
  *
  */
 
-if(session()->get('user_name') == "") {
-	return redirect()->to('welcome/index');
-}
 ?>
 
 	<div class="container-fluid">
@@ -93,14 +90,16 @@ for field in self.fields:
 				'dbName' : field.dbName}
 				
 	elif field.referencedObject and field.access == "ajax" :
-		attributeCode += """<input type="text" name="%(dbName)s_text" id="%(dbName)s_text" class="form-control" value="<?= $%(dbName)s_tex['%(display)s'] ?>" autocomplete="off" %(moreAttributes)s/>
-		<input type="hidden" name="%(dbName)s" id="%(dbName)s" value="<?= $%(structureObName)['%(dbName)s'] ?>">
+		attributeCode += """<input type="text" name="%(dbName)s_text" id="%(dbName)s_text" class="form-control" 
+			value="<?= $%(dbName)s_tex['%(display)s'] ?>" autocomplete="off" %(moreAttributes)s/>
+		<input type="hidden" name="%(dbName)s" id="%(dbName)s" value="<?= $%(structureObName)s['%(dbName)s'] ?>">
 		""" % { 'dbName' : field.dbName,
 				'referencedObject' : field.referencedObject.obName, 
 				'structureObName' : self.obName.lower(),
 				'display' : field.display,
 				'moreAttributes' : moreAttributes
 			 }
+		
 	elif field.sqlType.upper()[0:4] == "DATE":
 		dateFormat = field.sqlType[5:-1]
 		attributeCode += """	<div class="input-group input-append date" data-date-format="%(dateFormat)s" id="datepicker_%(dbName)s">
@@ -179,7 +178,7 @@ for field in self.fields:
 		enumTypes = field.sqlType[5:-1]
 		for enum in enumTypes.split(','):
 			valueAndText = enum.replace('"','').replace("'","").split(':')
-			attributeCode += """	<option value="%(value)s" <?= ($%(structureObName)['%(dbName)s'] == "%(value)s")?("selected"):("")?> >%(text)s</option>
+			attributeCode += """	<option value="%(value)s" <?= ($%(structureObName)s['%(dbName)s'] == "%(value)s")?("selected"):("")?> >%(text)s</option>
 		""" % {'value': valueAndText[0].strip(), 
 				'text': valueAndText[1].strip(), 
 				'structureObName' : self.obName.lower(),

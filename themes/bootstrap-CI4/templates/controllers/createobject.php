@@ -15,6 +15,11 @@ class Create%%(self.obName)%% extends \App\Controllers\BaseController {
 	 * page de creation d'un %%(self.obName.lower())%%
 	 */	
 	public function index(){
+
+		if(session()->get('user_name') == "") {
+			return redirect()->to('welcome/index');
+		}
+
 		helper(['form', 'url']);
 		$data = Array();
 

@@ -14,6 +14,11 @@ class List%%(self.obName)%%s extends \App\Controllers\BaseController {
 	 * Affichage des %%(self.obName)%%s
 	 */
 	public function index($orderBy = null, $asc = null, $offset = 0){
+
+		if(session()->get('user_name') == "") {
+			return redirect()->to('welcome/index');
+		}
+		
 		helper(['url']);
 
 		// preparer le tri
@@ -25,35 +30,39 @@ class List%%(self.obName)%%s extends \App\Controllers\BaseController {
 		}
 		$data['orderBy'] = $orderBy;
 		$data['asc'] = $asc;
-		$limit = 15;
-		/*
-		// preparer la pagination
-		$config['base_url'] = base_url().'index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index/'.$orderBy.'/'.$asc.'/';
-		$config['total_rows'] = $this->%%(self.obName.lower())%%service->count($this->db);
-		$config['per_page'] = 15;
-		$config['cur_tag_open'] = '<li class="active"><a href="#">';
-		$config['cur_tag_close'] = '</a></li>';
-		$config['num_tag_open'] = '<li>';
-		$config['num_tag_close'] = '</li>';
-		$config['prev_tag_open'] = '<li class="prev">';
-		$config['prev_tag_close'] = '</li>';
-		$config['next_tag_open'] = '<li class="next">';
-		$config['next_tag_close'] = '</li>';
-		$config['first_link'] = '&lt;&lt;';
-		$config['first_tag_open'] = '<li>';
-		$config['first_tag_close'] = '</li>';
-		$config['last_link'] = '&gt;&gt;';
-		$config['last_tag_open'] = '<li>';
-		$config['last_tag_close'] = '</li>';
-		$config['num_links'] = 5;
-		$config['uri_segment'] = '6'; // where the offset is in the URI segment 
-		$this->pagination->initialize($config);
-		$data['pagination'] = $this->pagination;
-		*/
+		$limit = 5;
+		$pager = \Config\Services::pager();
 		// recuperation des donnees
 		$this->%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
 
-		$data['%%(self.obName.lower())%%s'] = $this->%%(self.obName.lower())%%Model->orderBy($orderBy, $asc)->findAll($limit, $offset);
+		$data['%%(self.obName.lower())%%s'] = $this->%%(self.obName.lower())%%Model
+			->orderBy($orderBy, $asc)->paginate($limit, '', null, $offset);
+		$data['pager'] = $this->%%(self.obName.lower())%%Model->pager;
+
+%%allAttributeCode = ""
+# inclure les objets référencés dans l'objet $data
+
+for field in self.fields:
+	attributeCode = ""
+	if field.referencedObject and field.access == "default":
+		attributeCode += """
+		$data['%(referencedObjectLower)sCollection'] = $this->%(referencedObjectLower)sservice->getAll($this->db,'%(fieldDisplay)s');""" % {
+			'referencedObjectLower' : field.referencedObject.obName.lower(),
+			'fieldDisplay': field.display
+		}
+	elif field.sqlType.upper()[0:4] == "ENUM":
+		enumTypes = field.sqlType[5:-1]
+		attributeCode = """
+		$data["enum_%(dbName)s"] = array(""" % {'dbName' : field.dbName}
+		for enum in enumTypes.split(','):
+			valueAndText = enum.replace('"','').replace("'","").split(':')
+			attributeCode += """"%(value)s" => "%(text)s",""" % {'value': valueAndText[0].strip(), 'text': valueAndText[1].strip()}
+		attributeCode = attributeCode[:-1] + ");"
+	if attributeCode != "":
+		allAttributeCode += attributeCode
+	
+RETURN = allAttributeCode
+%%
 
 		return $this->view('%%(self.obName.title())%%/list%%(self.obName.lower())%%s', $data);
 	}

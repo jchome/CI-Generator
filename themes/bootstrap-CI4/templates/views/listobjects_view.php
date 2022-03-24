@@ -7,10 +7,6 @@
  *
  */
 
-if(session()->get('user_name') == "") {
-	return redirect()->to('welcome/index');
-}
-
 ?>
 	<div class="container">
 
@@ -66,7 +62,7 @@ for field in self.fields:
 	attributeCode = ""
 	if field.referencedObject and field.access == "ajax" :
 		attributeCode = """
-	$%(dbName)s_text = ($%(structureObName)s->%(dbName)s == 0)?(new %(referencedObject)sModel()):($this->%(referencedObjectLower)sservice->getUnique($this->db, $%(structureObName)s->%(dbName)s));
+	$%(dbName)s_text = ($%(structureObName)s['%(dbName)s'] == 0)?(new %(referencedObject)sModel()):($this->%(referencedObjectLower)sservice->getUnique($this->db, $%(structureObName)s['%(dbName)s']));
 """ % {
 		'structureObName' : self.obName.lower(),
 		'referencedObject': field.referencedObject.obName,
@@ -82,7 +78,7 @@ RETURN = allAttributesCode
 
 for field in self.fields:
 	if field.dbName == self.keyFields[0].dbName:
-		attributeCode = """<!-- $%(structureObName)s->%(dbName)s = <?= $%(structureObName)s->%(dbName)s ?> -->""" % {
+		attributeCode = """<!-- $%(structureObName)s['%(dbName)s'] = <?= $%(structureObName)s['%(dbName)s'] ?> -->""" % {
 					'structureObName' : self.obName.lower(),
 					'dbName' : field.dbName}
 	
@@ -91,7 +87,7 @@ for field in self.fields:
 				<td valign="top">"""
 		if field.referencedObject and field.access == "default":
 			# si pas de lien, le champ vaut 0 (et la sequence commence à 1)
-			attributeCode += """<?=($%(structureObName)s['%(dbName)s'] == 0)?(""):($%(referencedObject)sCollection[$%(structureObName)s->%(dbName)s]->%(display)s)?>
+			attributeCode += """<?=($%(structureObName)s['%(dbName)s'] == 0)?(""):($%(referencedObject)sCollection[$%(structureObName)s['%(dbName)s']]['%(display)s'])?>
 			""" % { 'display' : field.display, 
 					'referencedObject' : field.referencedObject.obName.lower(),
 					'structureObName' : self.obName.lower(),
@@ -106,7 +102,7 @@ for field in self.fields:
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
 		elif field.sqlType.upper()[0:4] == "ENUM":
-			attributeCode += """<?=($%(structureObName)s['%(dbName)s'] == "")?(""):($enum_%(dbName)s[$%(structureObName)s->%(dbName)s])?>""" % {
+			attributeCode += """<?=($%(structureObName)s['%(dbName)s'] == "")?(""):($enum_%(dbName)s[$%(structureObName)s['%(dbName)s']])?>""" % {
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
 		elif field.sqlType.upper()[0:4] == "FILE":
@@ -150,7 +146,7 @@ endforeach; ?>
 	
 		<div class="pagination row">
 			<ul class="pagination">
-			<?php if(isset($pagination)){ echo $pagination->create_links(); } ?>
+			<?= $pager->links('') ?>
 			</ul>
 		</div><!-- .pagination -->
 		
