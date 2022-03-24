@@ -46,8 +46,11 @@ for field in self.fields:
 	attributeCode = ""
 	if field.referencedObject and field.access == "default":
 		attributeCode += """
-		$data['%(referencedObjectLower)sCollection'] = $this->%(referencedObjectLower)sservice->getAll($this->db,'%(fieldDisplay)s');""" % {
+		$this->%(referencedObjectLower)sModel = new \App\Models\%(referencedObjectTitle)sModel();
+		$data['%(referencedObjectLower)sCollection'] = $this->%(referencedObjectLower)sModel->orderBy('%(fieldDisplay)s', 'asc')
+			->findAll();""" % {
 			'referencedObjectLower' : field.referencedObject.obName.lower(),
+			'referencedObjectTitle' : field.referencedObject.obName.title(),
 			'fieldDisplay': field.display
 		}
 	elif field.sqlType.upper()[0:4] == "ENUM":
