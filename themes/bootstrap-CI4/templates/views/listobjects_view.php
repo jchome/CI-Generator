@@ -126,15 +126,15 @@ for field in self.fields:
 RETURN = allAttributesCode
 %%
 					<td>
-						<a class="btn btn-default" 
+						<a class="btn btn-secondary" 
 							href="<?= base_url() ?>/index.php/%%(self.obName.lower())%%/edit%%(self.obName.lower())%%/index/<?=$%%(self.obName.lower())%%['%%(self.keyFields[0].dbName)%%']?>" 
 							title="<?= lang('App.form.button.edit') ?>">
-							<i class="glyphicon glyphicon-edit"> </i>
+							<i class="bi bi-pencil-fill"></i>
 						</a>
 						<a class="btn btn-danger" href="#" 
 							onclick="if( confirm('<?= lang('%%(self.obName.title())%%.message.askConfirm.deletion')?>')){document.location.href='<?= base_url() ?>/index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/delete/<?=$%%(self.obName.lower())%%['%%(self.keyFields[0].dbName)%%']?>';}" 
-							title="<?= lang('App.form.button.delete') ?>"
-							><i class="glyphicon glyphicon-remove"> </i>
+							title="<?= lang('App.form.button.delete') ?>">
+							<i class="bi bi-x"></i>
 						</a>
 					</td>
 				</tr>
@@ -144,16 +144,14 @@ endforeach; ?>
 			</tbody>
 		</table>
 	
-		<div class="pagination row">
+		<div class="row">
 			<ul class="pagination">
-			<?= $pager->links('') ?>
+			<?= $pager->links('bootstrap', 'bootstrap_pagination') ?>
 			</ul>
 		</div><!-- .pagination -->
 		
-		<div class="row">
-			<a href="<?= base_url('%%(self.obName.lower())%%/create%%(self.obName.lower())%%/index')?>"
-			 	class="btn btn-primary"><?= lang('%%(self.obName.title())%%.form.create.title') ?></a>
-		</div>
+		<a href="<?= base_url('%%(self.obName.lower())%%/create%%(self.obName.lower())%%/index')?>"
+			role="button" class="btn btn-primary"><?= lang('%%(self.obName.title())%%.form.create.title') ?></a>
 	</div><!-- .container -->
 	
 

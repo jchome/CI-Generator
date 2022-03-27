@@ -43,7 +43,6 @@ RETURN = allAttributesCode
 %%
 ?>
 
-			<fieldset>
 	<!-- list of variables - auto-generated : -->
 %%allAttributesCode = ""
 
@@ -57,13 +56,13 @@ for field in self.fields:
 	valueCode = "<?= $%(structureObName)s['%(dbName)s'] ?>" % { 'structureObName': self.obName.lower(), 'dbName' : field.dbName }
 	
 	attributeCode += """
-	<div class="form-group"><!-- %(obName)s : %(desc)s -->
+	<div class="mb-3"><!-- %(obName)s : %(desc)s -->
 		<label class="col-md-2 control-label" for="%(dbName)s">""" % { 'dbName' : field.dbName, 'obName' : field.obName,'desc' : field.description }
 
 	if not field.nullable:
 		attributeCode += "* "
 
-	attributeCode += """<?= lang('%(objectObName)s.form.%(dbName)s.label') ?> :</label>
+	attributeCode += """<?= lang('%(objectObName)s.form.%(dbName)s.label') ?></label>
 		<div class="col-md-10">
 		""" % { 'dbName' : field.dbName, 'objectObName' : self.obName.title() }
 
@@ -74,7 +73,7 @@ for field in self.fields:
 		moreAttributes = "required "
 			
 	if field.referencedObject and field.access == "default" :
-		attributeCode += """<select name="%(dbName)s" id="%(dbName)s" class="form-control">
+		attributeCode += """<select name="%(dbName)s" id="%(dbName)s" aria-describedby="%(dbName)sHelp" class="form-control">
 		""" % { 'dbName' : field.dbName }
 		if field.nullable:
 			attributeCode += """	<option value=""></option>
@@ -90,7 +89,8 @@ for field in self.fields:
 				'dbName' : field.dbName}
 				
 	elif field.referencedObject and field.access == "ajax" :
-		attributeCode += """<input type="text" name="%(dbName)s_text" id="%(dbName)s_text" class="form-control" 
+		attributeCode += """<input type="text" name="%(dbName)s_text" id="%(dbName)s_text" 
+			aria-describedby="%(dbName)sHelp" class="form-control" 
 			value="<?= $%(dbName)s_tex['%(display)s'] ?>" autocomplete="off" %(moreAttributes)s/>
 		<input type="hidden" name="%(dbName)s" id="%(dbName)s" value="<?= $%(structureObName)s['%(dbName)s'] ?>">
 		""" % { 'dbName' : field.dbName,
@@ -103,7 +103,8 @@ for field in self.fields:
 	elif field.sqlType.upper()[0:4] == "DATE":
 		dateFormat = field.sqlType[5:-1]
 		attributeCode += """	<div class="input-group input-append date" data-date-format="%(dateFormat)s" id="datepicker_%(dbName)s">
-			<input type="text" name="%(dbName)s" id="%(dbName)s" class="form-control" size="8" maxlength="10" value="%(valueCode)s" %(moreAttributes)s> 
+			<input type="text" name="%(dbName)s" id="%(dbName)s" class="form-control" size="8" 
+			aria-describedby="%(dbName)sHelp" maxlength="10" value="%(valueCode)s" %(moreAttributes)s> 
 			<span class="input-group-addon glyphicon glyphicon-calendar"></span>
 		</div>""" % { 'dbName' : field.dbName, 
 			'valueCode' : valueCode, 
@@ -114,7 +115,8 @@ for field in self.fields:
 	elif field.sqlType.upper()[0:8] == "PASSWORD":
 		attributeCode += """	<div class="input-group">
 				<span class="input-group-addon glyphicon glyphicon-lock"></span>
-				<input type="password" placeholder="Password" name="%(dbName)s" class="form-control" id="%(dbName)s" value="%(valueCode)s" %(moreAttributes)s>
+				<input type="password" placeholder="Password" name="%(dbName)s" 
+					aria-describedby="%(dbName)sHelp" class="form-control" id="%(dbName)s" value="%(valueCode)s" %(moreAttributes)s>
 			</div>""" % { 'dbName' : field.dbName, 
 			'valueCode' : valueCode,
 			'moreAttributes' : moreAttributes}
@@ -166,7 +168,8 @@ for field in self.fields:
 				'structureObName' : self.obName.lower() }
 		
 	elif field.sqlType.upper()[0:4] == "ENUM":
-		attributeCode += """<select name="%(dbName)s" id="%(dbName)s" class="form-control" %(moreAttributes)s>
+		attributeCode += """<select name="%(dbName)s" id="%(dbName)s" class="form-control" 
+			aria-describedby="%(dbName)sHelp" %(moreAttributes)s>
 		""" % { 
 			'dbName' : field.dbName,
 			'moreAttributes' : moreAttributes }
@@ -187,7 +190,8 @@ for field in self.fields:
 
 	else:
 		# for string, int, ...
-		attributeCode += """<input class="form-control" type="text" name="%(dbName)s" id="%(dbName)s" value="%(valueCode)s" %(moreAttributes)s """ % { 
+		attributeCode += """<input class="form-control" type="text" name="%(dbName)s" 
+			aria-describedby="%(dbName)sHelp" id="%(dbName)s" value="%(valueCode)s" %(moreAttributes)s """ % { 
 				'dbName' : field.dbName, 
 				'valueCode' : valueCode,
 				'moreAttributes' : moreAttributes
@@ -199,8 +203,7 @@ for field in self.fields:
 			attributeCode += ">"
 			
 	attributeCode += """
-			<span class="help-block"><?= lang('%(objectObName)s.form.%(dbName)s.description')?></span>
-		</div>
+		<div id="%(dbName)sHelp" class="form-text"><?= lang('%(objectObName)s.form.%(dbName)s.description')?></div>
 	</div>""" % {'dbName' : field.dbName, 'objectObName' : self.obName.title() }
 	
 
@@ -223,8 +226,6 @@ RETURN =  allAttributesCode
 			</div>
 		</div>
 			
-			
-		</fieldset>
 
 <?php
 echo form_close('');

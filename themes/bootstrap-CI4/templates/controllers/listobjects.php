@@ -30,13 +30,13 @@ class List%%(self.obName)%%s extends \App\Controllers\BaseController {
 		}
 		$data['orderBy'] = $orderBy;
 		$data['asc'] = $asc;
-		$limit = 5;
+		$limit = 10;
 		$pager = \Config\Services::pager();
 		// recuperation des donnees
 		$this->%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
 
 		$data['%%(self.obName.lower())%%s'] = $this->%%(self.obName.lower())%%Model
-			->orderBy($orderBy, $asc)->paginate($limit, '', null, $offset);
+			->orderBy($orderBy, $asc)->paginate($limit, 'bootstrap', null, $offset);
 		$data['pager'] = $this->%%(self.obName.lower())%%Model->pager;
 
 %%allAttributeCode = ""
