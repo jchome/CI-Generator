@@ -90,9 +90,9 @@ RETURN = allAttributeCode
 			throw new \CodeIgniter\Exceptions\PageNotFoundException($page);
 		}
 
-		echo view('templates/header', $data);
+		echo view('templates/header', ["menu" => "%%(self.obName.title())%%"]);
 		echo view($page, $data);
-		echo view('templates/footer', $data);
+		echo view('templates/footer');
 	}
 
 }
