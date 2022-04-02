@@ -59,7 +59,7 @@ for field in self.fields:
 			attributeCode += """<option value=""></option>
 			"""
 		attributeCode += """<?php foreach ($%(referencedObject)sCollection as $%(referencedObject)sElt): ?>
-				<option value="<?= $%(referencedObject)sElt->%(keyReference)s ?>" ><?= $%(referencedObject)sElt->%(display)s ?> </option>
+				<option value="<?= $%(referencedObject)sElt['%(keyReference)s'] ?>" ><?= $%(referencedObject)sElt['%(display)s'] ?> </option>
 			<?php endforeach;?>
 		</select>
 		""" % { 'display' : field.display, 

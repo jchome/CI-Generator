@@ -20,7 +20,7 @@ class Create%%(self.obName)%% extends \App\Controllers\BaseController {
 			return redirect()->to('welcome/index');
 		}
 
-		helper(['form', 'url']);
+		helper(['form']);
 		$data = Array();
 
 
@@ -31,8 +31,10 @@ for field in self.fields:
 	attributeCode = ""
 	if field.referencedObject and field.access == "default":
 		attributeCode += """
-		$data['%(referencedObjectLower)sCollection'] = $this->%(referencedObjectLower)sservice->getAll($this->db,'%(fieldDisplay)s');""" % {
+		$this->%(referencedObjectLower)sModel = new \App\Models\%(referencedObjectTitle)sModel();
+		$data['%(referencedObjectLower)sCollection'] = $this->%(referencedObjectLower)sModel->orderBy('%(fieldDisplay)s', 'asc')->findAll();""" % {
 			'referencedObjectLower' : field.referencedObject.obName.lower(),
+			'referencedObjectTitle' : field.referencedObject.obName.title(),
 			'fieldDisplay': field.display
 		}
 	elif field.sqlType.upper()[0:4] == "ENUM":
@@ -215,9 +217,9 @@ RETURN = codeForUploadFile
 			throw new \CodeIgniter\Exceptions\PageNotFoundException($page);
 		}
 
-		echo view('templates/header', $data);
+		echo view('templates/header', ["menu" => "%%(self.obName.title())%%"]);
 		echo view($page, $data);
-		echo view('templates/footer', $data);
+		echo view('templates/footer');
 	}
 }
 ?>

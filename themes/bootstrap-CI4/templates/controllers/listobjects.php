@@ -19,7 +19,7 @@ class List%%(self.obName)%%s extends \App\Controllers\BaseController {
 			return redirect()->to('welcome/index');
 		}
 		
-		helper(['url']);
+		helper(['database']);
 
 		// preparer le tri
 		if($orderBy == null) {
@@ -47,11 +47,12 @@ for field in self.fields:
 	if field.referencedObject and field.access == "default":
 		attributeCode += """
 		$this->%(referencedObjectLower)sModel = new \App\Models\%(referencedObjectTitle)sModel();
-		$data['%(referencedObjectLower)sCollection'] = $this->%(referencedObjectLower)sModel->orderBy('%(fieldDisplay)s', 'asc')
-			->findAll();""" % {
+		$data['%(referencedObjectLower)sCollection'] = index_data($this->%(referencedObjectLower)sModel->orderBy('%(fieldDisplay)s', 'asc')
+			->findAll(), '%(fieldKey)s');""" % {
 			'referencedObjectLower' : field.referencedObject.obName.lower(),
 			'referencedObjectTitle' : field.referencedObject.obName.title(),
-			'fieldDisplay': field.display
+			'fieldDisplay': field.display,
+			'fieldKey' : field.referencedObject.keyFields[0].dbName
 		}
 	elif field.sqlType.upper()[0:4] == "ENUM":
 		enumTypes = field.sqlType[5:-1]

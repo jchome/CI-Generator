@@ -173,8 +173,8 @@ for field in self.fields:
 
 if useUpload:
 	codeForUploadFile = codeForUploadFile + """
-		$this->userModel->update($key, $data);
-"""
+		$this->%(obName_lower)sModel->update($key, $data);
+""" % { 'obName_lower' : self.obName.lower() }
 RETURN = codeForUploadFile
 %%
 
@@ -191,9 +191,9 @@ RETURN = codeForUploadFile
 			throw new \CodeIgniter\Exceptions\PageNotFoundException($page);
 		}
 
-		echo view('templates/header', $data);
+		echo view('templates/header', ["menu" => "%%(self.obName.title())%%"]);
 		echo view($page, $data);
-		echo view('templates/footer', $data);
+		echo view('templates/footer');
 	}
 
 }
