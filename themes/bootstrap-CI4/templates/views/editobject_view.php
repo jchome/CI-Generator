@@ -12,13 +12,14 @@
 	<div class="container-fluid">
 	
 		<h2><?= lang('%%(self.obName.title())%%.form.edit.title') ?></h2>
-			
-		<?php 
-			$msg = session()->getFlashdata('msg_info');    if($msg != ""){echo ($msg);} 
-			$msg = session()->getFlashdata('msg_confirm'); if($msg != ""){echo ($msg);}
-			$msg = session()->getFlashdata('msg_warn');    if($msg != ""){echo ($msg);}
-			$msg = session()->getFlashdata('msg_error');   if($msg != ""){echo ($msg);}
-		?>
+		
+		<div class="row text-center ">
+			<div class="col-md-12">
+				<?= session()->getFlashdata('error') ?>
+				<?= service('validation')->listErrors('errors_list') ?>
+				<br />
+			</div>
+		</div>
 			
 		<div class="row-fluid">
 <?php
@@ -149,7 +150,7 @@ for field in self.fields:
 		<div class="row">
 			<div class="col-md-2"><i><?= lang('App.form.file.new')?></i></div>
 			<div class="col-md-10">
-				<input class="input-file" id="%(dbName)s_file" name="%(dbName)s_file" class="form-control" type="file" %(moreAttributes)s>
+				<input class="input-file" id="%(dbName)s_file" name="%(dbName)s_file" class="form-control" type="file">
 				<input type="hidden" name="%(dbName)s" id="%(dbName)s" value="%(valueCode)s">
 			</div>
 		</div>

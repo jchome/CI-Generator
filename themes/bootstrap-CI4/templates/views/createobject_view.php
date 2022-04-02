@@ -22,7 +22,7 @@
 		</div>
 		<div class="row-fluid">
 <?php
-echo form_open('%%(self.obName.lower())%%/create%%(self.obName.lower())%%/add', 'class="form-horizontal"');
+echo form_open_multipart('%%(self.obName.lower())%%/create%%(self.obName.lower())%%/add', 'class="form-horizontal"');
 ?>
 
 	<!-- list of variables - auto-generated : -->

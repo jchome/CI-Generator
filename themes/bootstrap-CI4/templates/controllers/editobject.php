@@ -25,62 +25,33 @@ class Edit%%(self.obName)%% extends \App\Controllers\BaseController {
 
 		$data['%%(self.obName.lower())%%'] = $model;
 %%allAttributeCode = ""
-# inclure les objets référencés dans l'objet $data
+# inclure les objets references dans l'objet $data
 
 for field in self.fields:
 	attributeCode = ""
 	if field.referencedObject and field.access == "default":
 		attributeCode += """
-		$data['%(referencedObjectLower)sCollection'] = $this->%(referencedObjectLower)sservice->getAll($this->db,'%(fieldDisplay)s');""" % {
+		$this->%(referencedObjectLower)sModel = new \App\Models\%(referencedObjectTitle)sModel();
+		$data['%(referencedObjectLower)sCollection'] = $this->%(referencedObjectLower)sModel->orderBy('%(fieldDisplay)s', 'asc')->findAll();""" % {
 			'referencedObjectLower' : field.referencedObject.obName.lower(),
+			'referencedObjectTitle' : field.referencedObject.obName.title(),
 			'fieldDisplay': field.display
 		}
 	allAttributeCode += attributeCode
 	
 RETURN = allAttributeCode
 %%
-		$this->view('%%(self.obName.title())%%/edit%%(self.obName.lower())%%', $data);
+		return $this->view('%%(self.obName.title())%%/edit%%(self.obName.lower())%%', $data);
 	}
 
 	/**
 	 * Sauvegarde des modifications
 	 */
 	public function save(){
-		helper(['form', 'url']);
+		helper(['form']);
 
 		$validation =  \Config\Services::validation();
-		/*
-		$this->form_validation->set_error_delimiters('<div class="error">', '</div>');
-%%allAttributeCode = ""
-for field in self.fields:
-	rule = "trim"
-	if not field.nullable:
-		rule += "|required"
 		
-	if field.sqlType.upper()[0:4] == "FILE":
-		attributeCode = """
-		$this->form_validation->set_rules('%(dbName)s_file', 'lang:%(objectObName)s.form.%(dbName)s.label', '%(rule)s');""" % {
-			'dbName': field.dbName,
-			'objectObName': self.obName.lower(),
-			'rule': rule
-		}
-	else:
-		attributeCode = """
-		$this->form_validation->set_rules('%(dbName)s', 'lang:%(objectObName)s.form.%(dbName)s.label', '%(rule)s');""" % {
-			'dbName': field.dbName,
-			'objectObName': self.obName.lower(),
-			'rule': rule
-		}
-	if attributeCode != "":
-		allAttributeCode += attributeCode
-RETURN = allAttributeCode
-%%
-		
-		if($this->form_validation->run() == FALSE){
-			$this->load->view('%%(self.obName.lower())%%/edit%%(self.obName.lower())%%_view');
-		}
-		*/
-
 		if (! $this->validate([
 %%allAttributeCode = ""
 for field in self.fields:
@@ -92,12 +63,14 @@ for field in self.fields:
 		continue
 
 	if field.sqlType.upper()[0:4] == "FILE":
-		attributeCode = """
-		'%(dbName)s_file' => '%(rule)s',""" % {
-			'dbName': field.dbName,
-			'objectObName': self.obName.title(),
-			'rule': rule
-		}
+		pass
+		## no rule for a file
+		#attributeCode = """
+		#'%(dbName)s_file' => '%(rule)s',""" % {
+		#	'dbName': field.dbName,
+		#	'objectObName': self.obName.title(),
+		#	'rule': rule
+		#}
 	else:	
 		attributeCode = """
 		'%(dbName)s' => '%(rule)s',""" % {
@@ -110,7 +83,10 @@ for field in self.fields:
 RETURN = allAttributeCode
 %%
 		])) {
-			$this->view('%%(self.obName.title())%%/edit%%(self.obName.lower())%%');
+			log_message('debug','[Edit%(obName_lower)s.php] : Error in the form !');
+			session()->setFlashData('error', $validation->listErrors());
+			return redirect()->to('%%(self.obName.title())%%/edit%%(self.obName.lower())%%/index/' 
+				. $this->request->getPost('%%(self.keyFields[0].dbName)%%'));
 		}
 
 		// Mise a jour des donnees en base
@@ -155,13 +131,17 @@ for field in self.fields:
 				if( file_exists($filepath) ){
 					unlink($filepath);
 				}
-				// Autre fichier à télécharger (autre extension)
-				if($oldModel['%(dbName)s'] != $data['%(dbName)s']){
+				// Autre fichier a telecharger (autre extension)
+				if($oldModel['%(dbName)s'] != $data['%(dbName)s'] 
+					&& $oldModel['%(dbName)s'] != ""
+					&& file_exists(PUBLIC_PATH . '/uploads/' . $oldModel['%(dbName)s'])
+					){
 					unlink(PUBLIC_PATH . '/uploads/' . $oldModel['%(dbName)s']);
 				}
 			} else {
 				session()->setFlashData('msg_error', lang('App.message.upload-failed'));
-				$this->view('%(obName_title)s/edit%(obName_lower)s');
+				return redirect()->to('%(obName_title)s/edit%(obName_lower)s/index/' 
+					. $this->request->getPost('%(keyField)s)'));
 			}
 		}""" % {'dbName' : field.dbName, 
 			'desc' : field.description, 

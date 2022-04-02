@@ -61,38 +61,7 @@ RETURN = allAttributeCode
 	
 		helper(['form', 'url']);
 		$validation =  \Config\Services::validation();
-/*
-%%allAttributeCode = ""
-for field in self.fields:
-	rule = "trim"
-	if not field.nullable:
-		rule += "|required"
-	
-	if field.autoincrement:
-		continue
 
-	if field.sqlType.upper()[0:4] == "FILE":
-		attributeCode = """
-		$validation->setRule('%(dbName)s_file', '%(objectObName)s.form.%(dbName)s.label', '%(rule)s');""" % {
-			'dbName': field.dbName,
-			'objectObName': self.obName.title(),
-			'rule': rule
-		}
-	else:	
-		attributeCode = """
-		$validation->setRule('%(dbName)s', '%(objectObName)s.form.%(dbName)s.label', '%(rule)s');""" % {
-			'dbName': field.dbName,
-			'objectObName': self.obName.title(),
-			'rule': rule
-		}
-	if attributeCode != "":
-		allAttributeCode += attributeCode
-RETURN = allAttributeCode
-%%
-		
-		if(! $validation->run()){
-			$this->view('%%(self.obName.title())%%/create%%(self.obName.lower())%%');
-		}*/
 		if (! $this->validate([
 %%allAttributeCode = ""
 for field in self.fields:
@@ -133,8 +102,10 @@ RETURN = self.dbAndObVariablesList("\t'(dbVar)s' => $this->request->getPost('(db
 %%
 		];
 		$this->%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
+		
 		$this->%%(self.obName.lower())%%Model->insert($data);
-		/*
+		$data['%%(self.keyFields[0].dbName)%%'] = $this->%%(self.obName.lower())%%Model->getInsertID();
+
 %%codeForUploadFile = ""
 useUpload = False
 for field in self.fields:
@@ -144,63 +115,44 @@ for field in self.fields:
 		attributeCode += """
 		
 		log_message('debug','[Create%(obName_lower)s.php] : DEMARRAGE de l\\\'upload');
-		$this->upload->initialize($config); // RAZ des erreurs
-		// Upload du fichier %(dbName)s : %(desc)s
-		$codeErrors = null;
-		if ( ! $this->upload->do_upload('%(dbName)s_file')) {
-			$codeErrors = $this->upload->display_errors() . "ext: [" . $this->upload->data('file_ext') ."] type mime: [" . $this->upload->data('file_type') . "]";
-			if($this->upload->display_errors() == '<p>'.$this->lang->line('upload_no_file_selected').'</p>'
-				|| $this->upload->display_errors() == '<p>upload_no_file_selected</p>'){ // if not translated
-				$codeErrors = "NO_FILE";
-			}
-		}else{
-			log_message('debug','[Create%(obName_lower)s.php] : PAS d\\\'erreur sur le nouveau fichier');
-			$uploadDataFile_%(dbName)s = $this->upload->data('file_name');
-		}
-	
-		if($codeErrors != null && $codeErrors != "NO_FILE") {
-			$this->session->set_flashdata('msg_error', $codeErrors);
-		}else{
-			$model->%(dbName)s = "";
-			if($uploadDataFile_%(dbName)s != null && $uploadDataFile_%(dbName)s != "") {
-				$model->%(dbName)s = '%(obName)s_%(dbName)s_' . $model->%(keyField)s . '_file' . $this->upload->data('file_ext');
-				log_message('debug','[Create%(obName_lower)s.php] : RENOMMAGE du nouveau fichier');
-				rename($path . $uploadDataFile_%(dbName)s, $path . $model->%(dbName)s);
-				// suppression du fichier temporaire telecharge
-				if( file_exists( $path . $uploadDataFile_%(dbName)s ) ){
-					log_message('debug','[Create%(obName_lower)s.php] : SUPPRESSION du fichier temporaire');
-					unlink($path . $uploadDataFile_%(dbName)s);
-				}
-			}
-			$this->%(obName_lower)sservice->update($this->db, $model);
-		}
 		
-		$this->session->set_flashdata('msg_info', $this->lang->line('%(obName_lower)s.message.confirm.added'));
-		""" % { 'dbName' : field.dbName,
-				'desc' : field.description,
-				'obName' : self.obName,
-				'obName_lower' : self.obName.lower(),
-				'keyField' : self.keyFields[0].dbName
+		// Upload du nouveau fichier %(dbName)s : %(desc)s
+		$%(dbName)s_file = $this->request->getFile('%(dbName)s_file');
+		if($%(dbName)s_file != "") {
+			$%(dbName)s_ext = $%(dbName)s_file->guessExtension();
+
+			if (! $%(dbName)s_file->hasMoved()) {
+				$filepath = WRITEPATH . 'uploads/' . $%(dbName)s_file->store();
+				// Rename file to match with this object
+				$data['%(dbName)s'] = '%(obName_lower)s_' . $data['%(keyField)s'] . '_%(dbName)s.' . $%(dbName)s_ext;
+				rename($filepath, PUBLIC_PATH . '/uploads/' . $data['%(dbName)s']);
+
+				// Remove uploaded file temp name
+				if( file_exists($filepath) ){
+					unlink($filepath);
+				}
+			} else {
+				session()->setFlashData('msg_error', lang('App.message.upload-failed'));
+				$this->view('%(obName_title)s/edit%(obName_lower)s');
+			}
+		}""" % {'dbName' : field.dbName, 
+			'desc' : field.description, 
+			'obName_title' : self.obName.title(),
+			'obName_lower' : self.obName.lower(),
+			'keyField' : self.keyFields[0].dbName
 		}
-		codeForUploadFile += attributeCode
-	
+	codeForUploadFile += attributeCode
+
 if useUpload:
-	codeForUploadFile = """
-		// Configuration pour chargement des fichiers
-		// Chemin de stockage des fichiers : doit etre WRITABLE pour tous
-		$config['upload_path'] = realpath('www/uploads/');
-		// Voir la configuration des types mimes s'il y a un probleme avec l'extension
-		$config['allowed_types'] = 'doc|docx|xls|xlsx|pdf|gif|jpg|png|jpeg|zip|rar|ppt|pptx|mp3';
-		$config['max_size']	= '2000';
-		$config['max_width']  = '0';
-		$config['max_height']  = '0';
-		$this->load->library('upload', $config);
-		$path = $config['upload_path'] . "/";
-		""" + codeForUploadFile
-	
+	codeForUploadFile = codeForUploadFile + """
+		$this->%(obName_lower)sModel->update($data['%(keyField)s'], $data);
+""" % { 'obName_lower' : self.obName.lower(),
+		'keyField' : self.keyFields[0].dbName
+}
+
 RETURN = codeForUploadFile
 %%
-*/
+
 		
 		// Recharge la page avec les nouvelles infos
 		session()->setFlashData('msg_confirm', lang('%%(self.obName.title())%%.message.confirm.added'));
