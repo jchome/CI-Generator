@@ -59,7 +59,7 @@ RETURN = allAttributeCode
 	 */
 	public function add(){
 	
-		helper(['form', 'url']);
+		helper(['form', 'database']);
 		$validation =  \Config\Services::validation();
 
 		if (! $this->validate([
@@ -96,9 +96,16 @@ RETURN = allAttributeCode
 		
 		// Insertion en base
 		$data = [
-%%
-includesKey = False;
-RETURN = self.dbAndObVariablesList("\t'(dbVar)s' => $this->request->getPost('(dbVar)s'),", 'dbVar', 'obVar', 2, includesKey)
+%%attributeCode = ""
+for field in self.fields:
+	if field.sqlType.upper()[0:4] == "DATE":
+		attributeCode += """
+			'%(dbName)s' => toSqlDate($this->request->getPost('%(dbName)s')),""" % {'dbName' : field.dbName }
+	else:
+		attributeCode += """
+			'%(dbName)s' => $this->request->getPost('%(dbName)s'),""" % {'dbName' : field.dbName }
+
+RETURN = attributeCode
 %%
 		];
 		$this->%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();

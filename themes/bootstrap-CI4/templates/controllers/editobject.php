@@ -19,10 +19,17 @@ class Edit%%(self.obName)%% extends \App\Controllers\BaseController {
 			return redirect()->to('welcome/index');
 		}
 		
-		helper('form');
+		helper(['form', 'database']);
 		$this->%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
 		$model = $this->%%(self.obName.lower())%%Model->find($%%(self.keyFields[0].dbName)%%);
+%%attributeCode = ""
+for field in self.fields:
+	if field.sqlType.upper()[0:4] == "DATE":
+		attributeCode += """
+		$model['%(dbName)s'] = toUiDate($model['%(dbName)s']);""" % {'dbName' : field.dbName }
 
+RETURN = attributeCode
+%%
 		$data['%%(self.obName.lower())%%'] = $model;
 %%allAttributeCode = ""
 # inclure les objets references dans l'objet $data
@@ -48,7 +55,7 @@ RETURN = allAttributeCode
 	 * Sauvegarde des modifications
 	 */
 	public function save(){
-		helper(['form']);
+		helper(['form', 'database']);
 
 		$validation =  \Config\Services::validation();
 		
@@ -95,9 +102,16 @@ RETURN = allAttributeCode
 		$oldModel = $this->%%(self.obName.lower())%%Model->find($key);
 
 		$data = [
-%%
-includesKey = True;
-RETURN = self.dbAndObVariablesList("\t'(dbVar)s' => $this->request->getPost('(dbVar)s'),", 'dbVar', 'obVar', 2, includesKey)
+%%attributeCode = ""
+for field in self.fields:
+	if field.sqlType.upper()[0:4] == "DATE":
+		attributeCode += """
+			'%(dbName)s' => toSqlDate($this->request->getPost('%(dbName)s')),""" % {'dbName' : field.dbName }
+	else:
+		attributeCode += """
+			'%(dbName)s' => $this->request->getPost('%(dbName)s'),""" % {'dbName' : field.dbName }
+
+RETURN = attributeCode
 %%
 		];
 
