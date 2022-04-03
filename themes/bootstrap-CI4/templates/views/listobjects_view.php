@@ -116,6 +116,10 @@ for field in self.fields:
 			""" % {
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
+		elif field.sqlType.upper()[0:4] == "DATE":
+			attributeCode += """<?=toUiDate($%(structureObName)s['%(dbName)s'])?>""" % {
+				'structureObName' : self.obName.lower(),
+				'dbName' : field.dbName}
 		else:
 			attributeCode += """<?=$%(structureObName)s['%(dbName)s']?>""" % {
 				'structureObName' : self.obName.lower(),
