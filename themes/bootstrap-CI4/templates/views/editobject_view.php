@@ -145,7 +145,7 @@ for field in self.fields:
 			<div class="row">
 				<div class="col-md-2"><i><?= lang('App.form.file.current')?></i></div>
 				<div class="col-md-2" id="%(dbName)s_currentFile">
-					<a href="/uploads/%(valueCode)s" target="_new" class="btn btn-default btn-xs">
+					<a href="<?= base_url() ?>/uploads/%(valueCode)s" target="_new" class="btn btn-default btn-xs">
 						<i class="glyphicon glyphicon-file"></i> <?= lang('App.form.button.download')?>
 					</a>
 				</div>

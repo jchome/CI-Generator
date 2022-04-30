@@ -25,7 +25,7 @@
 		<!-- table header auto-generated : -->
 					%%
 RETURN = self.dbAndObVariablesList("""<th class=\"sortable\"><!-- (dbVar)s -->
-						<a href="/index.php/%(obName_lower)s/list%(obName_lower)ss/index/(dbVar)s/<?= ($orderBy == '(dbVar)s'&& $asc == 'asc')?('desc'):('asc') ?>"
+						<a href="<?= base_url() ?>/index.php/%(obName_lower)s/list%(obName_lower)ss/index/(dbVar)s/<?= ($orderBy == '(dbVar)s'&& $asc == 'asc')?('desc'):('asc') ?>"
 						<?php if($orderBy == '(dbVar)s'&& $asc == 'asc') {?>
 							class=" sortAsc"
 						<?php }else if($orderBy == '(dbVar)s'&& $asc == 'desc') {?>
@@ -106,7 +106,7 @@ for field in self.fields:
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
 		elif field.sqlType.upper()[0:4] == "FILE":
-			attributeCode += """<a href="/uploads/<?=$%(structureObName)s['%(dbName)s']?>" target="_new" class="downloadFile">
+			attributeCode += """<a href="<?= base_url() ?>/uploads/<?=$%(structureObName)s['%(dbName)s']?>" target="_new" class="downloadFile">
 				<?=$%(structureObName)s['%(dbName)s']?></a>""" % {
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}

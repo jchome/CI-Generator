@@ -193,7 +193,7 @@ RETURN =  allAttributesCode
 				<button type="submit" class="btn btn-primary"><?= lang('App.form.button.save') ?></button>
 			</div>
 			<div class="col-md-offset-4 col-md-2 col-xs-offset-4 col-xs-2">
-				<a href="/index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index" type="button" class="btn btn-default"><?= lang('App.form.button.cancel') ?></a>
+				<a href="<?= base_url() ?>/index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index" type="button" class="btn btn-default"><?= lang('App.form.button.cancel') ?></a>
 			</div>
 		</div>
 			
