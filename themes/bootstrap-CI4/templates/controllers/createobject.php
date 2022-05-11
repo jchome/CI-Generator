@@ -21,10 +21,17 @@ class Create%%(self.obName)%% extends \App\Controllers\BaseController {
 		}
 
 		helper(['form']);
+		$data = $this->getData();
+		return $this->view('%%(self.obName.title())%%/create%%(self.obName.lower())%%', $data);
+	}
+
+	/**
+	 * Recuperation des objets references
+	 */
+	private function getData() {
 		$data = Array();
 
-
-%%allAttributeCode = "		// Recuperation des objets references"
+%%allAttributeCode = ""
 # inclure les objets référencés dans l'objet $data
 
 for field in self.fields:
@@ -50,8 +57,7 @@ for field in self.fields:
 	
 RETURN = allAttributeCode
 %%
-
-		return $this->view('%%(self.obName.title())%%/create%%(self.obName.lower())%%', $data);
+		return $data;
 	}
 	
 	/**
@@ -66,32 +72,29 @@ RETURN = allAttributeCode
 %%allAttributeCode = ""
 for field in self.fields:
 	rule = "trim"
-	if not field.nullable:
-		rule += "|required"
+	if field.sqlType.upper()[0:4] == "FILE":
+		continue
 	
 	if field.autoincrement:
 		continue
+		
+	if not field.nullable:
+		rule += "|required"
 
-	if field.sqlType.upper()[0:4] == "FILE":
-		attributeCode = """
-		'%(dbName)s_file' => '%(rule)s',""" % {
-			'dbName': field.dbName,
-			'objectObName': self.obName.title(),
-			'rule': rule
-		}
-	else:	
-		attributeCode = """
-		'%(dbName)s' => '%(rule)s',""" % {
-			'dbName': field.dbName,
-			'objectObName': self.obName.title(),
-			'rule': rule
-		}
+	attributeCode = """
+	'%(dbName)s' => '%(rule)s',""" % {
+		'dbName': field.dbName,
+		'objectObName': self.obName.title(),
+		'rule': rule
+	}
 	if attributeCode != "":
 		allAttributeCode += attributeCode
 RETURN = allAttributeCode
 %%
 		])) {
-			$this->view('%%(self.obName.title())%%/create%%(self.obName.lower())%%');
+			$data = $this->getData();
+			$data['validation'] = $this->validator;
+			$this->view('%%(self.obName.title())%%/create%%(self.obName.lower())%%', $data);
 		}
 		
 		// Insertion en base
