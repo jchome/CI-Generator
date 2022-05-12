@@ -55,7 +55,7 @@ RETURN = allAttributeCode
 	 * Sauvegarde des modifications
 	 */
 	public function save(){
-		helper(['form', 'database']);
+		helper(['form', 'database', 'security']);
 
 		$validation =  \Config\Services::validation();
 		
@@ -63,28 +63,21 @@ RETURN = allAttributeCode
 %%allAttributeCode = ""
 for field in self.fields:
 	rule = "trim"
+	if field.sqlType.upper()[0:4] == "FILE":
+		continue
+
 	if not field.nullable:
 		rule += "|required"
 	
 	if field.autoincrement:
 		continue
 
-	if field.sqlType.upper()[0:4] == "FILE":
-		pass
-		## no rule for a file
-		#attributeCode = """
-		#'%(dbName)s_file' => '%(rule)s',""" % {
-		#	'dbName': field.dbName,
-		#	'objectObName': self.obName.title(),
-		#	'rule': rule
-		#}
-	else:	
-		attributeCode = """
-		'%(dbName)s' => '%(rule)s',""" % {
-			'dbName': field.dbName,
-			'objectObName': self.obName.title(),
-			'rule': rule
-		}
+	attributeCode = """
+			'%(dbName)s' => '%(rule)s',""" % {
+		'dbName': field.dbName,
+		'objectObName': self.obName.title(),
+		'rule': rule
+	}
 	if attributeCode != "":
 		allAttributeCode += attributeCode
 RETURN = allAttributeCode
@@ -107,6 +100,11 @@ for field in self.fields:
 	if field.sqlType.upper()[0:4] == "DATE":
 		attributeCode += """
 			'%(dbName)s' => toSqlDate($this->request->getPost('%(dbName)s')),""" % {'dbName' : field.dbName }
+	
+	elif field.sqlType.upper()[0:8] == "PASSWORD":
+		attributeCode += """
+			'%(dbName)s' => generateHash($this->request->getPost('%(dbName)s')),""" % {'dbName' : field.dbName }
+		
 	else:
 		attributeCode += """
 			'%(dbName)s' => $this->request->getPost('%(dbName)s'),""" % {'dbName' : field.dbName }

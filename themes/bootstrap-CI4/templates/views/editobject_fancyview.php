@@ -133,7 +133,7 @@ for field in self.fields:
 				</a>
 			</div>
 			<div class="col-md-2" id="%(dbName)s_deleteButton">
-				<a href="#" onclick='deleteFile_%(dbName)s()' class="btn btn-default btn-xs">
+				<a onclick='deleteFile_%(dbName)s()' class="btn btn-default btn-xs">
 					<i class="glyphicon glyphicon-remove"></i> <?= lang('form.button.delete')?>
 				</a>
 			</div>
