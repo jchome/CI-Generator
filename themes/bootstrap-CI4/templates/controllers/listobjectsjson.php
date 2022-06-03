@@ -48,11 +48,11 @@ for field in self.fields:
 		attributeCode += """
 	public function findBy_%(fieldDbName)s($%(fieldDbName)s, $orderBy = null, $limit = 50, $offset = 0){
 		// recuperation des donnees
-		$this->%(objectNameLower)sModel = new \App\Models\%(objectNameTitle)sModel();
-		$model = $this->%(objectNameLower)sModel->find($%(fieldDbName)s);
+		$%(objectNameLower)sModel = new \App\Models\%(objectNameTitle)sModel();
+		$result = $%(objectNameLower)sModel->where('%(fieldDbName)s', $%(fieldDbName)s)->findAll();
 		return $this->respond([
 			'text' => 'ok',
-			'data' => $model
+			'data' => $result
 		]);
 	}""" % { 'fieldDbName' : field.dbName.lower(),
 			'objectNameLower' : self.obName.lower(),

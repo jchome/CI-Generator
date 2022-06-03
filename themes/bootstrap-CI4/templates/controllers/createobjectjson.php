@@ -2,6 +2,7 @@
 %[file : Create%%(self.obName.lower())%%json.php] 
 %[path : Controllers/%%(self.obName.title())%%]
 <?php
+
 /*
  * Created by generator
  * 
@@ -9,32 +10,6 @@
 namespace App\Controllers\%%(self.obName.title())%%;
 
 class Create%%(self.obName)%%Json extends \App\Controllers\BaseController {
-	
-	/**
-	 * Constructeur
-	 */
-	function __construct(){
-		parent::__construct();
-		$this->load->model('%%(self.obName)%%Model');
-		$this->load->library('%%(self.obName)%%Service');
-		$this->load->library('session');
-		$this->load->helper('url');
-		$this->load->database();
-%%allAttributeCode = ""
-# inclure les modeles des objets référencés
-		
-for field in self.fields:
-	attributeCode = ""
-	if field.referencedObject:
-		attributeCode += """
-		$this->load->model('%(referencedObject)sModel');
-		$this->load->library('%(referencedObject)sService');""" % {'referencedObject': field.referencedObject.obName}
-	allAttributeCode += attributeCode
-		
-RETURN = allAttributeCode
-%%
-		
-	}
 	
 	/**
 	 * page de creation d'un %%(self.obName.lower())%%

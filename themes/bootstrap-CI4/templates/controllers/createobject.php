@@ -65,7 +65,7 @@ RETURN = allAttributeCode
 	 */
 	public function add(){
 	
-		helper(['form', 'database']);
+		helper(['form', 'database', 'security']);
 		$validation =  \Config\Services::validation();
 
 		if (! $this->validate([
@@ -104,6 +104,11 @@ for field in self.fields:
 	if field.sqlType.upper()[0:4] == "DATE":
 		attributeCode += """
 			'%(dbName)s' => toSqlDate($this->request->getPost('%(dbName)s')),""" % {'dbName' : field.dbName }
+	
+	elif field.sqlType.upper()[0:8] == "PASSWORD":
+		attributeCode += """
+			'%(dbName)s' => generateHash($this->request->getPost('%(dbName)s')),""" % {'dbName' : field.dbName }
+
 	else:
 		attributeCode += """
 			'%(dbName)s' => $this->request->getPost('%(dbName)s'),""" % {'dbName' : field.dbName }
