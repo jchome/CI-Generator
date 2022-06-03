@@ -87,10 +87,10 @@ for field in self.fields:
 		}
 	if attributeCode != "":
 		allAttributeCode += attributeCode
-RETURN = allAttributeCode
+RETURN = allAttributeCode.lstrip()
 %%
 		])) {
-			log_message('debug','[Edit%(obName_lower)s.php] : Error in the form !');
+			log_message('debug','[Edit%%(self.obName.lower())%%.php] : Error in the form !');
 			session()->setFlashData('error', $validation->listErrors());
 			return redirect()->to('%%(self.obName.title())%%/edit%%(self.obName.lower())%%/index/' 
 				. $this->request->getPost('%%(self.keyFields[0].dbName)%%'));
