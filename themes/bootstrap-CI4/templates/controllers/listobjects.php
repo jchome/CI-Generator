@@ -33,11 +33,11 @@ class List%%(self.obName)%%s extends \App\Controllers\BaseController {
 		$limit = 10;
 		$pager = \Config\Services::pager();
 		// recuperation des donnees
-		$this->%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
+		$%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
 
-		$data['%%(self.obName.lower())%%s'] = $this->%%(self.obName.lower())%%Model
+		$data['%%(self.obName.lower())%%s'] = $%%(self.obName.lower())%%Model
 			->orderBy($orderBy, $asc)->paginate($limit, 'bootstrap', null, $offset);
-		$data['pager'] = $this->%%(self.obName.lower())%%Model->pager;
+		$data['pager'] = $%%(self.obName.lower())%%Model->pager;
 
 %%allAttributeCode = ""
 # inclure les objets référencés dans l'objet $data
@@ -46,8 +46,8 @@ for field in self.fields:
 	attributeCode = ""
 	if field.referencedObject and field.access == "default":
 		attributeCode += """
-		$this->%(referencedObjectLower)sModel = new \App\Models\%(referencedObjectTitle)sModel();
-		$data['%(referencedObjectLower)sCollection'] = index_data($this->%(referencedObjectLower)sModel->orderBy('%(fieldDisplay)s', 'asc')
+		$%(referencedObjectLower)sModel = new \App\Models\%(referencedObjectTitle)sModel();
+		$data['%(referencedObjectLower)sCollection'] = index_data($%(referencedObjectLower)sModel->orderBy('%(fieldDisplay)s', 'asc')
 			->findAll(), '%(fieldKey)s');""" % {
 			'referencedObjectLower' : field.referencedObject.obName.lower(),
 			'referencedObjectTitle' : field.referencedObject.obName.title(),
@@ -77,8 +77,8 @@ RETURN = allAttributeCode
 	 * @param $%%(self.keyFields[0].dbName)%% identifiant a supprimer
 	 */
 	function delete($%%(self.keyFields[0].dbName)%%){
-		$this->%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
-		$this->%%(self.obName.lower())%%Model->delete($%%(self.keyFields[0].dbName)%%);
+		$%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
+		$%%(self.obName.lower())%%Model->delete($%%(self.keyFields[0].dbName)%%);
 		session()->setFlashData('msg_confirm', lang('%%(self.obName.title())%%.message.confirm.deleted'));
 		return redirect()->to('%%(self.obName.title())%%/list%%(self.obName.lower())%%s/index'); 
 	}

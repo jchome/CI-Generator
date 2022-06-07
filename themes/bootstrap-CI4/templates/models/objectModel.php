@@ -29,6 +29,11 @@ class %%(self.obName.title())%%Model extends Model {
 RETURN = self.dbVariablesList("\t'(instVar)s', // (descrVar)s", 'instVar',  'typeVar', 'descrVar', 1)
 %%
 	];
+    public static $empty = [
+%%
+RETURN = self.dbVariablesList("\t'(instVar)s' => '',", 'instVar',  'typeVar', 'descrVar', 1)
+%%        
+    ];
 
 	/***************************************************************************
 	 * DO NOT MODIFY THIS FILE, IT IS GENERATED

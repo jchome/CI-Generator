@@ -62,11 +62,12 @@ for field in self.fields:
 	attributeCode = ""
 	if field.referencedObject and field.access == "ajax" :
 		attributeCode = """
-	$%(dbName)s_text = ($%(structureObName)s['%(dbName)s'] == 0)?(new %(referencedObject)sModel()):($this->%(referencedObjectLower)sservice->getUnique($this->db, $%(structureObName)s['%(dbName)s']));
+	$%(dbName)s_text = ($%(structureObName)s['%(dbName)s'] == 0)?(App\Models\%(referencedObject)sModel::$empty):((new \App\Models\%(referencedObject)sModel())->where('%(keyReference)s', $%(structureObName)s['%(dbName)s'])->first());
 """ % {
 		'structureObName' : self.obName.lower(),
 		'referencedObject': field.referencedObject.obName,
 		'referencedObjectLower': field.referencedObject.obName.lower(),
+		'keyReference' : field.referencedObject.keyFields[0].dbName, 
 		'dbName' : field.dbName
 		}
 	allAttributesCode += attributeCode
