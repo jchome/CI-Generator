@@ -25,14 +25,15 @@ for field in self.fields:
 		attributeCode = """ 
 $('#%(dbName)s_text').typeahead({
 	source: function (query, process) {
-		return $.get(base_url()+'index.php/%(referencedObject)s/list%(referencedObject)ssjson/findLike_%(display)s/'+query,
-		{ /*query: no more parameters*/ }, function (dataIN) {
+		return $.getJSON(base_url()+'index.php/%(referencedObject)s/list%(referencedObject)ssjson/findLike_%(display)s/'+query,
+		function (dataIN) {
+			var result = dataIN.data.%(referencedObject)sCollection;
 			data = new Array();
-			for (i in dataIN) {
+			for (i in result) {
 				var group;
 				group = {
-					id: dataIN[i].%(keyReference)s,
-					name: dataIN[i].%(display)s,
+					id: result[i].%(keyReference)s,
+					name: result[i].%(display)s,
 					toString: function () {
 						return JSON.stringify(this);
 					},

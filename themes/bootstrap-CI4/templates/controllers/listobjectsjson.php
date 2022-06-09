@@ -73,11 +73,20 @@ for field in self.fields:
 	attributeCode = ""
 	if field.sqlType.upper()[0:7] == "VARCHAR" or field.sqlType.upper()[0:4] == "TEXT" :
 		attributeCode += """
-	/*public function findLike_%(fieldDbName)s($%(fieldDbName)s){
-		$data['data'] = $this->%(objectNameLower)sservice->getAllLike_%(fieldDbName)s($this->db, urldecode($%(fieldDbName)s));
-		$this->load->view('json/jsonifyData_view', $data);
-	}*/""" % { 'fieldDbName' : field.dbName.lower(),
-			'objectNameLower' : self.obName.lower()
+	public function findLike_%(fieldDbName)s($%(fieldDbName)s){
+		$db      = \Config\Database::connect();
+		$builder = $db->table('%(tableName)s');
+		$builder->like('%(fieldDbName)s', urldecode($%(fieldDbName)s));
+
+		$data['%(objectNameLower)sCollection'] = $builder->get()->getResultArray();
+		return $this->respond([
+			'text' => 'ok',
+			'data' => $data
+		]);
+	}""" % { 'fieldDbName' : field.dbName.lower(),
+			'objectNameTitle' : self.obName.title(),
+			'objectNameLower' : self.obName.lower(),
+			'tableName' : self.dbTableName
 		}
 		
 	if attributeCode != "":
