@@ -91,7 +91,10 @@ RETURN = allAttributeCode
 			throw new \CodeIgniter\Exceptions\PageNotFoundException($page);
 		}
 
-		echo view('templates/header', ["menu" => "%%(self.obName.title())%%"]);
+		echo view('templates/header', [
+			"menu" => "%%(self.obName.title())%%",
+			"locale" => $this->request->getLocale()
+		]);
 		echo view($page, $data);
 		echo view('templates/footer');
 	}

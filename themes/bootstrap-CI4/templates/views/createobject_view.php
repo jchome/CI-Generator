@@ -38,9 +38,10 @@ for field in self.fields:
 	
 	attributeCode += """
 	<div class="row mb-3"><!-- %(obName)s : %(desc)s -->
-		<label for="%(dbName)s" class="col-sm-2 col-form-label">""" % { 'dbName' : field.dbName, 'obName' : field.obName,'desc' : field.description }
+		<label for="%(dbName)s" class="col-2 col-form-label">""" % { 'dbName' : field.dbName, 'obName' : field.obName,'desc' : field.description }
 
-	if not field.nullable:
+	if field.sqlType.upper()[0:4] != "FLAG" and not field.nullable:
+		## The Required attribute is not valid for FLAG field
 		attributeCode += "* "
 
 	attributeCode += """<?= lang('%(objectObName)s.form.%(dbName)s.label') ?>
@@ -48,10 +49,10 @@ for field in self.fields:
 
 	if field.sqlType.upper()[0:4] == "DATE":
 		attributeCode += """
-		<div class="col-sm-3">"""
+		<div class="col-3">"""
 	else:
 		attributeCode += """
-		<div class="col-sm-10">"""
+		<div class="col-10">"""
 
 	moreAttributes = ""
 	if not field.nullable:
@@ -173,10 +174,17 @@ for field in self.fields:
 				<?= lang('%(objectObName)s.form.%(dbName)s.description')?>
 			</span>
 		</div>
-	</div>""" % {
-		'dbName' : field.dbName, 
-		'objectObName' : self.obName.title() 
-	}
+		""" % {'dbName' : field.dbName, 'objectObName' : self.obName.title() }
+
+	## Add the "today" button
+	if field.sqlType.upper()[0:4] == "DATE":
+		attributeCode += """
+		<div class="col-3">
+			<button class="btn btn-primary btn-sm" onclick="return today(%(dbName)s)">Aujoud'hui</button>
+		</div>""" % {'dbName' : field.dbName}
+
+	attributeCode += """
+	</div>"""
 
 
 	# ajouter le nouvel attribut, avec indentation si ce n'est pas le premier

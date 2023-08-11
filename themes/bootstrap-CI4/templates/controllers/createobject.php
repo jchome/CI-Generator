@@ -77,8 +77,9 @@ for field in self.fields:
 	
 	if field.autoincrement:
 		continue
-		
-	if not field.nullable:
+
+	if field.sqlType.upper()[0:4] != "FLAG" and not field.nullable:
+		## The Required attribute is not valid for FLAG field
 		rule += "|required"
 
 	attributeCode = """
@@ -116,10 +117,20 @@ for field in self.fields:
 RETURN = attributeCode
 %%
 		];
-		$this->%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
+
+%%attributeCode = ""
+for field in self.fields:
+	if field.nullable:
+		attributeCode += """
+		if($data['%(dbName)s'] == ""){
+			$data['%(dbName)s'] = null;
+		}""" % {'dbName' : field.dbName }
+RETURN = attributeCode
+%%
+		$%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
 		
-		$this->%%(self.obName.lower())%%Model->insert($data);
-		$data['%%(self.keyFields[0].dbName)%%'] = $this->%%(self.obName.lower())%%Model->getInsertID();
+		$%%(self.obName.lower())%%Model->insert($data);
+		$data['%%(self.keyFields[0].dbName)%%'] = $%%(self.obName.lower())%%Model->getInsertID();
 
 %%codeForUploadFile = ""
 useUpload = False
@@ -183,8 +194,11 @@ RETURN = codeForUploadFile
 			// Whoops, we don't have a page for that!
 			throw new \CodeIgniter\Exceptions\PageNotFoundException($page);
 		}
-
-		echo view('templates/header', ["menu" => "%%(self.obName.title())%%"]);
+		
+		echo view('templates/header', [
+			"menu" => "%%(self.obName.title())%%", 
+			"locale" => $this->request->getLocale()
+		]);
 		echo view($page, $data);
 		echo view('templates/footer');
 	}

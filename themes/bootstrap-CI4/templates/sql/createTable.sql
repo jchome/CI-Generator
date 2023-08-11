@@ -50,7 +50,7 @@ for field in self.fields:
 	attributeCode = "\t`%(dbName)s` %(sqlType)s " % { 'dbName' : field.dbName,
 	  'sqlType' : typeForSQL
 	}
-	if not field.nullable:
+	if field.sqlType.upper()[0:4] != "FLAG" and not field.nullable:
 		attributeCode += "NOT NULL "
 	if field.autoincrement:
 		attributeCode += "AUTO_INCREMENT "
@@ -75,7 +75,7 @@ RETURN = content
 for field in self.fields:
 	foreignKey = ""
 	if field.referencedObject:
-		foreignKey = """ALTER TABLE %(tableName)s ADD CONSTRAINT FK_%(tableColumn)s_%(foreignTable)s_%(foreignColumn)s FOREIGN KEY (%(tableColumn)s) REFERENCES %(foreignTable)s (%(foreignColumn)s);
+		foreignKey = """ALTER TABLE %(tableName)s ADD CONSTRAINT FK_%(tableName)s_%(tableColumn)s_%(foreignTable)s_%(foreignColumn)s FOREIGN KEY (%(tableColumn)s) REFERENCES %(foreignTable)s (%(foreignColumn)s);
 """ % {	'tableName': self.dbTableName,
 	'foreignTable': field.referencedObject.dbTableName,
 	'foreignColumn': field.referencedObject.keyFields[0].dbName,

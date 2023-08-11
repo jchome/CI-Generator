@@ -65,7 +65,7 @@ for field in self.fields:
 	$%(dbName)s_text = ($%(structureObName)s['%(dbName)s'] == 0)?(App\Models\%(referencedObject)sModel::$empty):((new \App\Models\%(referencedObject)sModel())->where('%(keyReference)s', $%(structureObName)s['%(dbName)s'])->first());
 """ % {
 		'structureObName' : self.obName.lower(),
-		'referencedObject': field.referencedObject.obName,
+		'referencedObject': field.referencedObject.obName.title(),
 		'referencedObjectLower': field.referencedObject.obName.lower(),
 		'keyReference' : field.referencedObject.keyFields[0].dbName, 
 		'dbName' : field.dbName

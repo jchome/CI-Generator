@@ -35,7 +35,7 @@ for field in self.fields:
 	$%(dbName)s_text = ($%(structureObName)s['%(dbName)s'] == 0)?(App\Models\%(referencedObject)sModel::$empty):((new \App\Models\%(referencedObject)sModel())->where('%(keyReference)s', $%(structureObName)s['%(dbName)s'])->first());
 """ % {
 		'structureObName' : self.obName.lower(),
-		'referencedObject': field.referencedObject.obName,
+		'referencedObject': field.referencedObject.obName.title(),
 		'referencedObjectLower': field.referencedObject.obName.lower(),
 		'keyReference' : field.referencedObject.keyFields[0].dbName, 
 		'dbName' : field.dbName
@@ -61,7 +61,8 @@ for field in self.fields:
 	<div class="row mb-3"><!-- %(obName)s : %(desc)s -->
 		<label for="%(dbName)s" class="col-sm-2 col-form-label">""" % { 'dbName' : field.dbName, 'obName' : field.obName,'desc' : field.description }
 
-	if not field.nullable:
+	if field.sqlType.upper()[0:4] != "FLAG" and not field.nullable:
+		## The Required attribute is not valid for FLAG field
 		attributeCode += "* "
 
 	attributeCode += """<?= lang('%(objectObName)s.form.%(dbName)s.label') ?>
@@ -222,8 +223,18 @@ for field in self.fields:
 			<span id="%(dbName)sHelp" class="form-text">
 				<?= lang('%(objectObName)s.form.%(dbName)s.description')?>
 			</span>
-		</div>
-	</div>""" % {'dbName' : field.dbName, 'objectObName' : self.obName.title() }
+		</div>""" % {'dbName' : field.dbName, 'objectObName' : self.obName.title() }
+	
+		
+	## Add the "today" button
+	if field.sqlType.upper()[0:4] == "DATE":
+		attributeCode += """
+		<div class="col-3">
+			<button class="btn btn-primary btn-sm" onclick="return today(%(dbName)s)">Aujoud'hui</button>
+		</div>""" % {'dbName' : field.dbName}
+
+	attributeCode += """
+	</div>""" 
 	
 
 	# ajouter le nouvel attribut, avec indentation si ce n'est pas le premier

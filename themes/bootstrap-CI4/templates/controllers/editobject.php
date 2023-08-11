@@ -20,8 +20,8 @@ class Edit%%(self.obName)%% extends \App\Controllers\BaseController {
 		}
 		
 		helper(['form', 'database']);
-		$this->%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
-		$model = $this->%%(self.obName.lower())%%Model->find($%%(self.keyFields[0].dbName)%%);
+		$%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
+		$model = $%%(self.obName.lower())%%Model->find($%%(self.keyFields[0].dbName)%%);
 %%attributeCode = ""
 for field in self.fields:
 	if field.sqlType.upper()[0:4] == "DATE":
@@ -66,7 +66,8 @@ for field in self.fields:
 	if field.sqlType.upper()[0:4] == "FILE":
 		continue
 
-	if not field.nullable:
+	if field.sqlType.upper()[0:4] != "FLAG" and not field.nullable:
+		## The Required attribute is not valid for FLAG field
 		rule += "|required"
 	
 	if field.autoincrement:
@@ -90,9 +91,9 @@ RETURN = allAttributeCode.lstrip()
 		}
 
 		// Mise a jour des donnees en base
-		$this->%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
+		$%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
 		$key = $this->request->getPost('%%(self.keyFields[0].dbName)%%');
-		$oldModel = $this->%%(self.obName.lower())%%Model->find($key);
+		$oldModel = $%%(self.obName.lower())%%Model->find($key);
 
 		$data = [
 %%attributeCode = ""
@@ -112,8 +113,17 @@ for field in self.fields:
 RETURN = attributeCode
 %%
 		];
+%%attributeCode = ""
+for field in self.fields:
+	if field.nullable:
+		attributeCode += """
+		if($data['%(dbName)s'] == ""){
+			$data['%(dbName)s'] = null;
+		}""" % {'dbName' : field.dbName }
+RETURN = attributeCode
+%%
 
-		$this->%%(self.obName.lower())%%Model->update($key, $data);
+		$%%(self.obName.lower())%%Model->update($key, $data);
 		
 %%codeForUploadFile = ""
 useUpload = False
@@ -183,7 +193,10 @@ RETURN = codeForUploadFile
 			throw new \CodeIgniter\Exceptions\PageNotFoundException($page);
 		}
 
-		echo view('templates/header', ["menu" => "%%(self.obName.title())%%"]);
+		echo view('templates/header', [
+			"menu" => "%%(self.obName.title())%%", 
+			"locale" => $this->request->getLocale()
+		]);
 		echo view($page, $data);
 		echo view('templates/footer');
 	}
