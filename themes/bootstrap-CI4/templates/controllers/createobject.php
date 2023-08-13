@@ -38,8 +38,8 @@ for field in self.fields:
 	attributeCode = ""
 	if field.referencedObject and field.access == "default":
 		attributeCode += """
-		$this->%(referencedObjectLower)sModel = new \App\Models\%(referencedObjectTitle)sModel();
-		$data['%(referencedObjectLower)sCollection'] = $this->%(referencedObjectLower)sModel->orderBy('%(fieldDisplay)s', 'asc')->findAll();""" % {
+		$%(referencedObjectLower)sModel = new \App\Models\%(referencedObjectTitle)sModel();
+		$data['%(referencedObjectLower)sCollection'] = $%(referencedObjectLower)sModel->orderBy('%(fieldDisplay)s', 'asc')->findAll();""" % {
 			'referencedObjectLower' : field.referencedObject.obName.lower(),
 			'referencedObjectTitle' : field.referencedObject.obName.title(),
 			'fieldDisplay': field.display
@@ -171,7 +171,7 @@ for field in self.fields:
 
 if useUpload:
 	codeForUploadFile = codeForUploadFile + """
-		$this->%(obName_lower)sModel->update($data['%(keyField)s'], $data);
+		$%(obName_lower)sModel->update($data['%(keyField)s'], $data);
 """ % { 'obName_lower' : self.obName.lower(),
 		'keyField' : self.keyFields[0].dbName
 }

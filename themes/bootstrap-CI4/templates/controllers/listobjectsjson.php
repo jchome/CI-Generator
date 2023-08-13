@@ -26,11 +26,11 @@ class List%%(self.obName)%%sJson extends \App\Controllers\BaseController {
 		$limit = 10;
 		$pager = \Config\Services::pager();
 		// recuperation des donnees
-		$this->%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
+		$%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
 
-		$data['%%(self.obName.lower())%%s'] = $this->%%(self.obName.lower())%%Model
+		$data['%%(self.obName.lower())%%s'] = $%%(self.obName.lower())%%Model
 			->orderBy($orderBy, $asc)->paginate($limit, 'bootstrap', null, $offset);
-		$data['pager'] = $this->%%(self.obName.lower())%%Model->pager;
+		$data['pager'] = $%%(self.obName.lower())%%Model->pager;
 
 		return $this->respond([
 			'text' => 'ok',
