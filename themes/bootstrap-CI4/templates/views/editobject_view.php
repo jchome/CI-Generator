@@ -147,12 +147,12 @@ for field in self.fields:
 			<div class="row">
 				<div class="col-md-2"><i><?= lang('App.form.file.current')?></i></div>
 				<div class="col-md-2" id="%(dbName)s_currentFile">
-					<a href="<?= base_url() ?>/uploads/%(valueCode)s" target="_new" class="btn btn-default btn-xs">
+					<a href="<?= base_url() ?>/uploads/%(valueCode)s" target="_new" class="btn btn-primary btn-sm">
 						<i class="glyphicon glyphicon-file"></i> <?= lang('App.form.button.download')?>
 					</a>
 				</div>
 				<div class="col-md-2" id="%(dbName)s_deleteButton">
-					<a onclick='deleteFile_%(dbName)s()' class="btn btn-default btn-xs">
+					<a onclick='deleteFile_%(dbName)s()' class="btn btn-danger btn-sm">
 						<i class="glyphicon glyphicon-remove"></i> <?= lang('App.form.button.delete')?>
 					</a>
 				</div>
