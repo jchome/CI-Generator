@@ -14,7 +14,7 @@
 		<h2><?= lang('%%(self.obName.title())%%.form.create.title') ?></h2>
 		
 		<div class="row text-center ">
-			<div class="col-md-12">
+			<div class="col-12">
 				<?= session()->getFlashdata('error') ?>
 				<?= service('validation')->listErrors('errors_list') ?>
 				<br />
@@ -197,11 +197,9 @@ RETURN =  allAttributesCode
 
 		<hr>
 		<div class="row">
-			<div class="col-md-offset-2 col-md-2 col-xs-offset-2 col-xs-2">
+			<div class="d-flex justify-content-around">
 				<button type="submit" class="btn btn-primary"><?= lang('App.form.button.save') ?></button>
-			</div>
-			<div class="col-md-offset-4 col-md-2 col-xs-offset-4 col-xs-2">
-				<a href="<?= base_url() ?>/index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index" type="button" class="btn btn-default"><?= lang('App.form.button.cancel') ?></a>
+				<a href="<?= base_url() ?>/index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index" type="button" class="btn btn-secondary"><?= lang('App.form.button.cancel') ?></a>
 			</div>
 		</div>
 			

@@ -14,7 +14,7 @@
 		<h2><?= lang('%%(self.obName.title())%%.form.edit.title') ?></h2>
 		
 		<div class="row text-center ">
-			<div class="col-md-12">
+			<div class="col-12">
 				<?= session()->getFlashdata('error') ?>
 				<?= service('validation')->listErrors('errors_list') ?>
 				<br />
@@ -145,23 +145,23 @@ for field in self.fields:
 		attributeCode += """
 			<?php if($%(structureObName)s['%(dbName)s'] != "") { ?>
 			<div class="row">
-				<div class="col-md-2"><i><?= lang('App.form.file.current')?></i></div>
-				<div class="col-md-2" id="%(dbName)s_currentFile">
+				<div class="col-2"><i><?= lang('App.form.file.current')?></i></div>
+				<div class="col-2" id="%(dbName)s_currentFile">
 					<a href="<?= base_url() ?>/uploads/%(valueCode)s" target="_new" class="btn btn-primary btn-sm">
-						<i class="glyphicon glyphicon-file"></i> <?= lang('App.form.button.download')?>
+						<i class="bi bi-file-earmark-fill"></i> <?= lang('App.form.button.download')?>
 					</a>
 				</div>
-				<div class="col-md-2" id="%(dbName)s_deleteButton">
+				<div class="col-2" id="%(dbName)s_deleteButton">
 					<a onclick='deleteFile_%(dbName)s()' class="btn btn-danger btn-sm">
-						<i class="glyphicon glyphicon-remove"></i> <?= lang('App.form.button.delete')?>
+						<i class="bi bi-trash"></i> <?= lang('App.form.button.delete')?>
 					</a>
 				</div>
 			</div>
 			<hr/>
 			<?php } ?>
 			<div class="row">
-				<div class="col-md-2"><i><?= lang('App.form.file.new')?></i></div>
-				<div class="col-md-10">
+				<div class="col-2"><i><?= lang('App.form.file.new')?></i></div>
+				<div class="col-10">
 					<input class="input-file" id="%(dbName)s_file" name="%(dbName)s_file" class="form-control" type="file">
 					<input type="hidden" name="%(dbName)s" id="%(dbName)s" value="%(valueCode)s">
 				</div>
@@ -248,11 +248,9 @@ RETURN =  allAttributesCode
 		
 		<hr>
 		<div class="row">
-			<div class="col-md-offset-2 col-md-2 col-xs-offset-2 col-xs-2">
+			<div class="d-flex justify-content-around">
 				<button type="submit" class="btn btn-primary"><?= lang('App.form.button.save') ?></button>
-			</div>
-			<div class="col-md-offset-4 col-md-2 col-xs-offset-4 col-xs-2">
-				<a href="<?= base_url() ?>/index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index" type="button" class="btn btn-default"><?= lang('App.form.button.cancel') ?></a>
+				<a href="<?= base_url() ?>/index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index" type="button" class="btn btn-secondary"><?= lang('App.form.button.cancel') ?></a>
 			</div>
 		</div>
 			
