@@ -8,34 +8,10 @@
  */
 namespace App\Controllers\%%(self.obName.title())%%;
 
+use CodeIgniter\API\ResponseTrait;
+
 class Get%%(self.obName)%%Json extends \App\Controllers\BaseController {
-
-	/**
-	 * Constructeur
-	 */
-	function __construct(){
-		parent::__construct();
-		$this->load->model('%%(self.obName)%%Model');
-		$this->load->library('%%(self.obName)%%Service');
-		$this->load->library('session');
-		$this->load->library('form_validation');
-		$this->load->database();
-%%allAttributeCode = ""
-# inclure les modeles des objets référencés
-
-for field in self.fields:
-	attributeCode = ""
-	if field.referencedObject:
-		attributeCode += """
-		$this->load->model('%(referencedObject)sModel');
-		$this->load->library('%(referencedObject)sService');""" % {'referencedObject': field.referencedObject.obName}
-	allAttributeCode += attributeCode
-	
-RETURN = allAttributeCode
-%%
-
-	}
-
+	use ResponseTrait;
 %%codeForUploadFile = ""
 useUpload = False
 for field in self.fields:
@@ -78,9 +54,38 @@ RETURN = codeForUploadFile
 %%
 
 	/**
+	* Affichage des infos
+	*/
+	public function get($%%(self.keyFields[0].dbName)%%){
+%%
+field = self.keyFields[0]
+allAttributeCode = """
+		$%(objectNameLower)sModel = new \App\Models\%(objectNameTitle)sModel();
+		$result = $%(objectNameLower)sModel->find($%(fieldDbName)s);
+		if( $result == null ){
+			return $this->respond([
+				'status' => 'KO',
+				'data' => 'NOT FOUND'
+			]);
+		} else{
+			return $this->respond([
+				'status' => 'ok',
+				'data' => $result
+			]);
+		}""" % { 'fieldDbName' : field.dbName.lower(),
+			'objectNameLower' : self.obName.lower(),
+			'objectNameTitle' : self.obName.title(),
+			'obName' : self.obName
+		}
+RETURN = allAttributeCode
+%%
+	}
+
+	/**
 	 * Affichage des infos
 	 */
 	public function edit($%%(self.keyFields[0].dbName)%%){
+		/*
 		$model = $this->%%(self.obName.lower())%%service->getUnique($this->db, $%%(self.keyFields[0].dbName)%%);
 		$data['%%(self.obName.lower())%%'] = $model;
 %%allAttributeCode = ""
@@ -100,12 +105,14 @@ RETURN = allAttributeCode
 %%		
 	
 		$this->load->view('%%(self.obName.lower())%%/edit%%(self.obName.lower())%%_fancyview',$data);
+		*/
 	}
 	
 	/**
 	 * Sauvegarde des modifications
 	 */
 	public function save(){
+		/*
 		$this->form_validation->set_error_delimiters('', '');
 %%allAttributeCode = ""
 for field in self.fields:
@@ -219,6 +226,7 @@ RETURN = codeForUploadFile
 %%
 		$data['data'] = $model;
 		$this->load->view('json/jsonifyData_view', $data);
+		*/
 	}
 
 	/**
@@ -226,7 +234,8 @@ RETURN = codeForUploadFile
 	 * @param $%%(self.keyFields[0].dbName)%% identifiant a supprimer
 	 */
 	function delete($%%(self.keyFields[0].dbName)%%){
-		$model = $this->%%(self.obName.lower())%%service->getUnique($this->db, $%%(self.keyFields[0].dbName)%%);
+		$model = new \App\Models\%%(self.obName.title())%%Model();
+		$result = $model->find($%%(self.keyFields[0].dbName)%%);
 
 %%allAttributeCode = ""
 for field in self.fields:
@@ -245,10 +254,20 @@ for field in self.fields:
 
 RETURN = allAttributeCode
 %%
-		$this->%%(self.obName.lower())%%service->deleteByKey($this->db, $%%(self.keyFields[0].dbName)%%);
 
-		$data['data'] = $model;
-		$this->load->view('json/jsonifyData_view', $data);
+		if($result == null){
+			return $this->respond([
+				'status' => 'KO',
+				'data' => 'NOT FOUND',
+			]);
+		}else{
+			$model->delete($%%(self.keyFields[0].dbName)%%);
+			return $this->respond([
+				'status' => 'ok',
+			]);
+		}
+
+		
 	}
 
 }

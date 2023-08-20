@@ -145,6 +145,9 @@ for field in self.fields:
 		attributeCode += """
 			<?php if($%(structureObName)s['%(dbName)s'] != "") { ?>
 			<div class="row">
+				<img src="<?= base_url() ?>/uploads/<?= $content['%(dbName)s'] ?>"class="col-4 img-fluid mb-4" style="width: 150px;">
+			</div>
+			<div class="row">
 				<div class="col-2"><i><?= lang('App.form.file.current')?></i></div>
 				<div class="col-2" id="%(dbName)s_currentFile">
 					<a href="<?= base_url() ?>/uploads/%(valueCode)s" target="_new" class="btn btn-primary btn-sm">

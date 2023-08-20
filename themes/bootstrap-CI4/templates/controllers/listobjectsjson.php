@@ -33,7 +33,7 @@ class List%%(self.obName)%%sJson extends \App\Controllers\BaseController {
 		$data['pager'] = $%%(self.obName.lower())%%Model->pager;
 
 		return $this->respond([
-			'text' => 'ok',
+			'status' => 'ok',
 			'data' => $data
 		]);
 
@@ -51,7 +51,7 @@ for field in self.fields:
 		$%(objectNameLower)sModel = new \App\Models\%(objectNameTitle)sModel();
 		$result = $%(objectNameLower)sModel->where('%(fieldDbName)s', $%(fieldDbName)s)->findAll();
 		return $this->respond([
-			'text' => 'ok',
+			'status' => 'ok',
 			'data' => $result
 		]);
 	}""" % { 'fieldDbName' : field.dbName.lower(),
@@ -80,7 +80,7 @@ for field in self.fields:
 
 		$data['%(objectNameLower)sCollection'] = $builder->get()->getResultArray();
 		return $this->respond([
-			'text' => 'ok',
+			'status' => 'ok',
 			'data' => $data
 		]);
 	}""" % { 'fieldDbName' : field.dbName.lower(),

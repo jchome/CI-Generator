@@ -203,4 +203,3 @@ RETURN = codeForUploadFile
 		echo view('templates/footer');
 	}
 }
-?>
