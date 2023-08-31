@@ -51,7 +51,7 @@ $('#%(dbName)s_text').typeahead({
 							value += this.level;
 							value += '</span>';
 						}
-						return String.prototype.replace.apply('<div>' + value + '</div>', arguments);
+						return String.prototype.replace.apply(value, arguments);
 					}
 				};
 

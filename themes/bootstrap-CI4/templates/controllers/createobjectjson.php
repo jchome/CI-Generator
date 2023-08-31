@@ -20,6 +20,7 @@ class Create%%(self.obName)%%Json extends \App\Controllers\BaseController {
 	 */	
 	public function index(){
 		$data = Array();
+		/*
 %%allAttributeCode = "		// Recuperation des objets references"
 # inclure les objets référencés dans l'objet $data
 
@@ -44,14 +45,15 @@ for field in self.fields:
 	
 RETURN = allAttributeCode
 %%
-
+*/
 		echo view('%%(self.obName.lower())%%/create%%(self.obName.lower())%%_fancyview', $data);
 	}
 	
 	/**
-	 * Ajout d'un %%(self.obName)%%
+	 * Ajout / Mise a jour d'un %%(self.obName)%%
+	 * Si le champ '%%(self.keyFields[0].dbName)%%' est vide, un nouvel enregistrement sera cree
 	 */
-	public function add(){
+	public function save(){
 	
 		helper(['form', 'database', 'security']);
 		$validation =  \Config\Services::validation();
@@ -120,8 +122,10 @@ RETURN = attributeCode
 %%
 		$%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
 		
-		$%%(self.obName.lower())%%Model->insert($data);
-		$data['%%(self.keyFields[0].dbName)%%'] = $%%(self.obName.lower())%%Model->getInsertID();
+		$%%(self.obName.lower())%%Model->save($data);
+		if($data['%%(self.keyFields[0].dbName)%%'] == null || $data['%%(self.keyFields[0].dbName)%%'] == ""){
+			$data['%%(self.keyFields[0].dbName)%%'] = $%%(self.obName.lower())%%Model->getInsertID();
+		}
 
 %%codeForUploadFile = ""
 useUpload = False
