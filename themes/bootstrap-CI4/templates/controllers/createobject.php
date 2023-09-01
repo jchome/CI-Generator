@@ -72,7 +72,7 @@ RETURN = allAttributeCode
 %%allAttributeCode = ""
 for field in self.fields:
 	rule = "trim"
-	if field.sqlType.upper()[0:4] == "FILE":
+	if field.sqlType.upper()[0:4] == "FILE" or field.sqlType.upper()[0:4] == "FLAG":
 		continue
 	
 	if field.autoincrement:

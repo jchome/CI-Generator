@@ -55,7 +55,7 @@ for field in self.fields:
 		<div class="col-10">"""
 
 	moreAttributes = ""
-	if not field.nullable:
+	if field.sqlType.upper()[0:4] != "FLAG" and not field.nullable:
 		moreAttributes = "required "
 	
 	if field.referencedObject and field.access == "default":
