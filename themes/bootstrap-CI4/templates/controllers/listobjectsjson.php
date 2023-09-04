@@ -39,6 +39,23 @@ class List%%(self.obName)%%sJson extends \App\Controllers\BaseController {
 
 	}
 
+	/**
+	 * Get all objects having the key in the list $listOfKeys (string separated by ',')
+	 * 
+	 */
+	public function getAll_%%(self.keyFields[0].dbName)%%($listOfKeys, $orderBy = null){
+		$%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
+		$keysArray = explode(',', $listOfKeys);
+		if($orderBy == null){
+			$orderBy = '%%(self.keyFields[0].dbName)%%';
+		}
+		$result = $%%(self.obName.lower())%%Model->orderBy($orderBy, 'asc')->find($keysArray);
+		return $this->respond([
+			'status' => 'ok',
+			'data' => $result
+		]);
+	}
+
 %%allAttributeCode = ""
 for field in self.fields:
 	attributeCode = ""
@@ -49,7 +66,7 @@ for field in self.fields:
 	public function findBy_%(fieldDbName)s($%(fieldDbName)s, $orderBy = null, $limit = 50, $offset = 0){
 		// recuperation des donnees
 		$%(objectNameLower)sModel = new \App\Models\%(objectNameTitle)sModel();
-		$result = $%(objectNameLower)sModel->where('%(fieldDbName)s', $%(fieldDbName)s)->findAll();
+		$result = $%(objectNameLower)sModel->where('%(fieldDbName)s', $%(fieldDbName)s)->findAll($limit, $offset);
 		return $this->respond([
 			'status' => 'ok',
 			'data' => $result
