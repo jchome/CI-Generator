@@ -15,7 +15,7 @@ class List%%(self.obName)%%s extends \App\Controllers\BaseController {
 	 */
 	public function index($orderBy = null, $asc = null, $offset = 0){
 
-		if(session()->get('user_name') == "") {
+		if(session()->get('user_id') == "") {
 			return redirect()->to('welcome/index');
 		}
 		

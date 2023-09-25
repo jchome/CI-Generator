@@ -16,7 +16,7 @@ class Create%%(self.obName)%% extends \App\Controllers\BaseController {
 	 */	
 	public function index(){
 
-		if(session()->get('user_name') == "") {
+		if(session()->get('user_id') == "") {
 			return redirect()->to('welcome/index');
 		}
 

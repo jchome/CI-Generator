@@ -7,7 +7,7 @@
  *
  */
 
-if(session()->get('user_name') == "") {
+if(session()->get('user_id') == "") {
 	redirect('welcome/index');
 }
 ?>

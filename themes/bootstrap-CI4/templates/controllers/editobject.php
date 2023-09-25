@@ -15,7 +15,7 @@ class Edit%%(self.obName)%% extends \App\Controllers\BaseController {
 	 */
 	public function index($%%(self.keyFields[0].dbName)%%){
 
-		if(session()->get('user_name') == "") {
+		if(session()->get('user_id') == "") {
 			return redirect()->to('welcome/index');
 		}
 		
