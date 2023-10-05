@@ -1,12 +1,12 @@
 %[kind : controllers]
 %[file : Create%%(self.obName.lower())%%.php] 
-%[path : Controllers/%%(self.obName.title())%%]
+%[path : Controllers/Generated/%%(self.obName.title())%%]
 <?php
 /*
  * Created by generator
  * 
  */
-namespace App\Controllers\%%(self.obName.title())%%;
+namespace App\Controllers\Generated\%%(self.obName.title())%%;
 
 class Create%%(self.obName)%% extends \App\Controllers\BaseController {
 	
@@ -22,7 +22,7 @@ class Create%%(self.obName)%% extends \App\Controllers\BaseController {
 
 		helper(['form']);
 		$data = $this->getData();
-		return $this->view('%%(self.obName.title())%%/create%%(self.obName.lower())%%', $data);
+		return $this->view('Generated/%%(self.obName.title())%%/create%%(self.obName.lower())%%', $data);
 	}
 
 	/**
@@ -95,7 +95,7 @@ RETURN = allAttributeCode
 		])) {
 			$data = $this->getData();
 			$data['validation'] = $this->validator;
-			$this->view('%%(self.obName.title())%%/create%%(self.obName.lower())%%', $data);
+			$this->view('Generated/%%(self.obName.title())%%/create%%(self.obName.lower())%%', $data);
 		}
 		
 		// Insertion en base
@@ -183,7 +183,7 @@ RETURN = codeForUploadFile
 		// Recharge la page avec les nouvelles infos
 		session()->setFlashData('msg_confirm', lang('%%(self.obName.title())%%.message.confirm.added'));
 
-		return redirect()->to('%%(self.obName.title())%%/list%%(self.obName.lower())%%s/index');
+		return redirect()->to('Generated/%%(self.obName.title())%%/list%%(self.obName.lower())%%s/index');
 	}
 
 

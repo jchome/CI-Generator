@@ -1,6 +1,6 @@
 %[kind : views]
 %[file : edit%%(self.obName.lower())%%_fancyview.php]
-%[path : Views/%%(self.obName.title())%%]
+%[path : Views/Generated/%%(self.obName.title())%%]
 <?php
 /*
  * Created by generator
@@ -22,7 +22,7 @@ if(session()->get('user_id') == "") {
 <?php
 $attributes_info = array('name' => 'EditForm%%(self.obName)%%', 'id' => 'EditForm%%(self.obName)%%', 'class' => 'form-horizontal');
 $fields_info = array('%%(self.keyFields[0].dbName)%%' => $%%(self.obName.lower())%%->%%(self.keyFields[0].dbName)%%);
-echo form_open_multipart('%%(self.obName.lower())%%/get%%(self.obName.lower())%%json/save', $attributes_info, $fields_info );
+echo form_open_multipart('Generated/%%(self.obName.lower())%%/get%%(self.obName.lower())%%json/save', $attributes_info, $fields_info );
 %%allAttributesCode = ""
 
 for field in self.fields:
@@ -230,4 +230,4 @@ echo form_close('');
 	</div> <!-- .container -->
 
 
-<script src="<?= base_url() ?>/js/views/%%(self.obName.lower())%%/edit%%(self.obName.lower())%%.fancy.js"></script>
+<script src="<?= base_url() ?>/js/views/generated/%%(self.obName.lower())%%/edit%%(self.obName.lower())%%.fancy.js"></script>

@@ -1,6 +1,6 @@
 %[kind : views]
 %[file : list%%(self.obName.lower())%%s.php] 
-%[path : Views/%%(self.obName.title())%%]
+%[path : Views/Generated/%%(self.obName.title())%%]
 <?php
 /*
  * Created by generator
@@ -25,7 +25,7 @@
 		<!-- table header auto-generated : -->
 					%%
 RETURN = self.dbAndObVariablesList("""<th class=\"sortable\"><!-- (dbVar)s -->
-						<a href="<?= base_url() ?>/index.php/%(obName_lower)s/list%(obName_lower)ss/index/(dbVar)s/<?= ($orderBy == '(dbVar)s'&& $asc == 'asc')?('desc'):('asc') ?>"
+						<a href="<?= base_url() ?>/index.php/Generated/%(obName_lower)s/list%(obName_lower)ss/index/(dbVar)s/<?= ($orderBy == '(dbVar)s'&& $asc == 'asc')?('desc'):('asc') ?>"
 						<?php if($orderBy == '(dbVar)s'&& $asc == 'asc') {?>
 							class=" sortAsc"
 						<?php }else if($orderBy == '(dbVar)s'&& $asc == 'desc') {?>
@@ -132,7 +132,7 @@ RETURN = allAttributesCode
 %%
 					<td>
 						<a class="btn btn-secondary" 
-							href="<?= base_url() ?>/index.php/%%(self.obName.lower())%%/edit%%(self.obName.lower())%%/index/<?=$%%(self.obName.lower())%%['%%(self.keyFields[0].dbName)%%']?>" 
+							href="<?= base_url() ?>/index.php/Generated/%%(self.obName.lower())%%/edit%%(self.obName.lower())%%/index/<?=$%%(self.obName.lower())%%['%%(self.keyFields[0].dbName)%%']?>" 
 							title="<?= lang('App.form.button.edit') ?>">
 							<i class="bi bi-pencil-fill"></i>
 						</a>
@@ -155,9 +155,9 @@ endforeach; ?>
 			</ul>
 		</div><!-- .pagination -->
 		
-		<a href="<?= base_url('%%(self.obName.lower())%%/create%%(self.obName.lower())%%/index')?>"
+		<a href="<?= base_url('Generated/%%(self.obName.lower())%%/create%%(self.obName.lower())%%/index')?>"
 			role="button" class="btn btn-primary"><?= lang('%%(self.obName.title())%%.form.create.title') ?></a>
 	</div><!-- .container -->
 	
 
-<script src="<?= base_url() ?>/js/views/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s.js"></script>
+<script src="<?= base_url() ?>/js/views/generated/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s.js"></script>

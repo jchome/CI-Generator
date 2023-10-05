@@ -1,6 +1,6 @@
 %[kind : json0]
 %[file : jsonifyUnique_view0.php] 
-%[path : Views/%%(self.obName.title())%%]
+%[path : Views/Generated/%%(self.obName.title())%%]
 <?php
 /*
  * Created by generator

@@ -1,6 +1,6 @@
 %[kind : unitTest]
 %[file : %%(self.obName.title())%%test.php] 
-%[path : Controllers/test]
+%[path : Controllers/Generated/test]
 <?php
 /*
  * Created by generator

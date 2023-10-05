@@ -1,12 +1,12 @@
 %[kind : controllers]
 %[file : Import%%(self.obName.lower())%%s.php] 
-%[path : Controllers/%%(self.obName.title())%%]
+%[path : Controllers/Generated/%%(self.obName.title())%%]
 <?php
 /*
  * Created by generator
  *
  */
-namespace App\Controllers\%%(self.obName.title())%%;
+namespace App\Controllers\Generated\%%(self.obName.title())%%;
 
 class Import%%(self.obName)%%s extends \App\Controllers\BaseController {
 
@@ -23,7 +23,7 @@ class Import%%(self.obName)%%s extends \App\Controllers\BaseController {
 	
 	public function index(){
 		$data = array();
-		$this->load->view('%%(self.obName.lower())%%/import%%(self.obName.lower())%%s_view', $data);
+		$this->load->view('Generated/%%(self.obName.lower())%%/import%%(self.obName.lower())%%s_view', $data);
 	}
 	
 	public function loadFile(){
@@ -62,7 +62,7 @@ class Import%%(self.obName)%%s extends \App\Controllers\BaseController {
 			unlink($filename);
 		}
 	
-		$this->load->view('%%(self.obName.lower())%%/import%%(self.obName.lower())%%s_view', $data);
+		$this->load->view('Generated/%%(self.obName.lower())%%/import%%(self.obName.lower())%%s_view', $data);
 	
 	}
 	/**

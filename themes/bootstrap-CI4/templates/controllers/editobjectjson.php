@@ -1,6 +1,6 @@
 %[kind : controllers0]
 %[file : Edit%%(self.obName.lower())%%json.php] 
-%[path : Controllers/%%(self.obName.title())%%]
+%[path : Controllers/Generated/%%(self.obName.title())%%]
 <?php
 /*
  * Created by generator
@@ -57,7 +57,7 @@ for field in self.fields:
 RETURN = allAttributeCode
 %%
 
-		$this->load->view('%%(self.obName.lower())%%/edit%%(self.obName.lower())%%_fancyview',$data);
+		$this->load->view('Generated/%%(self.obName.lower())%%/edit%%(self.obName.lower())%%_fancyview',$data);
 	}
 
 	/**
@@ -91,7 +91,7 @@ RETURN = allAttributeCode
 %%
 		
 		if($this->form_validation->run() == FALSE){
-			$this->load->view('%%(self.obName.lower())%%/edit%%(self.obName.lower())%%_fancyview');
+			$this->load->view('Generated/%%(self.obName.lower())%%/edit%%(self.obName.lower())%%_fancyview');
 		}
 		
 		// Mise a jour des donnees en base
@@ -178,7 +178,7 @@ RETURN = codeForUploadFile
 %%
 		$this->session->set_flashdata('msg_confirm', $this->lang->line('%%(self.obName.lower())%%.message.confirm.modified'));
 
-		redirect('%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index');
+		redirect('Generated/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index');
 	}
 
 }

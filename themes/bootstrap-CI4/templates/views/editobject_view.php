@@ -1,6 +1,6 @@
 %[kind : views]
 %[file : edit%%(self.obName.lower())%%.php]
-%[path : Views/%%(self.obName.title())%%]
+%[path : Views/Generated/%%(self.obName.title())%%]
 <?php
 /*
  * Created by generator
@@ -25,7 +25,7 @@
 <?php
 $attributes_info = array('name' => 'EditForm', 'class' => 'form-horizontal');
 $fields_info = array('%%(self.keyFields[0].dbName)%%' => $%%(self.obName.lower())%%['%%(self.keyFields[0].dbName)%%']);
-echo form_open_multipart('%%(self.obName.lower())%%/edit%%(self.obName.lower())%%/save', $attributes_info, $fields_info );
+echo form_open_multipart('Generated/%%(self.obName.lower())%%/edit%%(self.obName.lower())%%/save', $attributes_info, $fields_info );
 %%allAttributesCode = ""
 
 for field in self.fields:
@@ -253,7 +253,7 @@ RETURN =  allAttributesCode
 		<div class="row">
 			<div class="d-flex justify-content-around">
 				<button type="submit" class="btn btn-primary"><?= lang('App.form.button.save') ?></button>
-				<a href="<?= base_url() ?>/index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index" type="button" class="btn btn-secondary"><?= lang('App.form.button.cancel') ?></a>
+				<a href="<?= base_url() ?>/index.php/Generated/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index" type="button" class="btn btn-secondary"><?= lang('App.form.button.cancel') ?></a>
 			</div>
 		</div>
 			
@@ -265,4 +265,4 @@ echo form_close('');
 		</div> <!-- .row-fluid -->
 	</div> <!-- .container -->
 
-<script src="<?= base_url() ?>/js/views/%%(self.obName.lower())%%/edit%%(self.obName.lower())%%.js"></script>
+<script src="<?= base_url() ?>/js/views/generated/%%(self.obName.lower())%%/edit%%(self.obName.lower())%%.js"></script>

@@ -1,13 +1,13 @@
 %[kind : json]
 %[file : Create%%(self.obName.lower())%%json.php] 
-%[path : Controllers/%%(self.obName.title())%%]
+%[path : Controllers/Generated/%%(self.obName.title())%%]
 <?php
 
 /*
  * Created by generator
  * 
  */
-namespace App\Controllers\%%(self.obName.title())%%;
+namespace App\Controllers\Generated\%%(self.obName.title())%%;
 
 use CodeIgniter\API\ResponseTrait;
 

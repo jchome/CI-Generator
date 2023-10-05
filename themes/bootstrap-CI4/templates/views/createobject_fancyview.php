@@ -1,6 +1,6 @@
 %[kind : views]
 %[file : create%%(self.obName.lower())%%_fancyview.php]
-%[path : Views/%%(self.obName.title())%%]
+%[path : Views/Generated/%%(self.obName.title())%%]
 <?php
 /*
  * Created by generator
@@ -22,7 +22,7 @@ if(session()->get('user_id') == "") {
 <?php
 $attributes_info = array('name' => 'AddForm%%(self.obName)%%', 'id' => 'AddForm%%(self.obName)%%', 'class' => 'form-horizontal');
 $fields_info = array();
-echo form_open_multipart('%%(self.obName.lower())%%/create%%(self.obName.lower())%%json/add', $attributes_info, $fields_info );
+echo form_open_multipart('Generated/%%(self.obName.lower())%%/create%%(self.obName.lower())%%json/add', $attributes_info, $fields_info );
 ?>
 
 			<fieldset>
@@ -177,4 +177,4 @@ echo form_close('');
 		</div> <!-- .row-fluid -->
 	</div> <!-- .container -->
 
-<script src="<?= base_url() ?>www/js/views/%%(self.obName.lower())%%/create%%(self.obName.lower())%%.fancy.js"></script>
+<script src="<?= base_url() ?>www/js/views/generated/%%(self.obName.lower())%%/create%%(self.obName.lower())%%.fancy.js"></script>

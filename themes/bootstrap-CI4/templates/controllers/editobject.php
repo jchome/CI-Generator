@@ -1,12 +1,12 @@
 %[kind : controllers]
 %[file : Edit%%(self.obName.lower())%%.php] 
-%[path : Controllers/%%(self.obName.title())%%]
+%[path : Controllers/Generated/%%(self.obName.title())%%]
 <?php
 /*
  * Created by generator
  *
  */
-namespace App\Controllers\%%(self.obName.title())%%;
+namespace App\Controllers\Generated\%%(self.obName.title())%%;
 
 class Edit%%(self.obName)%% extends \App\Controllers\BaseController {
 
@@ -48,7 +48,7 @@ for field in self.fields:
 	
 RETURN = allAttributeCode
 %%
-		return $this->view('%%(self.obName.title())%%/edit%%(self.obName.lower())%%', $data);
+		return $this->view('Generated/%%(self.obName.title())%%/edit%%(self.obName.lower())%%', $data);
 	}
 
 	/**
@@ -86,7 +86,7 @@ RETURN = allAttributeCode.lstrip()
 		])) {
 			log_message('debug','[Edit%%(self.obName.lower())%%.php] : Error in the form !');
 			session()->setFlashData('error', $validation->listErrors());
-			return redirect()->to('%%(self.obName.title())%%/edit%%(self.obName.lower())%%/index/' 
+			return redirect()->to('Generated/%%(self.obName.title())%%/edit%%(self.obName.lower())%%/index/' 
 				. $this->request->getPost('%%(self.keyFields[0].dbName)%%'));
 		}
 
@@ -181,7 +181,7 @@ RETURN = codeForUploadFile
 %%
 
 		session()->setFlashData('msg_confirm', lang('%%(self.obName.title())%%.message.confirm.modified'));
-		return redirect()->to('%%(self.obName.title())%%/list%%(self.obName.lower())%%s/index');
+		return redirect()->to('Generated/%%(self.obName.title())%%/list%%(self.obName.lower())%%s/index');
 	}
 
 

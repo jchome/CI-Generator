@@ -1,6 +1,6 @@
 %[kind : views]
 %[file : createMultiselect%%(self.obName)%%Fragment_view.php]
-%[path : Views/%%(self.obName.title())%%]
+%[path : Views/Generated/%%(self.obName.title())%%]
 
 %%
 allAttributesCode = ""

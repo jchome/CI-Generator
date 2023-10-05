@@ -1,12 +1,12 @@
 %[kind : controllers]
 %[file : List%%(self.obName.lower())%%s.php] 
-%[path : Controllers/%%(self.obName.title())%%]
+%[path : Controllers/Generated/%%(self.obName.title())%%]
 <?php
 /*
  * Created by generator
  *
  */
-namespace App\Controllers\%%(self.obName.title())%%;
+namespace App\Controllers\Generated\%%(self.obName.title())%%;
 
 class List%%(self.obName)%%s extends \App\Controllers\BaseController {
 
@@ -68,7 +68,7 @@ for field in self.fields:
 RETURN = allAttributeCode
 %%
 
-		return $this->view('%%(self.obName.title())%%/list%%(self.obName.lower())%%s', $data);
+		return $this->view('Generated/%%(self.obName.title())%%/list%%(self.obName.lower())%%s', $data);
 	}
 
 	
@@ -80,7 +80,7 @@ RETURN = allAttributeCode
 		$%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
 		$%%(self.obName.lower())%%Model->delete($%%(self.keyFields[0].dbName)%%);
 		session()->setFlashData('msg_confirm', lang('%%(self.obName.title())%%.message.confirm.deleted'));
-		return redirect()->to('%%(self.obName.title())%%/list%%(self.obName.lower())%%s/index'); 
+		return redirect()->to('Generated/%%(self.obName.title())%%/list%%(self.obName.lower())%%s/index'); 
 	}
 
 	public function view($page, $data = [])

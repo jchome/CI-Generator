@@ -1,6 +1,6 @@
 %[kind : views]
 %[file : create%%(self.obName.lower())%%.php]
-%[path : Views/%%(self.obName.title())%%]
+%[path : Views/Generated/%%(self.obName.title())%%]
 <?php
 /*
  * Created by generator
@@ -22,7 +22,7 @@
 		</div>
 		<div class="row-fluid">
 <?php
-echo form_open_multipart('%%(self.obName.lower())%%/create%%(self.obName.lower())%%/add', 'class="form-horizontal"');
+echo form_open_multipart('Generated/%%(self.obName.lower())%%/create%%(self.obName.lower())%%/add', 'class="form-horizontal"');
 ?>
 
 	<!-- list of variables - auto-generated : -->
@@ -199,7 +199,7 @@ RETURN =  allAttributesCode
 		<div class="row">
 			<div class="d-flex justify-content-around">
 				<button type="submit" class="btn btn-primary"><?= lang('App.form.button.save') ?></button>
-				<a href="<?= base_url() ?>/index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index" type="button" class="btn btn-secondary"><?= lang('App.form.button.cancel') ?></a>
+				<a href="<?= base_url() ?>/index.php/Generated/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index" type="button" class="btn btn-secondary"><?= lang('App.form.button.cancel') ?></a>
 			</div>
 		</div>
 			
@@ -208,4 +208,4 @@ RETURN =  allAttributesCode
 		</div> <!-- .row-fluid -->
 	</div> <!-- .container -->
 
-<script src="<?= base_url() ?>/js/views/%%(self.obName.lower())%%/create%%(self.obName.lower())%%.js"></script>
+<script src="<?= base_url() ?>/js/views/generated/%%(self.obName.lower())%%/create%%(self.obName.lower())%%.js"></script>

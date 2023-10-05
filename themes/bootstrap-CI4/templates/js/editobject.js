@@ -1,6 +1,6 @@
 %[kind : js]
 %[file : edit%%(self.obName.lower())%%.js]
-%[path : ../public/js/views/%%(self.obName.lower())%%]
+%[path : ../public/js/views/generated/%%(self.obName.lower())%%]
 /* Javascript for edit%%(self.obName.lower())%%_view.php */
 
 %%
@@ -47,7 +47,7 @@ for field in self.fields:
 		attributeCode = """ 
 $('#%(dbName)s_text').typeahead({
 	source: function (query, process) {
-		return $.getJSON(base_url()+'index.php/%(referencedObject)s/list%(referencedObject)ssjson/findLike_%(display)s/'+query,
+		return $.getJSON(base_url()+'index.php/Generated/%(referencedObject)s/list%(referencedObject)ssjson/findLike_%(display)s/'+query,
 		function (dataIN) {
 			var result = dataIN.data.%(referencedObject)sCollection;
 			data = new Array();
