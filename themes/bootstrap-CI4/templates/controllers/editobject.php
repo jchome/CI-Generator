@@ -8,7 +8,7 @@
  */
 namespace App\Controllers\Generated\%%(self.obName.title())%%;
 
-class Edit%%(self.obName)%% extends \App\Controllers\BaseController {
+class Edit%%(self.obName)%% extends \App\Controllers\Generated\HtmlController {
 
 	/**
 	 * Affichage des infos
@@ -48,7 +48,7 @@ for field in self.fields:
 	
 RETURN = allAttributeCode
 %%
-		return $this->view('Generated/%%(self.obName.title())%%/edit%%(self.obName.lower())%%', $data);
+		return $this->view('Generated/%%(self.obName.title())%%/edit%%(self.obName.lower())%%', $data, '%%(self.obName.title())%%');
 	}
 
 	/**
@@ -184,22 +184,6 @@ RETURN = codeForUploadFile
 		return redirect()->to('Generated/%%(self.obName.title())%%/list%%(self.obName.lower())%%s/index');
 	}
 
-
-	public function view($page, $data = [])
-	{
-		if (! is_file(APPPATH . 'Views/' . $page . '.php')) {
-			print("Cannot open view to ". $page);
-			// Whoops, we don't have a page for that!
-			throw new \CodeIgniter\Exceptions\PageNotFoundException($page);
-		}
-
-		echo view('templates/header', [
-			"menu" => "%%(self.obName.title())%%", 
-			"locale" => $this->request->getLocale()
-		]);
-		echo view($page, $data);
-		echo view('templates/footer');
-	}
 
 }
 ?>

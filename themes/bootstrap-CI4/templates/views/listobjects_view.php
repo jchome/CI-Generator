@@ -25,7 +25,7 @@
 		<!-- table header auto-generated : -->
 					%%
 RETURN = self.dbAndObVariablesList("""<th class=\"sortable\"><!-- (dbVar)s -->
-						<a href="<?= base_url() ?>/index.php/Generated/%(obName_lower)s/list%(obName_lower)ss/index/(dbVar)s/<?= ($orderBy == '(dbVar)s'&& $asc == 'asc')?('desc'):('asc') ?>"
+						<a href="<?= base_url() ?>/Generated/%(obName_lower)s/list%(obName_lower)ss/index/(dbVar)s/<?= ($orderBy == '(dbVar)s'&& $asc == 'asc')?('desc'):('asc') ?>"
 						<?php if($orderBy == '(dbVar)s'&& $asc == 'asc') {?>
 							class=" sortAsc"
 						<?php }else if($orderBy == '(dbVar)s'&& $asc == 'desc') {?>
@@ -132,7 +132,7 @@ RETURN = allAttributesCode
 %%
 					<td>
 						<a class="btn btn-secondary" 
-							href="<?= base_url() ?>/index.php/Generated/%%(self.obName.lower())%%/edit%%(self.obName.lower())%%/index/<?=$%%(self.obName.lower())%%['%%(self.keyFields[0].dbName)%%']?>" 
+							href="<?= base_url() ?>/Generated/%%(self.obName.lower())%%/edit%%(self.obName.lower())%%/index/<?=$%%(self.obName.lower())%%['%%(self.keyFields[0].dbName)%%']?>" 
 							title="<?= lang('App.form.button.edit') ?>">
 							<i class="bi bi-pencil-fill"></i>
 						</a>

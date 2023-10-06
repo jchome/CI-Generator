@@ -8,7 +8,7 @@
  */
 namespace App\Controllers\Generated\%%(self.obName.title())%%;
 
-class Create%%(self.obName)%% extends \App\Controllers\BaseController {
+class Create%%(self.obName)%% extends \App\Controllers\Generated\HtmlController {
 	
 	
 	/**
@@ -22,7 +22,7 @@ class Create%%(self.obName)%% extends \App\Controllers\BaseController {
 
 		helper(['form']);
 		$data = $this->getData();
-		return $this->view('Generated/%%(self.obName.title())%%/create%%(self.obName.lower())%%', $data);
+		return $this->view('Generated/%%(self.obName.title())%%/create%%(self.obName.lower())%%', $data, '%%(self.obName.title())%%');
 	}
 
 	/**
@@ -95,7 +95,7 @@ RETURN = allAttributeCode
 		])) {
 			$data = $this->getData();
 			$data['validation'] = $this->validator;
-			$this->view('Generated/%%(self.obName.title())%%/create%%(self.obName.lower())%%', $data);
+			$this->view('Generated/%%(self.obName.title())%%/create%%(self.obName.lower())%%', $data, '%%(self.obName.title())%%');
 		}
 		
 		// Insertion en base
@@ -184,22 +184,5 @@ RETURN = codeForUploadFile
 		session()->setFlashData('msg_confirm', lang('%%(self.obName.title())%%.message.confirm.added'));
 
 		return redirect()->to('Generated/%%(self.obName.title())%%/list%%(self.obName.lower())%%s/index');
-	}
-
-
-	public function view($page, $data = [])
-	{
-		if (! is_file(APPPATH . 'Views/' . $page . '.php')) {
-			print("Cannot open view to ". $page);
-			// Whoops, we don't have a page for that!
-			throw new \CodeIgniter\Exceptions\PageNotFoundException($page);
-		}
-		
-		echo view('templates/header', [
-			"menu" => "%%(self.obName.title())%%", 
-			"locale" => $this->request->getLocale()
-		]);
-		echo view($page, $data);
-		echo view('templates/footer');
 	}
 }

@@ -8,7 +8,7 @@
  */
 namespace App\Controllers\Generated\%%(self.obName.title())%%;
 
-class List%%(self.obName)%%s extends \App\Controllers\BaseController {
+class List%%(self.obName)%%s extends \App\Controllers\Generated\HtmlController {
 
 	/**
 	 * Affichage des %%(self.obName)%%s
@@ -68,7 +68,7 @@ for field in self.fields:
 RETURN = allAttributeCode
 %%
 
-		return $this->view('Generated/%%(self.obName.title())%%/list%%(self.obName.lower())%%s', $data);
+		return $this->view('Generated/%%(self.obName.title())%%/list%%(self.obName.lower())%%s', $data, '%%(self.obName.title())%%');
 	}
 
 	
@@ -81,22 +81,6 @@ RETURN = allAttributeCode
 		$%%(self.obName.lower())%%Model->delete($%%(self.keyFields[0].dbName)%%);
 		session()->setFlashData('msg_confirm', lang('%%(self.obName.title())%%.message.confirm.deleted'));
 		return redirect()->to('Generated/%%(self.obName.title())%%/list%%(self.obName.lower())%%s/index'); 
-	}
-
-	public function view($page, $data = [])
-	{
-		if (! is_file(APPPATH . 'Views/' . $page . '.php')) {
-			print("Cannot open view to ". $page);
-			// Whoops, we don't have a page for that!
-			throw new \CodeIgniter\Exceptions\PageNotFoundException($page);
-		}
-
-		echo view('templates/header', [
-			"menu" => "%%(self.obName.title())%%",
-			"locale" => $this->request->getLocale()
-		]);
-		echo view($page, $data);
-		echo view('templates/footer');
 	}
 
 }

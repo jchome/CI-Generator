@@ -25,7 +25,7 @@ for field in self.fields:
 		attributeCode = """ 
 $('#%(dbName)s_text').typeahead({
 	source: function (query, process) {
-		return $.getJSON(base_url()+'index.php/Generated/%(referencedObject)s/list%(referencedObject)ssjson/findLike_%(display)s/'+query,
+		return $.getJSON(base_url()+'Generated/%(referencedObject)s/list%(referencedObject)ssjson/findLike_%(display)s/'+query,
 		function (dataIN) {
 			var result = dataIN.data.%(referencedObject)sCollection;
 			data = new Array();

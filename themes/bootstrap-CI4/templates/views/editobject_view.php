@@ -253,7 +253,7 @@ RETURN =  allAttributesCode
 		<div class="row">
 			<div class="d-flex justify-content-around">
 				<button type="submit" class="btn btn-primary"><?= lang('App.form.button.save') ?></button>
-				<a href="<?= base_url() ?>/index.php/Generated/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index" type="button" class="btn btn-secondary"><?= lang('App.form.button.cancel') ?></a>
+				<a href="<?= base_url() ?>/Generated/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/index" type="button" class="btn btn-secondary"><?= lang('App.form.button.cancel') ?></a>
 			</div>
 		</div>
 			
