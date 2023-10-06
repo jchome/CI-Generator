@@ -137,7 +137,7 @@ RETURN = allAttributesCode
 							<i class="bi bi-pencil-fill"></i>
 						</a>
 						<a class="btn btn-danger" href="#" 
-							onclick="if( confirm('<?= lang('%%(self.obName.title())%%.message.askConfirm.deletion')?>')){document.location.href='<?= base_url() ?>/index.php/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/delete/<?=$%%(self.obName.lower())%%['%%(self.keyFields[0].dbName)%%']?>';}" 
+							onclick="if( confirm('<?= lang('%%(self.obName.title())%%.message.askConfirm.deletion')?>')){document.location.href='<?= base_url() ?>/Generated/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/delete/<?=$%%(self.obName.lower())%%['%%(self.keyFields[0].dbName)%%']?>';}" 
 							title="<?= lang('App.form.button.delete') ?>">
 							<i class="bi bi-x"></i>
 						</a>
