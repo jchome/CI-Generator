@@ -107,8 +107,14 @@ for field in self.fields:
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
 		elif field.sqlType.upper()[0:4] == "FILE":
-			attributeCode += """<a href="<?= base_url() ?>/uploads/<?=$%(structureObName)s['%(dbName)s']?>" target="_new" class="downloadFile">
-				<?=$%(structureObName)s['%(dbName)s']?></a>""" % {
+			attributeCode += """
+				<?php 
+				$ext = ($%(structureObName)s['%(dbName)s'] == null)?(""):(substr($%(structureObName)s['%(dbName)s'], -3));
+				if( in_array($ext, ['png', 'gif', 'jpg']) ) {?>
+					<img src="<?= base_url() ?>/uploads/<?=$%(structureObName)s['%(dbName)s']?>" class="img-zoom" alt="<?=$%(structureObName)s['%(dbName)s']?>">
+				<?php }else{?>
+					<a href="<?= base_url() ?>/uploads/<?=$%(structureObName)s['%(dbName)s']?>" target="_new" class="downloadFile">
+				<?php } ?>""" % {
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
 		elif field.sqlType.upper()[0:8] == "PASSWORD":
