@@ -1,6 +1,6 @@
 %[kind : js]
 %[file : edit%%(self.obName.lower())%%.js]
-%[path : ../public/js/views/generated/%%(self.obName.lower())%%]
+%[path : ../public/js/Generated/%%(self.obName.lower())%%]
 /* Javascript for edit%%(self.obName.lower())%%_view.php */
 
 %%
