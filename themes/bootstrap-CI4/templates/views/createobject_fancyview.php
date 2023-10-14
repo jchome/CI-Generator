@@ -177,4 +177,4 @@ echo form_close('');
 		</div> <!-- .row-fluid -->
 	</div> <!-- .container -->
 
-<script src="<?= base_url() ?>www/js/views/generated/%%(self.obName.lower())%%/create%%(self.obName.lower())%%.fancy.js"></script>
+<script src="<?= base_url() ?>www/js/Generated/%%(self.obName.lower())%%/create%%(self.obName.lower())%%.fancy.js"></script>
