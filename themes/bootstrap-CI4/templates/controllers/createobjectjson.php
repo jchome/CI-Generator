@@ -11,9 +11,7 @@ namespace App\Controllers\Generated\%%(self.obName.title())%%;
 
 use CodeIgniter\API\ResponseTrait;
 
-class Create%%(self.obName)%%Json extends \App\Controllers\BaseController {
-	
-	use ResponseTrait;
+class Create%%(self.obName)%%Json extends \App\Controllers\Generated\AjaxController {
 
 	/**
 	 * page de creation d'un %%(self.obName.lower())%%
