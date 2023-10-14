@@ -208,4 +208,4 @@ RETURN =  allAttributesCode
 		</div> <!-- .row-fluid -->
 	</div> <!-- .container -->
 
-<script src="<?= base_url() ?>/js/views/generated/%%(self.obName.lower())%%/create%%(self.obName.lower())%%.js"></script>
+<script src="<?= base_url() ?>/js/Generated/%%(self.obName.lower())%%/create%%(self.obName.lower())%%.js"></script>

@@ -111,7 +111,7 @@ for field in self.fields:
 					<?php 
 					$ext = ($%(structureObName)s['%(dbName)s'] == null)?(""):(substr($%(structureObName)s['%(dbName)s'], -3));
 					if( in_array($ext, ['png', 'gif', 'jpg']) ) {?>
-						<img src="<?= base_url() ?>/uploads/<?=$%(structureObName)s['%(dbName)s']?>" class="img-zoom" alt="<?=$%(structureObName)s['%(dbName)s']?>">
+						<img src="<?= base_url() ?>/uploads/<?=$%(structureObName)s['%(dbName)s']?>" class="img-zoom" alt="<?=$%(structureObName)s['%(dbName)s']?>" width="50">
 					<?php }else{?>
 						<a href="<?= base_url() ?>/uploads/<?=$%(structureObName)s['%(dbName)s']?>" target="_new" class="downloadFile">
 					<?php } ?>
@@ -167,4 +167,4 @@ endforeach; ?>
 	</div><!-- .container -->
 	
 
-<script src="<?= base_url() ?>/js/views/generated/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s.js"></script>
+<script src="<?= base_url() ?>/js/Generated/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s.js"></script>
