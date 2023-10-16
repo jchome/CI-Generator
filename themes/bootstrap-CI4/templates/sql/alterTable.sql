@@ -12,7 +12,7 @@ allAttributesCode = ""
 for field in self.fields:
 	if allAttributesCode != "":
 		allAttributesCode += "\n"
-	attributeCode = "ALTER TABLE self.dbTableName ADD COLUMN"
+	attributeCode = "ALTER TABLE %(dbTableName)s ADD COLUMN" % {'dbTableName': self.dbTableName}
 
 	typeForSQL = field.sqlType
 
