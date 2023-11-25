@@ -16,7 +16,7 @@ if(session()->get('user_id') == "") {
 	
 	<div class="container-fluid">
 	
-		<h2><?= lang('%%(self.obName.lower())%%.form.create.title') ?></h2>
+		<h2><?= lang('generated.%%(self.obName.lower())%%.form.create.title') ?></h2>
 			
 		<div class="row-fluid">
 <?php
@@ -44,7 +44,7 @@ for field in self.fields:
 		attributeCode += "* "
 
 	attributeCode += """
-			<?= lang('%(objectObName)s.form.%(dbName)s.label') ?> :
+			<?= lang('generated.%(objectObName)s.form.%(dbName)s.label') ?> :
 		</label>
 		<div class="controls">""" % { 'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
 
@@ -145,7 +145,7 @@ for field in self.fields:
 			attributeCode += ">"
 			
 	attributeCode += """
-			<span class="help-block valtype"><?= lang('%(objectObName)s.form.%(dbName)s.description')?></span>
+			<span class="help-block valtype"><?= lang('generated.%(objectObName)s.form.%(dbName)s.description')?></span>
 		</div>
 	</div>""" % {'dbName' : field.dbName, 'objectObName' : self.obName.lower() }
 

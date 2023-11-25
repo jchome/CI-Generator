@@ -34,7 +34,7 @@ if($multiselectOf == '%(referencedObjectName)s' ){ ?>
 
 	attributeCode += """
 <div class="control-group">
-<label class="control-label" for="%(structureObName)s_%(referencedID)s"><?= lang('%(referencedObject_lower)s.form.list.title')?> :</label>
+<label class="control-label" for="%(structureObName)s_%(referencedID)s"><?= lang('generated.%(referencedObject_lower)s.form.list.title')?> :</label>
 <div class="controls"><select name="%(structureObName)s_%(referencedID)s[]" id="%(structureObName)s_%(referencedID)s" multiple="multiple">
 <?php foreach ($%(referencedObject_lower)sCollection as $%(referencedObject_lower)s){
 	$selection = false;
@@ -51,7 +51,7 @@ if($multiselectOf == '%(referencedObjectName)s' ){ ?>
 	}
 }?>
 </select>
-<p class="help-block valtype"><?= lang('%(structureObName_lower)s.form.%(dbName)s.description')?></p>
+<p class="help-block valtype"><?= lang('generated.%(structureObName_lower)s.form.%(dbName)s.description')?></p>
 </div></div>
 
 """ % { 'structureObName' : self.obName,

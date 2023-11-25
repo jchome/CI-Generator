@@ -10,7 +10,7 @@
 ?>
 	<div class="container">
 
-		<h2><?= lang('%%(self.obName.title())%%.form.list.title') ?></h2>
+		<h2><?= lang('generated.%%(self.obName.title())%%.form.list.title') ?></h2>
 			<?php 
 			$msg = session()->getFlashdata('msg_info');    if($msg != ""){echo '<div class="alert alert-info" role="alert">' . $msg . '</div>';}
 			$msg = session()->getFlashdata('msg_confirm'); if($msg != ""){echo '<div class="alert alert-success" role="alert">' . $msg . '</div>';}
@@ -31,7 +31,7 @@ RETURN = self.dbAndObVariablesList("""<th class=\"sortable\"><!-- (dbVar)s -->
 						<?php }else if($orderBy == '(dbVar)s'&& $asc == 'desc') {?>
 							class=" sortDesc"
 						<?php }?>
-						><?= lang('%(obName)s.form.(dbVar)s.label') ?></a></th>""" % {'obName':self.obName.title(), 'obName_lower':self.obName.lower(), }, 'dbVar', 'obVar', 5, False)
+						><?= lang('generated.%(obName)s.form.(dbVar)s.label') ?></a></th>""" % {'obName':self.obName.title(), 'obName_lower':self.obName.lower(), }, 'dbVar', 'obVar', 5, False)
 %%
 					<th><?= lang('App.object.tableheader.actions') ?></th>
 				</tr>
@@ -144,7 +144,7 @@ RETURN = allAttributesCode
 							<i class="bi bi-pencil-fill"></i>
 						</a>
 						<a class="btn btn-danger" href="#" 
-							onclick="if( confirm('<?= addslashes(lang('%%(self.obName.title())%%.message.askConfirm.deletion'))?>')){document.location.href='<?= base_url() ?>/Generated/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/delete/<?=$%%(self.obName.lower())%%['%%(self.keyFields[0].dbName)%%']?>';}" 
+							onclick="if( confirm('<?= addslashes(lang('generated.%%(self.obName.title())%%.message.askConfirm.deletion'))?>')){document.location.href='<?= base_url() ?>/Generated/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/delete/<?=$%%(self.obName.lower())%%['%%(self.keyFields[0].dbName)%%']?>';}" 
 							title="<?= lang('App.form.button.delete') ?>">
 							<i class="bi bi-x"></i>
 						</a>
@@ -163,7 +163,7 @@ endforeach; ?>
 		</div><!-- .pagination -->
 		
 		<a href="<?= base_url('Generated/%%(self.obName.lower())%%/create%%(self.obName.lower())%%/index')?>"
-			role="button" class="btn btn-primary"><?= lang('%%(self.obName.title())%%.form.create.title') ?></a>
+			role="button" class="btn btn-primary"><?= lang('generated.%%(self.obName.title())%%.form.create.title') ?></a>
 	</div><!-- .container -->
 	
 

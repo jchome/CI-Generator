@@ -11,7 +11,7 @@
 
 	<div class="container-fluid">
 	
-		<h2><?= lang('%%(self.obName.title())%%.form.create.title') ?></h2>
+		<h2><?= lang('generated.%%(self.obName.title())%%.form.create.title') ?></h2>
 		
 		<div class="row text-center ">
 			<div class="col-12">
@@ -44,7 +44,7 @@ for field in self.fields:
 		## The Required attribute is not valid for FLAG field
 		attributeCode += "* "
 
-	attributeCode += """<?= lang('%(objectObName)s.form.%(dbName)s.label') ?>
+	attributeCode += """<?= lang('generated.%(objectObName)s.form.%(dbName)s.label') ?>
 		</label>""" % { 'dbName' : field.dbName, 'objectObName' : self.obName.title() }
 
 	if field.sqlType.upper()[0:4] == "DATE":
@@ -171,7 +171,7 @@ for field in self.fields:
 			
 	attributeCode += """
 			<span id="%(dbName)sHelp" class="form-text">
-				<?= lang('%(objectObName)s.form.%(dbName)s.description')?>
+				<?= lang('generated.%(objectObName)s.form.%(dbName)s.description')?>
 			</span>
 		</div>
 		""" % {'dbName' : field.dbName, 'objectObName' : self.obName.title() }

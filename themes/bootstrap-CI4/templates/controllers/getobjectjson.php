@@ -8,7 +8,7 @@
  */
 namespace App\Controllers\Generated\%%(self.obName.title())%%;
 
-class Get%%(self.obName)%%Json extends \App\Controllers\Generated\AjaxController {
+class Get%%(self.obName)%%Json extends \App\Controllers\AjaxController {
 %%codeForUploadFile = ""
 useUpload = False
 for field in self.fields:

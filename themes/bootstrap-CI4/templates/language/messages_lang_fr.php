@@ -1,6 +1,6 @@
 %[kind : lang]
 %[file : %%(self.obName.title())%%.php] 
-%[path : Language/fr]
+%[path : Language/fr/generated]
 <?php
 /**
  * Message file for entity %%(self.obName)%%

@@ -8,7 +8,7 @@
  */
 namespace App\Controllers\Generated\%%(self.obName.title())%%;
 
-class Edit%%(self.obName)%% extends \App\Controllers\Generated\HtmlController {
+class Edit%%(self.obName)%% extends \App\Controllers\HtmlController {
 
 	/**
 	 * Affichage des infos
@@ -180,7 +180,7 @@ if useUpload:
 RETURN = codeForUploadFile
 %%
 
-		session()->setFlashData('msg_confirm', lang('%%(self.obName.title())%%.message.confirm.modified'));
+		session()->setFlashData('msg_confirm', lang('generated.%%(self.obName.title())%%.message.confirm.modified'));
 		return redirect()->to('Generated/%%(self.obName.title())%%/list%%(self.obName.lower())%%s/index');
 	}
 

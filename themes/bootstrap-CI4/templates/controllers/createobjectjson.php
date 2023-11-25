@@ -9,7 +9,7 @@
  */
 namespace App\Controllers\Generated\%%(self.obName.title())%%;
 
-class Create%%(self.obName)%%Json extends \App\Controllers\Generated\AjaxController {
+class Create%%(self.obName)%%Json extends \App\Controllers\AjaxController {
 
 	/**
 	 * page de creation d'un %%(self.obName.lower())%%

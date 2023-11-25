@@ -8,7 +8,7 @@
  */
 namespace App\Controllers\Generated\%%(self.obName.title())%%;
 
-class Create%%(self.obName)%% extends \App\Controllers\Generated\HtmlController {
+class Create%%(self.obName)%% extends \App\Controllers\HtmlController {
 	
 	
 	/**
@@ -181,7 +181,7 @@ RETURN = codeForUploadFile
 
 		
 		// Recharge la page avec les nouvelles infos
-		session()->setFlashData('msg_confirm', lang('%%(self.obName.title())%%.message.confirm.added'));
+		session()->setFlashData('msg_confirm', lang('generated.%%(self.obName.title())%%.message.confirm.added'));
 
 		return redirect()->to('Generated/%%(self.obName.title())%%/list%%(self.obName.lower())%%s/index');
 	}
