@@ -180,7 +180,7 @@ if useUpload:
 RETURN = codeForUploadFile
 %%
 
-		session()->setFlashData('msg_confirm', lang('generated.%%(self.obName.title())%%.message.confirm.modified'));
+		session()->setFlashData('msg_confirm', lang('generated/%%(self.obName.title())%%.message.confirm.modified'));
 		return redirect()->to('Generated/%%(self.obName.title())%%/list%%(self.obName.lower())%%s/index');
 	}
 

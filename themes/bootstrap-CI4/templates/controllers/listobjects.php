@@ -79,7 +79,7 @@ RETURN = allAttributeCode
 	function delete($%%(self.keyFields[0].dbName)%%){
 		$%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
 		$%%(self.obName.lower())%%Model->delete($%%(self.keyFields[0].dbName)%%);
-		session()->setFlashData('msg_confirm', lang('generated.%%(self.obName.title())%%.message.confirm.deleted'));
+		session()->setFlashData('msg_confirm', lang('generated/%%(self.obName.title())%%.message.confirm.deleted'));
 		return redirect()->to('Generated/%%(self.obName.title())%%/list%%(self.obName.lower())%%s/index'); 
 	}
 
