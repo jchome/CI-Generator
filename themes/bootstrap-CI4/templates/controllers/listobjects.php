@@ -36,7 +36,8 @@ class List%%(self.obName)%%s extends \App\Controllers\HtmlController {
 		$%%(self.obName.lower())%%Model = new \App\Models\%%(self.obName.title())%%Model();
 
 		$data['%%(self.obName.lower())%%s'] = $%%(self.obName.lower())%%Model
-			->orderBy($orderBy, $asc)->paginate($limit, 'bootstrap', null, $offset);
+			->asObject()->orderBy($orderBy, $asc)
+			->paginate($limit, 'bootstrap', null, $offset);
 		$data['pager'] = $%%(self.obName.lower())%%Model->pager;
 
 %%allAttributeCode = ""
@@ -47,7 +48,7 @@ for field in self.fields:
 	if field.referencedObject and field.access == "default":
 		attributeCode += """
 		$%(referencedObjectLower)sModel = new \App\Models\%(referencedObjectTitle)sModel();
-		$data['%(referencedObjectLower)sCollection'] = index_data($%(referencedObjectLower)sModel->orderBy('%(fieldDisplay)s', 'asc')
+		$data['%(referencedObjectLower)sCollection'] = index_data($%(referencedObjectLower)sModel->asObject()->orderBy('%(fieldDisplay)s', 'asc')
 			->findAll(), '%(fieldKey)s');""" % {
 			'referencedObjectLower' : field.referencedObject.obName.lower(),
 			'referencedObjectTitle' : field.referencedObject.obName.title(),

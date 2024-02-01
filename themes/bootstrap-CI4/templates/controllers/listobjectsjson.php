@@ -10,7 +10,7 @@ namespace App\Controllers\Generated\%%(self.obName.title())%%;
 
 use CodeIgniter\API\ResponseTrait;
 
-class List%%(self.obName)%%sJson extends \App\Controllers\BaseController {
+class List%%(self.obName)%%sJson extends \App\Controllers\AjaxController {
 
 	use ResponseTrait;
 
@@ -32,10 +32,7 @@ class List%%(self.obName)%%sJson extends \App\Controllers\BaseController {
 			->orderBy($orderBy, $asc)->paginate($limit, 'bootstrap', null, $offset);
 		$data['pager'] = $%%(self.obName.lower())%%Model->pager;
 
-		return $this->respond([
-			'status' => 'ok',
-			'data' => $data
-		]);
+		return $this->statusOK($data);
 
 	}
 
@@ -50,10 +47,7 @@ class List%%(self.obName)%%sJson extends \App\Controllers\BaseController {
 			$orderBy = '%%(self.keyFields[0].dbName)%%';
 		}
 		$result = $%%(self.obName.lower())%%Model->orderBy($orderBy, 'asc')->find($keysArray);
-		return $this->respond([
-			'status' => 'ok',
-			'data' => $result
-		]);
+		return $this->statusOK($result);
 	}
 
 %%allAttributeCode = ""
@@ -67,10 +61,7 @@ for field in self.fields:
 		// recuperation des donnees
 		$%(objectNameLower)sModel = new \App\Models\%(objectNameTitle)sModel();
 		$result = $%(objectNameLower)sModel->where('%(fieldDbName)s', $%(fieldDbName)s)->findAll($limit, $offset);
-		return $this->respond([
-			'status' => 'ok',
-			'data' => $result
-		]);
+		return $this->statusOK($result);
 	}""" % { 'fieldDbName' : field.dbName.lower(),
 			'objectNameLower' : self.obName.lower(),
 			'objectNameTitle' : self.obName.title(),
@@ -96,10 +87,7 @@ for field in self.fields:
 		$builder->like('%(fieldDbName)s', urldecode($%(fieldDbName)s));
 
 		$data['%(objectNameLower)sCollection'] = $builder->get()->getResultArray();
-		return $this->respond([
-			'status' => 'ok',
-			'data' => $data
-		]);
+		return $this->statusOK($data);
 	}""" % { 'fieldDbName' : field.dbName.lower(),
 			'objectNameTitle' : self.obName.title(),
 			'objectNameLower' : self.obName.lower(),

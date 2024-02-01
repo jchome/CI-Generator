@@ -62,7 +62,10 @@ for field in self.fields:
 	attributeCode = ""
 	if field.referencedObject and field.access == "ajax" :
 		attributeCode = """
-	$%(dbName)s_text = ($%(structureObName)s['%(dbName)s'] == 0)?(App\Models\%(referencedObject)sModel::$empty):((new \App\Models\%(referencedObject)sModel())->where('%(keyReference)s', $%(structureObName)s['%(dbName)s'])->first());
+	$%(dbName)s_text = ($%(structureObName)s->%(dbName)s == 0)?(new App\Models\%(referencedObject)sModel()):((new \App\Models\%(referencedObject)sModel())->asObject()->where('%(keyReference)s', $%(structureObName)s->%(dbName)s)->first());
+	if( $%(dbName)s_text == null){
+		$%(dbName)s_text = new App\Models\%(referencedObject)sModel();
+	}
 """ % {
 		'structureObName' : self.obName.lower(),
 		'referencedObject': field.referencedObject.obName.title(),
@@ -79,7 +82,7 @@ RETURN = allAttributesCode
 
 for field in self.fields:
 	if field.dbName == self.keyFields[0].dbName:
-		attributeCode = """<!-- $%(structureObName)s['%(dbName)s'] = <?= $%(structureObName)s['%(dbName)s'] ?> -->""" % {
+		attributeCode = """<!-- $%(structureObName)s->%(dbName)s = <?= $%(structureObName)s->%(dbName)s ?> -->""" % {
 					'structureObName' : self.obName.lower(),
 					'dbName' : field.dbName}
 	
@@ -88,48 +91,48 @@ for field in self.fields:
 				<td valign="top">"""
 		if field.referencedObject and field.access == "default":
 			# si pas de lien, le champ vaut 0 (et la sequence commence à 1)
-			attributeCode += """<?=($%(structureObName)s['%(dbName)s'] == 0)?(""):($%(referencedObject)sCollection[$%(structureObName)s['%(dbName)s']]['%(display)s'])?>
+			attributeCode += """<?=($%(structureObName)s->%(dbName)s == 0)?(""):($%(referencedObject)sCollection[$%(structureObName)s->%(dbName)s]->%(display)s)?>
 			""" % { 'display' : field.display, 
 					'referencedObject' : field.referencedObject.obName.lower(),
 					'structureObName' : self.obName.lower(),
 					'dbName' : field.dbName}
 		elif field.referencedObject and field.access == 'ajax':
-			attributeCode += """<?=$%(dbName)s_text['%(display)s']?>""" % {
+			attributeCode += """<?=$%(dbName)s_text->%(display)s?>""" % {
 					'display' : field.display, 
 					'dbName' : field.dbName }
 		elif field.sqlType.upper()[0:4] == "FLAG":
 			label = field.sqlType[5:-1].replace('"','').replace("'","")
-			attributeCode += """<?= ($%(structureObName)s['%(dbName)s'] == "O")?("%(label)s"):("")?>""" % {'label' : field.obName,
+			attributeCode += """<?= ($%(structureObName)s->%(dbName)s == "O")?("%(label)s"):("")?>""" % {'label' : field.obName,
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
 		elif field.sqlType.upper()[0:4] == "ENUM":
-			attributeCode += """<?=($%(structureObName)s['%(dbName)s'] == "")?(""):($enum_%(dbName)s[$%(structureObName)s['%(dbName)s']])?>""" % {
+			attributeCode += """<?=($%(structureObName)s->%(dbName)s == "")?(""):($enum_%(dbName)s[$%(structureObName)s->%(dbName)s])?>""" % {
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
 		elif field.sqlType.upper()[0:4] == "FILE":
 			attributeCode += """
 					<?php 
-					$ext = ($%(structureObName)s['%(dbName)s'] == null)?(""):(substr($%(structureObName)s['%(dbName)s'], -3));
+					$ext = ($%(structureObName)s->%(dbName)s == null)?(""):(substr($%(structureObName)s->%(dbName)s, -3));
 					if( in_array($ext, ['png', 'gif', 'jpg']) ) {?>
-						<img src="<?= base_url() ?>/uploads/<?=$%(structureObName)s['%(dbName)s']?>" class="img-zoom" alt="<?=$%(structureObName)s['%(dbName)s']?>" width="50">
+						<img src="<?= base_url() ?>/uploads/<?=$%(structureObName)s->%(dbName)s?>" class="img-zoom" alt="<?=$%(structureObName)s->%(dbName)s?>" width="50">
 					<?php }else{?>
-						<a href="<?= base_url() ?>/uploads/<?=$%(structureObName)s['%(dbName)s']?>" target="_new" class="downloadFile">
+						<a href="<?= base_url() ?>/uploads/<?=$%(structureObName)s->%(dbName)s?>" target="_new" class="downloadFile">
 					<?php } ?>
 				""" % {
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
 		elif field.sqlType.upper()[0:8] == "PASSWORD":
-			attributeCode += """<input type="hidden" name="%(dbName)s" id="%(dbName)s" value="<?=$%(structureObName)s['%(dbName)s']?>">
-			<span title="<?=$%(structureObName)s['%(dbName)s']?>">&#9733;&#9733;&#9733;&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+			attributeCode += """<input type="hidden" name="%(dbName)s" id="%(dbName)s" value="<?=$%(structureObName)s->%(dbName)s?>">
+			<span title="<?= $%(structureObName)s->%(dbName)s ?>">&#9733;&#9733;&#9733;&#9733;&#9733;&#9733;&#9733;&#9733;</span>
 			""" % {
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
 		elif field.sqlType.upper()[0:4] == "DATE":
-			attributeCode += """<?=toUiDate($%(structureObName)s['%(dbName)s'])?>""" % {
+			attributeCode += """<?=toUiDate($%(structureObName)s->%(dbName)s)?>""" % {
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
 		else:
-			attributeCode += """<?=$%(structureObName)s['%(dbName)s']?>""" % {
+			attributeCode += """<?=$%(structureObName)s->%(dbName)s?>""" % {
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
 			 
@@ -139,12 +142,12 @@ RETURN = allAttributesCode
 %%
 					<td>
 						<a class="btn btn-secondary" 
-							href="<?= base_url() ?>/Generated/%%(self.obName.lower())%%/edit%%(self.obName.lower())%%/index/<?=$%%(self.obName.lower())%%['%%(self.keyFields[0].dbName)%%']?>" 
+							href="<?= base_url() ?>/Generated/%%(self.obName.lower())%%/edit%%(self.obName.lower())%%/index/<?= $%%(self.obName.lower())%%->%%(self.keyFields[0].dbName)%% ?>" 
 							title="<?= lang('App.form.button.edit') ?>">
 							<i class="bi bi-pencil-fill"></i>
 						</a>
 						<a class="btn btn-danger" href="#" 
-							onclick="if( confirm('<?= addslashes(lang('generated/%%(self.obName.title())%%.message.askConfirm.deletion'))?>')){document.location.href='<?= base_url() ?>/Generated/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/delete/<?=$%%(self.obName.lower())%%['%%(self.keyFields[0].dbName)%%']?>';}" 
+							onclick="if( confirm('<?= addslashes(lang('generated/%%(self.obName.title())%%.message.askConfirm.deletion'))?>')){document.location.href='<?= base_url() ?>/Generated/%%(self.obName.lower())%%/list%%(self.obName.lower())%%s/delete/<?= $%%(self.obName.lower())%%->%%(self.keyFields[0].dbName)%% ?>';}" 
 							title="<?= lang('App.form.button.delete') ?>">
 							<i class="bi bi-x"></i>
 						</a>

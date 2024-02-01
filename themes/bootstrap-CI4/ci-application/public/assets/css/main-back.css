@@ -1,0 +1,171 @@
+/** MAIN.CSS **/
+/* use for custom CSS */
+.brand-logo{
+	background: url(../images/logo-small.png) no-repeat top left;
+	width: 332px;
+	height: 40px;
+	margin-right: 10px;
+	float: left;
+}
+
+body.login{
+	padding-top: 70px; 
+	background-image: url('../img/background.jpg');
+	background-position: center;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-color: black;
+	height: 100vh;
+}
+
+.login-holder{
+	background-color: #fff;
+}
+
+.login-box{
+	margin-left: auto; 
+	margin-right: auto;
+	width: 400px;
+	border: 1px solid #999;
+	-moz-box-shadow: 0px 0px 12px 0px #555555;
+	-webkit-box-shadow: 0px 0px 12px 0px #555555;
+	-o-box-shadow: 0px 0px 12px 0px #555555;
+	box-shadow: 0px 0px 12px 0px #555555;
+	filter:progid:DXImageTransform.Microsoft.Shadow(color=#555555, Direction=NaN, Strength=12);
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;	
+}
+
+.login-holder{
+	padding: 20px 50px 20px 50px;
+	width: 300px;
+}
+
+.brand-login{
+	padding-left: 10px;
+	height: 42px;
+	background-color: #1B1B1B;
+    background-image: linear-gradient(to bottom, #222222, #111111);
+    background-repeat: repeat-x;
+    border-color: #252525;    
+	-moz-border-radius: 5px 5px 0px 0px;
+	-webkit-border-radius: 5px 5px 0px 0px;
+	border-radius: 5px 5px 0px 0px;	
+	font-size: 20px;
+    font-weight: 200;
+    color: #999999;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+
+.brand-login .brand-logo{
+	line-height: 44px;
+	padding-left: 45px;
+}
+
+.errors{
+	background-color: #ff5050;
+	color: white;
+	padding: 1em 0;
+	width: 50%;
+	margin: auto;
+	border-radius: 5px;
+}
+.errors ul {
+	list-style: none;
+	margin-bottom: 0;
+}
+
+.ck-content.ck-editor__editable {
+	height: 150px;
+}
+
+/* ************ Images in the table ************* */
+td img.img-zoom{
+	width: 50px;
+}
+img.img-zoom{
+	cursor: pointer;
+	transition: 0.3s;
+}
+img.img-zoom:hover {
+	opacity: 0.7;
+}
+/* ********************************************** */
+
+.tag-item, .tag-item-edit{
+	border: 1px solid SteelBlue;
+	color: SteelBlue;
+	border-radius: 5px;
+	display: inline-flex;
+	padding: 5px 8px;
+	margin: 2px 10px;
+}
+
+.tag-item-edit button{
+	margin-left: 4px;
+	padding: 0px 4px;
+}
+
+.content-item-edit, .media-item-edit{
+	margin: 0 10px;
+}
+
+.card-header .number{
+    max-width: 30px;
+    max-height: 30px;
+    min-width: 30px;
+    min-height: 30px;
+    background-color: #0d6efd;
+    color: white;
+    display: flex;
+    border-radius: 100%;
+    padding-top: 3px;
+    font-size: 1em;
+	margin-right: 6px;
+    justify-content: center !important;
+}
+
+.text-small, .text-small p{
+	font-size: 0.8em !important;
+}
+
+.interactive{
+	cursor: pointer;
+}
+.interactive:hover{
+	background-color: LightBlue;
+}
+
+
+/* *************************************** */
+/* list of contents */
+.tree-content .detail{
+	border: 1px solid darkblue;
+	margin: 1em;
+	padding: 1em;
+}
+.tree-content .category{
+	background-color: cornflowerblue;
+	color: black;
+	border-radius: 4px;
+	font-size: 12px;
+	padding: 0 4px;
+	margin: 0 4px;
+}
+.tree-content .access{
+	background-color: coral;
+	color: black;
+	border-radius: 4px;
+	font-size: 12px;
+	padding: 0 4px;
+	margin: 0 4px;
+}
+.tree-content .endDate{
+	background-color: crimson;
+	color: white;
+	border-radius: 4px;
+	font-size: 12px;
+	padding: 0 4px;
+	margin: 0 4px;
+}
