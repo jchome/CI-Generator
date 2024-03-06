@@ -22,38 +22,41 @@ function verify($password, $hashedPassword) {
  */
 function generateToken($userId, $ipAddress = ""){
     $saltPhrase = md5("Security");
-    $date = new DateTime();
-    $now = $date->getTimestamp() * 1000; // number of miliseconds
-    $maxSessionDuration = 24 * 60 * 60 * 1000; // 24 hours
-    $endTime = $now + $maxSessionDuration;
-    return base64_encode($saltPhrase . " " . $userId . " " . $endTime . " " . $ipAddress);
+    $now = strtotime("+0 sec");
+    return urlencode(base64_encode($saltPhrase . " " . $userId . " " . $now . " " . $ipAddress));
 }
 
-function check_token($token, $userId, $ipAddress = ""){
-    $array = explode(' ', base64_decode($token));
+function computeTokenExpirationDate(){
+    return date('Y-m-d H:i:s', strtotime("+1 hour") ); // 1 hour of session
+}
+
+function check_token($token, $user, $ipAddress = ""){
+    $array = explode(' ', base64_decode(urldecode($token)));
     if(sizeof($array) != 4){
         // Wrong number of arguments
-        return FALSE;
+        return 'Wrong number of arguments';
     }
     if($array[0] != md5("Security")){
         // Wrong security pass
-        return FALSE;
+        return 'Wrong security pass';
     }
-    if($array[1] != $userId){
+    if($array[1] != $user->id){
         // Wrong userId
-        return FALSE;
+        return "Wrong userId: $array[1] != $user->id";
     }
     if($array[3] != $ipAddress){
         // Wrong ip address
-        return FALSE;
+        return "Wrong ip address: $array[3] - $ipAddress";
     }
-    $date = new DateTime();
-    $now = $date->getTimestamp() * 1000; // number of miliseconds
-    if($now > $array[2]){
-        // Token expired
-        return FALSE;
+    $startTime = $array[2];
+    $now = strtotime("+0 sec");
+    $expirationTime = strtotime($user->expiration_token);
+    
+    if($startTime < $now && $now < $expirationTime){
+        return "";
+    }else{
+        return "Wrong test: $startTime < $now < $expirationTime";
     }
-    return TRUE;
 
 }
 

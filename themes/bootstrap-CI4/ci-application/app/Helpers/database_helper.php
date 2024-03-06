@@ -6,7 +6,7 @@
 function index_data($array, $keyName){
     $newArray = [];
     foreach ($array as $data):
-        $newArray[$data[$keyName]] = $data;
+        $newArray[$data->$keyName] = $data;
     endforeach;
     return $newArray;
 }

@@ -19,7 +19,7 @@ function resizeImage($imgSrc, $finalWidth, $imgDest){
     }elseif( $imageType == IMAGETYPE_GIF ) {
         $src = imagecreatefromgif($imgSrc);
     } elseif( $imageType == IMAGETYPE_PNG ) {
-        $src = imagecreatefromgif($imgSrc);
+        $src = imagecreatefrompng($imgSrc);
     }else{
         throwException(new Exception("Image type is unknown."));
     }

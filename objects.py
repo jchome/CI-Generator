@@ -64,7 +64,11 @@ class CIObject:
 		self.nonKeyFields = []
 
 	def fromXML(self, aFilename):
-		doc = parse(aFilename)
+		try:
+			doc = parse(aFilename)
+		except xml.parsers.expat.ExpatError:
+			print(">>>>> Error in file %s" % aFilename)
+			raise
 		objectDef = doc.getElementsByTagName("object")[0]
 		self.dbTableName = objectDef.getAttribute("shortName")
 		self.displayName = objectDef.getAttribute("displayName")
