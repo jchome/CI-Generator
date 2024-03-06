@@ -134,11 +134,13 @@ for field in self.fields:
 		
 	elif field.sqlType.upper()[0:4] == "TEXT":
 		attributeCode += """
-			<textarea class="ckeditor" name="%(dbName)s" class="form-control" id="%(dbName)s" 
-				%(moreAttributes)s>%(valueCode)s</textarea>""" % { 
+			<input id="%(dbName)s" type="hidden" name="%(dbName)s" 
+				value="<?= htmlentities($%(structureObName)s['%(dbName)s']) ?>" %(moreAttributes)s>
+			<trix-editor input="%(dbName)s"></trix-editor>""" % { 
 			'dbName' : field.dbName, 
 			'valueCode' : valueCode,
-			'moreAttributes' : moreAttributes
+			'moreAttributes' : moreAttributes,
+			'structureObName' : self.obName.lower()
 			}
 		
 	elif field.sqlType.upper()[0:4] == "FILE":

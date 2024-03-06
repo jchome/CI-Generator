@@ -31,29 +31,33 @@ RETURN = self.dbAndObVariablesList("""<th class=\"sortable\"><!-- (dbVar)s -->
 						<?php }else if($orderBy == '(dbVar)s'&& $asc == 'desc') {?>
 							class=" sortDesc"
 						<?php }?>
-						><?= lang('generated/%(obName)s.form.(dbVar)s.label') ?></a></th>""" % {'obName':self.obName.title(), 'obName_lower':self.obName.lower(), }, 'dbVar', 'obVar', 5, False)
+						><?= lang('generated/%(obName)s.form.(dbVar)s.label') ?></a>
+					</th>""" % {'obName':self.obName.title(), 'obName_lower':self.obName.lower(), }, 'dbVar', 'obVar', 5, False)
 %%
 					<th><?= lang('App.object.tableheader.actions') ?></th>
 				</tr>
 			</thead>
 			<tbody>
 <?php
-%%allAttributes = "" 
+%%
+allAttributes = "" 
+
 for field in self.fields:
 	if field.dbName != self.keyFields[0].dbName:
 		if field.sqlType.upper()[0:4] == "ENUM":
+			allEnums = ""
 			enumTypes = field.sqlType[5:-1]
 			for enum in enumTypes.split(','):
 				valueAndText = enum.replace('"','').replace("'","").split(':')
 				attributeCode = "\"%(value)s\"=>\"%(text)s\"" % {'value': valueAndText[0].strip(), 
 					'text': valueAndText[1].strip()}
-				if allAttributes != "":
-					allAttributes += ", " + attributeCode
+				if allEnums != "":
+					allEnums += ", " + attributeCode
 				else:
-					allAttributes = attributeCode
+					allEnums = attributeCode
+			allAttributes += "\n$enum_%(dbName)s = array( %(allEnums)s );" % {'dbName': field.dbName, 'allEnums': allEnums }
 			 
-allEnums = "$enum_%(dbName)s = array(%(allAttributes)s);" % {'dbName' : field.dbName, 'allAttributes' : allAttributes }
-RETURN = allEnums
+RETURN = allAttributes
 %%
 foreach($%%(self.obName.lower())%%s as $%%(self.obName.lower())%%):
 %%allAttributesCode = ""
@@ -77,7 +81,7 @@ for field in self.fields:
 RETURN = allAttributesCode
 %%
 ?>
-	<tr>
+				<tr>
 %%allAttributesCode = ""
 
 for field in self.fields:
@@ -88,7 +92,7 @@ for field in self.fields:
 	
 	else:
 		attributeCode = """
-				<td valign="top">"""
+					<td valign="top">"""
 		if field.referencedObject and field.access == "default":
 			# si pas de lien, le champ vaut 0 (et la sequence commence à 1)
 			attributeCode += """<?=($%(structureObName)s->%(dbName)s == 0)?(""):($%(referencedObject)sCollection[$%(structureObName)s->%(dbName)s]->%(display)s)?>
@@ -111,20 +115,20 @@ for field in self.fields:
 				'dbName' : field.dbName}
 		elif field.sqlType.upper()[0:4] == "FILE":
 			attributeCode += """
-					<?php 
-					$ext = ($%(structureObName)s->%(dbName)s == null)?(""):(substr($%(structureObName)s->%(dbName)s, -3));
-					if( in_array($ext, ['png', 'gif', 'jpg']) ) {?>
-						<img src="<?= base_url() ?>/uploads/<?=$%(structureObName)s->%(dbName)s?>" class="img-zoom" alt="<?=$%(structureObName)s->%(dbName)s?>" width="50">
-					<?php }else{?>
-						<a href="<?= base_url() ?>/uploads/<?=$%(structureObName)s->%(dbName)s?>" target="_new" class="downloadFile">
-					<?php } ?>
-				""" % {
+						<?php 
+						$ext = ($%(structureObName)s->%(dbName)s == null)?(""):(substr($%(structureObName)s->%(dbName)s, -3));
+						if( in_array($ext, ['png', 'gif', 'jpg']) ) {?>
+							<img src="<?= base_url() ?>/uploads/<?=$%(structureObName)s->%(dbName)s?>" class="img-zoom" alt="<?=$%(structureObName)s->%(dbName)s?>" width="50">
+						<?php }else{?>
+							<a href="<?= base_url() ?>/uploads/<?=$%(structureObName)s->%(dbName)s?>" target="_new" class="downloadFile">
+						<?php } ?>
+					""" % {
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
 		elif field.sqlType.upper()[0:8] == "PASSWORD":
 			attributeCode += """<input type="hidden" name="%(dbName)s" id="%(dbName)s" value="<?=$%(structureObName)s->%(dbName)s?>">
-			<span title="<?= $%(structureObName)s->%(dbName)s ?>">&#9733;&#9733;&#9733;&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-			""" % {
+						<span title="<?= $%(structureObName)s->%(dbName)s ?>">&#9733;&#9733;&#9733;&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+					""" % {
 				'structureObName' : self.obName.lower(),
 				'dbName' : field.dbName}
 		elif field.sqlType.upper()[0:4] == "DATE":

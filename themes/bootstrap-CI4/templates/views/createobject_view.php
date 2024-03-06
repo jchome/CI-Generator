@@ -102,22 +102,22 @@ for field in self.fields:
 				<input type="password" placeholder="Password" name="%(dbName)s" id="%(dbName)s" 
 					aria-describedby="%(dbName)sHelp" class="form-control" %(moreAttributes)s>
 			</div>""" % { 'dbName' : field.dbName,
-			'moreAttributes' : moreAttributes
+				'moreAttributes' : moreAttributes
 			}
 		
 	elif field.sqlType.upper()[0:4] == "TEXT":
 		attributeCode += """
-			<textarea class="ckeditor" name="%(dbName)s" id="%(dbName)s" class="form-control" %(moreAttributes)s>
-			</textarea>""" % { 'dbName' : field.dbName ,
-			'moreAttributes' : moreAttributes
+			<input id="%(dbName)s" type="hidden" name="%(dbName)s" %(moreAttributes)s>
+			<trix-editor input="%(dbName)s"></trix-editor>""" % { 'dbName' : field.dbName ,
+				'moreAttributes' : moreAttributes
 			}
 		
 	elif field.sqlType.upper()[0:4] == "FILE":
 		attributeCode += """
 			<input class="input-file" id="%(dbName)s_file" name="%(dbName)s_file" class="form-control" type="file" %(moreAttributes)s/>
 			<input type="hidden" name="%(dbName)s" id="%(dbName)s"/>""" % { 'dbName' : field.dbName, 
-			'structureObName': self.obName.lower(),
-			'moreAttributes' : moreAttributes
+				'structureObName': self.obName.lower(),
+				'moreAttributes' : moreAttributes
 			}
 
 	elif field.sqlType.upper()[0:4] == "FLAG":

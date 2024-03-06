@@ -11,8 +11,7 @@ for field in self.fields:
 		jsCode += """$('#datepicker_%(dbName)s').datepicker({ format:"dd/mm/yyyy", language: "fr" });
 """ % { 'dbName' : field.dbName }
 	elif field.sqlType.upper()[0:4] == "TEXT":
-		jsCode += """ClassicEditor.create( document.querySelector('#%(dbName)s') );
-""" % { 'dbName' : field.dbName }
+		continue
 RETURN = jsCode
 %%
 
