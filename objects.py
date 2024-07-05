@@ -81,7 +81,7 @@ class CIObject:
 
 		# stockage des objets référencés pour ne pas avoir à les charger en boucle
 		allSubStructure = {}
-		allSubStructure[self.obName] = self
+		allSubStructure[self.displayName] = self
 		for attributeTag in objectDef.getElementsByTagName("attribute"):
 			aField = Field()
 			aField.dbName = attributeTag.getAttribute("id")
@@ -99,7 +99,9 @@ class CIObject:
 				aField.autoincrement = (attributeTag.getAttribute("autoincrement") == "YES")
 			if attributeTag.getAttribute("referencedObject") != "":
 				#print("... Finding %s" % attributeTag.getAttribute("referencedObject"))
+				#print("    in " , allSubStructure.keys())
 				if attributeTag.getAttribute("referencedObject") not in allSubStructure:
+				#	print("--->", attributeTag.getAttribute("referencedObject"), "  not in  ", allSubStructure.keys())
 					subStructure = CIObject()
 					filePath = os.path.dirname(aFilename)
 					subStructure.fromXML(os.path.join(filePath, attributeTag.getAttribute("referencedObject") + ".xml"))

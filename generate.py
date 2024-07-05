@@ -44,12 +44,14 @@ class TemplateFileReader:
 		self.kind = ""
 		self.filePath = ""
 		self.segments = []
+		self.templateFilename = ""
 
 	def readFile(self, templateFilename):
 		#f = codecs.open(templateFilename, 'r', sys.getfilesystemencoding())
 		#f = codecs.open(templateFilename, 'r', encoding='utf-8')
 		f = open(templateFilename, encoding='utf-8')
-		print ("templateFilename : %s" % templateFilename)
+		self.templateFilename = templateFilename
+		#print ("templateFilename : %s" % self.templateFilename)
 
 		# detection des infos meta sur les premieres lignes
 		regexpMetaSpliter = re.compile('^%\[\s*(?P<key>.+)\s*:\s*(?P<value>.+)\s*\]\s*$')
@@ -111,14 +113,14 @@ class TemplateFileReader:
 		return segments
 
 
-	def generateSegmentsFor(self, structure):
-		return self.generateSegmentObjectFor(self.segments, structure)
+	def generateSegmentsFor(self, structure, databaseName = ""):
+		return self.generateSegmentObjectFor(self.segments, structure, databaseName)
 
-	def generateSegmentObjectFor(self, segmentArray, structure):
+	def generateSegmentObjectFor(self, segmentArray, structure, databaseName = ""):
 		content = u""
 		for segment in segmentArray:
 			## encoding to UTF-8
-			content += segment.toString(structure)
+			content += segment.toString(structure, databaseName)
 			
 		return content
 
@@ -133,7 +135,7 @@ class StringSegment:
 			print("XXXXXXXXXXXXXXXX")
 			raise e
 
-	def toString(self, structure):
+	def toString(self, structure, databaseName = ""):
 		return self.data
 
 class PythonSegment:
@@ -148,10 +150,10 @@ class PythonSegment:
 
 		self.template = aTemplateFileReader
 	
-	def toString(self, structure):
+	def toString(self, structure, databaseName):
 		filename='<input>'
 		symbol='single'
-		localVars = {"self" : structure, "RETURN" : ""}
+		localVars = {"self" : structure, "DATABASE": databaseName, "RETURN" : ""}
 		inter = InteractiveInterpreter(localVars)
 		
 		#if isinstance(source, types.UnicodeType):
@@ -165,7 +167,7 @@ class PythonSegment:
 			code_object = compile(self.data.encode('ascii','ignore'), '<string>', 'exec')
 			exec(code_object, localVars)
 		except Exception as e :
-			print ("-  ERR --Kind:%s---------------------------------------" % (self.template.kind) )
+			print("-  ERR --%s---------------------------------------" % (self.template.templateFilename) )
 			InteractiveInterpreter.showsyntaxerror(console, filename)
 			frames = inspect.trace()
 			lineNumber = frames[1][2]
@@ -188,10 +190,10 @@ class PythonLine:
 		self.data = data.strip() #unicode(data).strip()
 		self.template = aTemplateFileReader
 	
-	def toString(self, structure):
+	def toString(self, structure, databaseName = ""):
 		result = u""
 		try:
-			result = eval(self.data, {"self" : structure} )
+			result = eval(self.data, {"self" : structure, "DATABASE": databaseName} )
 		except Exception as e:
 			print ("ERROR while executing this code:")
 			print ("-  ERR --Kind:%s---------------------------------------" % (self.template.kind) )
@@ -204,17 +206,17 @@ class PythonLine:
 
 
 
-def generateTemplates(rootFiles, readerTemplates, kind):
+def generateTemplates(rootFiles, readerTemplates, kind, databaseName):
 	# generation du fichier a partir du template
 	if not kind in readerTemplates:
 		print ("No kind <%s>." % kind)
 		return
 	print ("  Generating files of kind <%s>:" % kind)
 	for reader in readerTemplates[kind]:
-		myDirectory = os.path.join(rootFiles, reader.generateSegmentObjectFor(reader.filePath, structure) )
+		myDirectory = os.path.join(rootFiles, reader.generateSegmentObjectFor(reader.filePath, structure, databaseName) )
 		if not os.path.exists(myDirectory):
 			os.makedirs(myDirectory)
-		filename = os.path.join(myDirectory, reader.generateSegmentObjectFor(reader.fileOut, structure) )
+		filename = os.path.join(myDirectory, reader.generateSegmentObjectFor(reader.fileOut, structure, databaseName) )
 		baseFilename = os.path.basename(filename)
 		## Desactivate diff
 		backupFilename = filename
@@ -240,7 +242,7 @@ def generateTemplates(rootFiles, readerTemplates, kind):
 		#####################################
 		# 2. GENERATION PROCESS
 		# (in the backup file)
-		content = reader.generateSegmentsFor(structure)
+		content = reader.generateSegmentsFor(structure, databaseName)
 		file = open(backupFilename,'w')
 		file.write( "%s" % content )
 		file.close()
@@ -276,7 +278,7 @@ if __name__ == '__main__':
 	theme = config.get('global', 'theme').strip()
 	CIRootFiles = config.get('generation', 'outDirFor_Classes').strip()
 	generateObjects = config.get('generation','generate').strip()
-	databaseName = config.get('generation', 'database').strip()
+	databaseName = config.get('generation', 'table_prefix').strip()
 
 	# import du theme
 	print ("Using theme <"+ theme +">...")
@@ -317,7 +319,7 @@ if __name__ == '__main__':
 
 		for kind in kindsToGenerate:
 			# générer les fichiers de template
-			generateTemplates(CIRootFiles, allTemplates, kind)
+			generateTemplates(CIRootFiles, allTemplates, kind, databaseName)
 
 		i += 1
 

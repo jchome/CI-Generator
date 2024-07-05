@@ -12,7 +12,9 @@ allAttributesCode = ""
 for field in self.fields:
 	if allAttributesCode != "":
 		allAttributesCode += "\n"
-	attributeCode = "ALTER TABLE %(dbTableName)s ADD COLUMN" % {'dbTableName': self.dbTableName}
+	attributeCode = "ALTER TABLE %(dbTableName)s ADD COLUMN" % {
+		'dbTableName': (DATABASE + "_" + self.dbTableName if DATABASE != "" else self.dbTableName)
+	}
 
 	typeForSQL = field.sqlType
 
@@ -21,7 +23,10 @@ for field in self.fields:
 	elif field.sqlType.upper()[0:5] == "COLOR":
 		typeForSQL = "char(7)"
 	elif field.sqlType.upper()[0:5] == "FLOAT":
-		typeForSQL = "float(%s)" % field.sqlType[6:-1]
+		if len(field.sqlType) == 5:
+			typeForSQL = "float"
+		else:
+			typeForSQL = "float(%s)" % field.sqlType[6:-1]
 	elif field.sqlType.upper()[0:4] == "DATE":
 		typeForSQL = "date"
 	elif field.sqlType.upper()[0:8] == "PASSWORD":
@@ -56,9 +61,9 @@ RETURN = allAttributesCode
 for field in self.fields:
 	foreignKey = ""
 	if field.referencedObject:
-		foreignKey = """ALTER TABLE %(tableName)s ADD CONSTRAINT FK_%(tableName)s_%(tableColumn)s_%(foreignTable)s_%(foreignColumn)s FOREIGN KEY (%(tableColumn)s) REFERENCES %(foreignTable)s (%(foreignColumn)s);
-""" % {	'tableName': self.dbTableName,
-	'foreignTable': field.referencedObject.dbTableName,
+		foreignKey = """ALTER TABLE %(tableName)s ADD CONSTRAINT FK_%(tableName)s_%(tableColumn)s_%(foreignTable)s_%(foreignColumn)s FOREIGN KEY (`%(tableColumn)s`) REFERENCES %(foreignTable)s (`%(foreignColumn)s`);
+""" % {	'tableName': (DATABASE + "_" + self.dbTableName if DATABASE != "" else self.dbTableName),
+	'foreignTable': (DATABASE + "_" + field.referencedObject.dbTableName if DATABASE != "" else field.referencedObject.dbTableName),
 	'foreignColumn': field.referencedObject.keyFields[0].dbName,
 	'tableColumn': field.dbName 
 	}
