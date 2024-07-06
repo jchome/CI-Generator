@@ -16,7 +16,7 @@ use CodeIgniter\Model;
 
 class %%(self.obName.title())%%Model extends Model {
 	
-    protected $table      = '%%(self.dbTableName)%%';
+    protected $table      = '%%(DATABASE + "_" if DATABASE != "" else "")%%%%(self.dbTableName)%%';
     protected $primaryKey = '%%(self.keyFields[0].dbName)%%';
 
     protected $useAutoIncrement = true;
