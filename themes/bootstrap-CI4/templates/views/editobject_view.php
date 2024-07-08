@@ -135,7 +135,7 @@ for field in self.fields:
 	elif field.sqlType.upper()[0:4] == "TEXT":
 		attributeCode += """
 			<input id="%(dbName)s" type="hidden" name="%(dbName)s" 
-				value="<?= htmlentities($%(structureObName)s['%(dbName)s']) ?>" %(moreAttributes)s>
+				value="<?= (($%(structureObName)s['%(dbName)s'] == null)?(""):(htmlentities($%(structureObName)s['%(dbName)s'])) ?>" %(moreAttributes)s>
 			<trix-editor input="%(dbName)s"></trix-editor>""" % { 
 			'dbName' : field.dbName, 
 			'valueCode' : valueCode,
