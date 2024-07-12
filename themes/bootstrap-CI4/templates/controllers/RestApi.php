@@ -1,12 +1,12 @@
 %[kind : controllers]
 %[file : %%(self.obName.title())%%.php] 
-%[path : Controllers/Api]
+%[path : Controllers/Api/v1]
 <?php
 /*
  * Created by generator
  * 
  */
-namespace App\Controllers\Api;
+namespace App\Controllers\Api\v1;
 use CodeIgniter\RESTful\ResourceController;
 
  class %%(self.obName.title())%% extends ResourceController {
@@ -14,14 +14,12 @@ use CodeIgniter\RESTful\ResourceController;
     protected $modelName = 'App\Models\%%(self.obName.title())%%Model';
     protected $format    = 'json';
 
-    public function index()
-    {
+    public function index(){
         $objects = $this->model->findAll();
         return $this->respond($objects);
     }
 
-    public function show($id = null)
-    {
+    public function show($id = null){
         $object = $this->model->find($id);
         if (!$object) {
             return $this->failNotFound('Object not found');
@@ -30,8 +28,7 @@ use CodeIgniter\RESTful\ResourceController;
     }
 
 
-    public function create()
-    {
+    public function create(){
         $data = $this->request->getPost();
         
         if (!$this->validate([%%allAttributeCode = ""
@@ -66,8 +63,7 @@ RETURN = allAttributeCode
         return $this->respondCreated($data);
     }
 
-    public function update($id = null)
-    {
+    public function update($id = null){
         $data = $this->request->getRawInput();
         if (!$this->validate([%%allAttributeCode = ""
 for field in self.fields:
@@ -105,8 +101,7 @@ RETURN = allAttributeCode
         return $this->respond($data);
     }
 
-    public function delete($id = null)
-    {
+    public function delete($id = null){
         $object = $this->model->find($id);
         if (!$object) {
             return $this->failNotFound('Object not found');
