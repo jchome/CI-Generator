@@ -21,8 +21,23 @@ class %%(self.obName.title())%% extends ResourceController {
      * 
      */
     public function index(){
-        $objects = $this->model->findAll();
-        return $this->respond($objects);
+        $sortBy = $this->request->getGet('sort_by') ?? 'id'; // Par défaut, trier par ID
+        $order  = $this->request->getGet('order') ?? 'asc';  // Ordre par défaut : ascendant
+        if (!in_array($order, ['asc', 'desc'])) {
+            return $this->fail('Invalid order parameter. Use "asc" or "desc".');
+        }
+        $page   = $this->request->getGet('page') ?? 1;       // Numéro de la page (1 par défaut)
+        $limit  = $this->request->getGet('limit') ?? 10;     // Limite d'éléments par page (10 par défaut)
+
+        $items = $this->model
+            ->orderBy($sortBy, $order)
+            ->paginate($limit, 'default', $page);
+            
+        $response = [
+            'data' => $items,
+            'pager' => $this->model->pager->getDetails(),
+        ];
+        return $this->respond($response);
     }
 
     /**
