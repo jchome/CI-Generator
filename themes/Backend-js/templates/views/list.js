@@ -7,6 +7,40 @@ import { translate, get } from 'lit-translate'
 
 import %%(self.obName.title())%%EditElement from './edit.js'
 
+const fields = [%%allAttributeCode = ""
+for field in self.fields:
+    referenceData = ""
+    if field.referencedObject:
+        referenceData = """
+        references: {
+            object: "%(refObject)s",
+            key: "%(refKey)s",
+            label: "%(refLabel)s",
+        } """ % {
+            'refObject': field.referencedObject.obName.lower(),
+            'refKey': field.referencedObject.keyFields[0].dbName,
+            'refLabel': field.display
+        }
+
+    attributeCode = """
+    {
+        key: "%(dbName)s",
+        type: "%(fieldType)s",%(referenceData)s
+    }""" % {
+        'dbName': field.dbName,
+        'fieldType': field.sqlType.lower(),
+        'objectObName': self.obName.lower(),
+        'referenceData': referenceData
+    }
+
+    if allAttributeCode != "":
+        allAttributeCode += ","
+    allAttributeCode += attributeCode
+RETURN = allAttributeCode
+%%
+]
+
+const LABEL_SUFFIX = "_label"
 
 export default class %%(self.obName.title())%%ListElement extends LitElement {
     static properties = { }
@@ -14,24 +48,17 @@ export default class %%(self.obName.title())%%ListElement extends LitElement {
 
     constructor() {
         super()
-        this.columns = [%%allAttributeCode = ""
-for field in self.fields:
-    attributeCode = """
-            {
-                key: "%(dbName)s",
-                type: "%(fieldType)s",
-                label: translate("object.%(objectObName)s.field.%(dbName)s")
-            }""" % {
-                'dbName': field.dbName,
-                'fieldType': field.sqlType.lower(),
-                'objectObName': self.obName.lower(),
+
+        this.foreignFields = fields.filter(f => f.references != undefined)
+        
+        this.columns = fields.map((f) => {
+            let column = Object.assign({}, f) // Make a copy of 'f'
+            column.label = translate("object.building.field."+f.key)
+            if( f.references != undefined){
+                column.key += LABEL_SUFFIX // Update the key on 'column', not on 'f'
             }
-    if allAttributeCode != "":
-        allAttributeCode += ","
-    allAttributeCode += attributeCode
-RETURN = allAttributeCode
-%%
-        ]
+            return column
+        })
         this.actions = [
             {
                 code: 'edit', 
@@ -103,16 +130,50 @@ RETURN = allAttributeCode
 
     loadData(){
         return new Promise((resolve, reject) => {
-            call('/api/v1/%%(self.obName.lower())%%s/', 'GET').then((responseOk, responseFailure) => {
+            call('/api/v1/buildings/', 'GET').then((responseOk, responseFailure) => {
                 //console.log(responseOk)
                 if(responseOk && responseOk.data){
-                    resolve(responseOk.data)
+                    this.loadAllForeignData(responseOk.data).then(() => {
+                        resolve(responseOk.data)
+                    })
                 }else{
                     reject()
                 }
             })
         })
     }
+
+    loadAllForeignData(data){
+        return new Promise((resolve, reject) => {
+            let promises = [] 
+            for(let foreignField of this.foreignFields){
+                for(let index in data){
+                    let rawValue = data[index][foreignField.key]
+                    promises.push(this.loadForeignData(index, foreignField, rawValue))
+                }
+            }
+            Promise.all(promises).then((result) => {
+                for(let res of result){
+                    data[res.index][res.field.key+LABEL_SUFFIX] = res.label
+                }
+                resolve()
+            })
+        })
+    }
+
+    loadForeignData(index, field, value){
+        return new Promise((resolve, reject) => {
+            call('/api/v1/'+field.references.object+'s/'+value, 'GET').then((responseOk, responseFailure) => {
+                if(responseOk){
+                    let result = {field, index, label: responseOk[field.references.label]}
+                    resolve(result)
+                }else{
+                    reject()
+                }
+            })
+        })
+    }
+
 
     onEdit(event){
         const item = event.detail.item
