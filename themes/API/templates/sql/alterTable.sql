@@ -1,6 +1,6 @@
 %[kind : sql]
 %[file : altertab_%%(self.obName.lower())%%.sql]
-%[path : ../sql]
+%[path : ../designDeploy/sql]
 /**
  * Script MySQL pour %%(self.obName)%%
  * 

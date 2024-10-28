@@ -1,6 +1,6 @@
 %[kind : sql]
 %[file : cretab_%%(self.obName.lower())%%.sql]
-%[path : ../sql]
+%[path : ../designDeploy/sql]
 /**
  * Script MySQL pour %%(self.obName)%%
  * %%foreignKeys = ""

@@ -294,7 +294,7 @@ RETURN =  allAttributesCode
     }
 
     onApply(event){
-        // Get all fields
+        // TODO: Get all fields
         const data = {
 
         }

@@ -1,0 +1,36 @@
+%[kind : models]
+%[file : meta-data.json] 
+%[path : app/assets/generated/%%(self.obName.lower())%%]
+{
+    "name": "%%(self.obName.title())%%",
+    "fields": [%%allAttributeCode = ""
+for field in self.fields:
+    referenceData = ""
+    if field.referencedObject:
+        referenceData = """,
+                "references": {
+                    "object": "%(refObject)s",
+                    "key": "%(refKey)s",
+                    "label": "%(refLabel)s"
+                } """ % {
+                    'refObject': field.referencedObject.obName.lower(),
+                    'refKey': field.referencedObject.keyFields[0].dbName,
+                    'refLabel': field.display
+                }
+
+    attributeCode = """
+            {
+                "key": "%(dbName)s",
+                "type": "%(fieldType)s"%(referenceData)s
+            }""" % {
+                'dbName': field.dbName,
+                'fieldType': field.sqlType.lower(),
+                'referenceData': referenceData
+            }
+    if allAttributeCode != "":
+        allAttributeCode += ","
+    allAttributeCode += attributeCode
+RETURN = allAttributeCode
+%%
+    ]
+}
