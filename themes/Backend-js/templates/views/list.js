@@ -2,6 +2,7 @@
 %[file : list.js] 
 %[path : app/assets/generated/%%(self.obName.lower())%%]
 import GenericListElement from '../list-generic.js'
+import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 
 import %%(self.obName.title())%%EditElement from './edit.js'
 
@@ -50,25 +51,42 @@ RETURN = allAttributeCode
 
     /* Override if needed
     urlOfList(){
-        return '/api/v2/%%(self.obName.lower())%%s/?page=' + this.currentPage
+        var sortQuery = ""
+        if(this.orderBy != undefined){
+            sortQuery = `&sort_by=${this.orderBy}&order=${this.asc?'asc':'desc'}`
+        }
+        return '/api/v2/%%(self.obName.lower())%%s/?page=${this.currentPage}${sortQuery}`
     }*/
     
     /**
      * Convert data to another format
-     * Override if needed
      * 
      * @param {Array} data 
      * @returns Array The data converted
      */
     convertData(data){
-        // Default: don't convert data
-        return super.convertData(data) 
-        /*return data.map((item) => {
-            if(item.photo){
-                item.photo = unsafeHTML(`<img src="${this.conf.server.host}/uploads/${item.photo}" class="user-photo">`)
+        return data.map((item) => {
+%%allAttributeCode = ""
+for field in self.fields:
+    attributeCode = ""
+    if field.sqlType.upper()[0:4] == "FILE":
+        attributeCode = """
+            if(item.%(dbName)s){
+                item.%(dbName)s = unsafeHTML(`<img src="${this.conf.server.host}/uploads/${item.%(dbName)s}" class="img-fluid">`)
             }
+        """ % { 'dbName' : field.dbName }
+    elif field.sqlType.upper()[0:4] == "DATE":
+        attributeCode = """
+            if(item.%(dbName)s){
+                item.%(dbName)s = item.%(dbName)s.split('-').reverse().join('/')
+            }
+        """  % { 'dbName' : field.dbName }
+
+    allAttributeCode += attributeCode
+RETURN = allAttributeCode
+%%
             return item
-        })*/
+        })
     }
 
 
