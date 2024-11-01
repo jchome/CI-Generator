@@ -1,6 +1,6 @@
 %[kind : models]
-%[file : meta-data.json] 
-%[path : app/assets/generated/%%(self.obName.lower())%%]
+%[file : %%(self.obName.lower())%%-meta-data.json] 
+%[path : app/assets/metadata]
 {
     "name": "%%(self.obName.title())%%",
     "fields": [%%allAttributeCode = ""
@@ -21,11 +21,17 @@ for field in self.fields:
     attributeCode = """
             {
                 "key": "%(dbName)s",
-                "type": "%(fieldType)s"%(referenceData)s
+                "type": "%(fieldType)s",
+                "required": %(required)s,
+                "show": {
+                    "list": true,
+                    "edit": true
+                }%(referenceData)s
             }""" % {
                 'dbName': field.dbName,
                 'fieldType': field.sqlType.lower(),
-                'referenceData': referenceData
+                'referenceData': referenceData,
+                'required': 'false' if field.nullable else 'true'
             }
     if allAttributeCode != "":
         allAttributeCode += ","
