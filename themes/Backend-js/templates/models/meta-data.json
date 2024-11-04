@@ -11,27 +11,32 @@ for field in self.fields:
                 "references": {
                     "object": "%(refObject)s",
                     "key": "%(refKey)s",
-                    "label": "%(refLabel)s"
+                    "label": "%(refLabel)s",
+                    "access": "%(access)s"
                 } """ % {
                     'refObject': field.referencedObject.obName.lower(),
                     'refKey': field.referencedObject.keyFields[0].dbName,
-                    'refLabel': field.display
+                    'refLabel': field.display,
+                    'access': field.access
                 }
 
     attributeCode = """
             {
                 "key": "%(dbName)s",
+                "primary": %(isKey)s,
                 "type": "%(fieldType)s",
                 "required": %(required)s,
                 "show": {
-                    "list": true,
-                    "edit": true
+                    "list": %(visible)s,
+                    "edit": %(visible)s
                 }%(referenceData)s
             }""" % {
                 'dbName': field.dbName,
                 'fieldType': field.sqlType.lower(),
                 'referenceData': referenceData,
-                'required': 'false' if field.nullable else 'true'
+                'required': 'false' if field.nullable else 'true',
+                'isKey': 'true' if field.isKey else 'false',
+                'visible': 'false' if field.isKey else 'true',
             }
     if allAttributeCode != "":
         allAttributeCode += ","
