@@ -2,8 +2,10 @@
 %[file : list.js] 
 %[path : app/assets/generated/%%(self.obName.lower())%%]
 import GenericListElement from '../list-generic.js'
+import { html } from 'lit';
 
 import %%(self.obName.title())%%EditElement from './edit.js'
+import %%(self.obName.title())%%CreateElement from './create.js'
 
 
 export default class %%(self.obName.title())%%ListElement extends GenericListElement {
@@ -11,10 +13,11 @@ export default class %%(self.obName.title())%%ListElement extends GenericListEle
     static get styles() { }
 
     constructor() {
-        super('%%(self.obName.lower())%%')
+        super()
+        this.objectName = "%%(self.obName.lower())%%"
     }
 
-    /* Override if needed
+    /** Override if needed
     urlOfList(){
         var sortQuery = ""
         if(this.orderBy != undefined){
@@ -22,6 +25,22 @@ export default class %%(self.obName.title())%%ListElement extends GenericListEle
         }
         return `/api/v2/%%(self.obName.lower())%%s/?page=${this.currentPage}${sortQuery}`
     }*/
+
+    getEditorHtml(){
+        return html`<app-%%(self.obName.lower())%%-edit id="editor" 
+                .conf=${ this.conf } 
+                .metadata=${ this.metadata }
+                .user="${ this.user }">
+            </app-%%(self.obName.lower())%%-edit>`
+    }
+
+    getCreatorHtml(){
+        return html`<app-%%(self.obName.lower())%%-create id="creator"
+                .conf=${ this.conf } 
+                .metadata=${ this.metadata }
+                .user="${ this.user }">
+            </app-%%(self.obName.lower())%%-create>`
+    }
 
 
 }

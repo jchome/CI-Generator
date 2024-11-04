@@ -17,7 +17,7 @@ class %%(self.obName.title())%% extends ResourceController {
     /**
      * Get all objects
      * 
-     * /api/v1/%%(self.obName.lower())%%s/
+     * GET /api/v1/%%(self.obName.lower())%%s/
      * 
      */
     public function index(){
@@ -43,7 +43,7 @@ class %%(self.obName.title())%% extends ResourceController {
     /**
      * Get one object by its id
      * 
-     * /api/v1/%%(self.obName.lower())%%s/1
+     * GET /api/v1/%%(self.obName.lower())%%s/1
      * 
      */
     public function show($id = null){
@@ -55,8 +55,12 @@ class %%(self.obName.title())%% extends ResourceController {
     }
 
 
+    /**
+     * POST /api/v1/%%(self.obName.lower())%%s/
+     * body: {...}
+     */
     public function create(){
-        $data = $this->request->getPost();
+        $data = $this->request->getJSON(true);
         
         if (!$this->validate([%%allAttributeCode = ""
 for field in self.fields:
@@ -97,9 +101,13 @@ RETURN = allAttributesCode
         $data['id'] = $this->model->insertID();
         return $this->respondCreated($data);
     }
-
+    
+    /**
+     * PUT /api/v1/%%(self.obName.lower())%%s/{id}
+     * body: {...}
+     */
     public function update($id = null){
-        $data = $this->request->getRawInput();
+        $data = $this->request->getJSON(true);
         if (!$this->validate([%%allAttributeCode = ""
 for field in self.fields:
     rule = "trim"
@@ -136,6 +144,11 @@ RETURN = allAttributeCode
         return $this->respond($data);
     }
 
+    
+    /**
+     * DELETE /api/v1/%%(self.obName.lower())%%s/
+     * 
+     */
     public function delete($id = null){
         $object = $this->model->find($id);
         if (!$object) {
