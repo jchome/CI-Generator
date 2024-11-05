@@ -28,10 +28,19 @@ class %%(self.obName.title())%% extends ResourceController {
         }
         $page   = $this->request->getGet('page') ?? 1;       // Numéro de la page (1 par défaut)
         $limit  = $this->request->getGet('limit') ?? 10;     // Limite d'éléments par page (10 par défaut)
+        $searchField = $this->request->getGet('search_on');
+        $searchValue = $this->request->getGet('search_value');
 
-        $items = $this->model
-            ->orderBy($sortBy, $order)
-            ->paginate($limit, 'default', $page);
+        if (!empty($searchField) && !empty($searchValue)) {
+            $items = $this->model
+                ->orderBy($sortBy, $order)
+                ->like($searchField, $searchValue)
+                ->paginate($limit, 'default', $page);
+        }else{
+            $items = $this->model
+                ->orderBy($sortBy, $order)
+                ->paginate($limit, 'default', $page);
+        }
             
         $response = [
             'data' => $items,
