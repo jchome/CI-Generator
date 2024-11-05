@@ -97,6 +97,20 @@ for field in self.fields:
 """ % {'dbName': field.dbName}
 RETURN = allAttributesCode
 %%
+
+        helper(['image', 'database']);
+%%allAttributeCode = ""
+for field in self.fields:
+    if field.sqlType.upper()[0:4] == "FILE":
+        allAttributeCode += """
+        $data = manageFileUpload($data, '%(dbName)s'); """ % {'dbName': field.dbName}
+
+    elif field.sqlType.upper()[0:4] == "DATE":
+        allAttributeCode += """
+        $data['%(dbName)s'] = toSqlDate($data['%(dbName)s']);""" % {'dbName': field.dbName}
+
+RETURN = allAttributeCode
+%%
         $this->model->save($data);
         $data['id'] = $this->model->insertID();
         return $this->respondCreated($data);
@@ -140,6 +154,20 @@ RETURN = allAttributeCode
             return $this->failNotFound('Object not found');
         }
 
+        helper(['image', 'database']);
+%%allAttributeCode = ""
+for field in self.fields:
+    if field.sqlType.upper()[0:4] == "FILE":
+        allAttributeCode += """
+        $data = manageFileUpload($data, '%(dbName)s', $existingObject); """ % {'dbName': field.dbName}
+
+    elif field.sqlType.upper()[0:4] == "DATE":
+        allAttributeCode += """
+        $data['%(dbName)s'] = toSqlDate($data['%(dbName)s']);""" % {'dbName': field.dbName}
+
+RETURN = allAttributeCode
+%%
+
         $this->model->update($id, $data);
         return $this->respond($data);
     }
@@ -158,5 +186,6 @@ RETURN = allAttributeCode
         $this->model->delete($id);
         return $this->respondDeleted($object);
     }
+
 
 }
