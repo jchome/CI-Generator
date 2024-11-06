@@ -19,6 +19,9 @@ for field in self.fields:
                     'refLabel': field.display,
                     'access': field.access
                 }
+    visibleInList = True
+    if field.sqlType.upper()[0:8] == "PASSWORD" or field.isKey:
+        visibleInList = False
 
     attributeCode = """
             {
@@ -36,7 +39,7 @@ for field in self.fields:
                 'referenceData': referenceData,
                 'required': 'false' if field.nullable else 'true',
                 'isKey': 'true' if field.isKey else 'false',
-                'visible': 'false' if field.isKey else 'true',
+                'visible': 'true' if visibleInList else 'false',
             }
     if allAttributeCode != "":
         allAttributeCode += ","

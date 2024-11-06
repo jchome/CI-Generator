@@ -7,9 +7,9 @@
  * 
  */
 namespace App\Controllers\Api\v1;
-use CodeIgniter\RESTful\ResourceController;
+use App\Controllers\Api\SecuredResourceController;
 
-class %%(self.obName.title())%% extends ResourceController {
+class %%(self.obName.title())%% extends SecuredResourceController {
 
     protected $modelName = 'App\Models\%%(self.obName.title())%%Model';
     protected $format    = 'json';
@@ -31,22 +31,7 @@ class %%(self.obName.title())%% extends ResourceController {
         $searchField = $this->request->getGet('search_on');
         $searchValue = $this->request->getGet('search_value');
 
-        if (!empty($searchField) && !empty($searchValue)) {
-            $items = $this->model
-                ->orderBy($sortBy, $order)
-                ->like($searchField, $searchValue)
-                ->paginate($limit, 'default', $page);
-        }else{
-            $items = $this->model
-                ->orderBy($sortBy, $order)
-                ->paginate($limit, 'default', $page);
-        }
-            
-        $response = [
-            'data' => $items,
-            'pager' => $this->model->pager->getDetails(),
-        ];
-        return $this->respond($response);
+        return $this->searchIndex($sortBy, $order, $page, $limit, $searchField, $searchValue);
     }
 
     /**
@@ -73,25 +58,18 @@ class %%(self.obName.title())%% extends ResourceController {
         
         if (!$this->validate([%%allAttributeCode = ""
 for field in self.fields:
-    rule = "trim"
     if field.sqlType.upper()[0:4] == "FILE" or field.sqlType.upper()[0:4] == "FLAG":
         continue
-    
+
     if field.autoincrement:
         continue
 
     if field.sqlType.upper()[0:4] != "FLAG" and not field.nullable:
         ## The Required attribute is not valid for FLAG field
-        rule += "|required"
-
-    attributeCode = """
-            '%(dbName)s' => '%(rule)s',""" % {
-        'dbName': field.dbName,
-        'objectObName': self.obName.title(),
-        'rule': rule
-    }
-    if attributeCode != "":
-        allAttributeCode += attributeCode
+        allAttributeCode += """
+                '%(dbName)s' => 'required',""" % {
+            'dbName': field.dbName
+        }
 RETURN = allAttributeCode
 %%
         ])) {
@@ -106,9 +84,7 @@ for field in self.fields:
 """ % {'dbName': field.dbName}
 RETURN = allAttributesCode
 %%
-
-        helper(['image', 'database']);
-%%allAttributeCode = ""
+        helper(['image', 'database']);%%allAttributeCode = ""
 for field in self.fields:
     if field.sqlType.upper()[0:4] == "FILE":
         allAttributeCode += """
@@ -118,11 +94,14 @@ for field in self.fields:
         allAttributeCode += """
         $data['%(dbName)s'] = toSqlDate($data['%(dbName)s']);""" % {'dbName': field.dbName}
 
+    elif field.sqlType.upper()[0:3] == "INT":
+        allAttributeCode += """
+        $data['%(dbName)s'] = empty($data['%(dbName)s']) ? null : intval($data['%(dbName)s']);""" % {'dbName': field.dbName}
+
 RETURN = allAttributeCode
 %%
-        $this->model->save($data);
-        $data['id'] = $this->model->insertID();
-        return $this->respondCreated($data);
+
+        return $this->createData($data);
     }
     
     /**
@@ -133,8 +112,7 @@ RETURN = allAttributeCode
         $data = $this->request->getJSON(true);
         if (!$this->validate([%%allAttributeCode = ""
 for field in self.fields:
-    rule = "trim"
-    if field.sqlType.upper()[0:4] == "FILE" or field.sqlType.upper()[0:4] == "FLAG":
+    if field.sqlType.upper()[0:4] == "FILE" or field.sqlType.upper()[0:4] == "FLAG" or field.sqlType.upper()[0:8] == "PASSWORD":
         continue
     
     if field.autoincrement:
@@ -142,16 +120,10 @@ for field in self.fields:
 
     if field.sqlType.upper()[0:4] != "FLAG" and not field.nullable:
         ## The Required attribute is not valid for FLAG field
-        rule += "|required"
-
-    attributeCode = """
-            '%(dbName)s' => '%(rule)s',""" % {
-        'dbName': field.dbName,
-        'objectObName': self.obName.title(),
-        'rule': rule
-    }
-    if attributeCode != "":
-        allAttributeCode += attributeCode
+        allAttributeCode += """
+                '%(dbName)s' => 'required',""" % {
+            'dbName': field.dbName
+        }
 RETURN = allAttributeCode
 %%
         ])) {
@@ -163,8 +135,7 @@ RETURN = allAttributeCode
             return $this->failNotFound('Object not found');
         }
 
-        helper(['image', 'database']);
-%%allAttributeCode = ""
+        helper(['image', 'database']);%%allAttributeCode = ""
 for field in self.fields:
     if field.sqlType.upper()[0:4] == "FILE":
         allAttributeCode += """
@@ -174,11 +145,22 @@ for field in self.fields:
         allAttributeCode += """
         $data['%(dbName)s'] = toSqlDate($data['%(dbName)s']);""" % {'dbName': field.dbName}
 
+    elif field.sqlType.upper()[0:3] == "INT":
+        allAttributeCode += """
+        $data['%(dbName)s'] = empty($data['%(dbName)s']) ? null : intval($data['%(dbName)s']);""" % {'dbName': field.dbName}
+    
+    elif field.sqlType.upper()[0:8] == "PASSWORD":
+        allAttributeCode += """
+        if(empty($data['%(dbName)s'])){
+            unset($data['%(dbName)s']);
+        }else{
+            $data['%(dbName)s'] = password_hash($data['%(dbName)s'], PASSWORD_DEFAULT);
+        }""" % {'dbName': field.dbName}
+
 RETURN = allAttributeCode
 %%
 
-        $this->model->update($id, $data);
-        return $this->respond($data);
+        return $this->updateData($id, $data);
     }
 
     
@@ -194,6 +176,42 @@ RETURN = allAttributeCode
 
         $this->model->delete($id);
         return $this->respondDeleted($object);
+    }
+
+
+    /* -------------------------------------------------------- */
+    /* -- Functions to override -- */
+    /* -------------------------------------------------------- */
+
+    protected function searchIndex($sortBy, $order, $page, $limit, $searchField, $searchValue){
+        if (!empty($searchField) && !empty($searchValue)) {
+            $items = $this->model
+                ->orderBy($sortBy, $order)
+                ->like($searchField, $searchValue)
+                ->paginate($limit, 'default', $page);
+        }else{
+            $items = $this->model
+                ->orderBy($sortBy, $order)
+                ->paginate($limit, 'default', $page);
+        }
+            
+        $response = [
+            'data' => $items,
+            'pager' => $this->model->pager->getDetails(),
+        ];
+        return $this->respond($response);
+    }
+
+
+    protected function createData($data){
+        $this->model->save($data);
+        $data['id'] = $this->model->insertID();
+        return $this->respondCreated($data);
+    }
+
+    protected function updateData($id, $data){
+        $this->model->update($id, $data);
+        return $this->respond($data);
     }
 
 
