@@ -35,7 +35,7 @@ for field in self.fields:
                 }%(referenceData)s
             }""" % {
                 'dbName': field.dbName,
-                'fieldType': field.sqlType.lower(),
+                'fieldType': field.sqlType,
                 'referenceData': referenceData,
                 'required': 'false' if field.nullable else 'true',
                 'isKey': 'true' if field.isKey else 'false',
