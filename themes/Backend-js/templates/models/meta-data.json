@@ -30,8 +30,8 @@ for field in self.fields:
                 "type": "%(fieldType)s",
                 "required": %(required)s,
                 "show": {
-                    "list": %(visible)s,
-                    "edit": %(visible)s
+                    "list": %(visibleInList)s,
+                    "edit": %(visibleInEdit)s
                 }%(referenceData)s
             }""" % {
                 'dbName': field.dbName,
@@ -39,7 +39,8 @@ for field in self.fields:
                 'referenceData': referenceData,
                 'required': 'false' if field.nullable else 'true',
                 'isKey': 'true' if field.isKey else 'false',
-                'visible': 'true' if visibleInList else 'false',
+                'visibleInList': 'true' if visibleInList else 'false',
+                'visibleInEdit': 'true' ,
             }
     if allAttributeCode != "":
         allAttributeCode += ","
