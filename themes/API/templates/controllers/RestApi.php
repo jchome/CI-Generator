@@ -88,7 +88,8 @@ RETURN = allAttributesCode
 for field in self.fields:
     if field.sqlType.upper()[0:4] == "FILE":
         allAttributeCode += """
-        $data = manageFileUpload($data, '%(dbName)s'); """ % {'dbName': field.dbName}
+        $data_%(dbName)s = $data['%(dbName)s'];
+        $data['%(dbName)s'] = null;""" % {'dbName': field.dbName}
 
     elif field.sqlType.upper()[0:4] == "DATE":
         allAttributeCode += """
@@ -101,7 +102,18 @@ for field in self.fields:
 RETURN = allAttributeCode
 %%
 
-        return $this->createData($data);
+        $existingObject = $this->createData($data);
+%%allAttributeCode = ""
+for field in self.fields:
+    if field.sqlType.upper()[0:4] == "FILE":
+        allAttributeCode += """
+        $data['%(dbName)s'] = $data_%(dbName)s;
+        $data = manageFileUpload($data, '%(dbName)s', $existingObject);""" % {'dbName': field.dbName}
+
+RETURN = allAttributeCode
+%%
+        $this->model->update($data['id'], $data);
+        return $this->respondCreated($data);
     }
     
     /**
@@ -206,7 +218,7 @@ RETURN = allAttributeCode
     protected function createData($data){
         $this->model->save($data);
         $data['id'] = $this->model->insertID();
-        return $this->respondCreated($data);
+        return $data;
     }
 
     protected function updateData($id, $data){
