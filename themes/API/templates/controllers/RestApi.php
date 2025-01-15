@@ -101,8 +101,8 @@ for field in self.fields:
 
 RETURN = allAttributeCode
 %%
-
         $existingObject = $this->createData($data);
+        $data['id'] = $existingObject['id'];
 %%allAttributeCode = ""
 for field in self.fields:
     if field.sqlType.upper()[0:4] == "FILE":
