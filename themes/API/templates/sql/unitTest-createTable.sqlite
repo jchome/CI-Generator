@@ -1,6 +1,6 @@
 %[kind : unitTest]
 %[file : cretab_%%(self.obName.lower())%%.sqlite]
-%[path : Database]
+%[path : ../../Assets/Database/sqlite]
 /*
  * Lancer la commande suivante pour insérer les données
  * cat cretab_%%(self.obName.lower())%%.sqlite | sqlite3 test_database.sdb

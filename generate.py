@@ -295,11 +295,13 @@ if __name__ == '__main__':
 	if len(sys.argv) < 2:
 		print ("Syntax : " + sys.argv[0] + " <fileObject0.xml> [fileObject1.xml]")
 		sys.exit(1)
-
+	
+	pathOfScript = os.path.dirname(os.path.realpath(sys.argv[0]))
+	
 	# recuperation de tous les fichiers template
 	allTemplates = {}
-	for templateFilename in glob.glob(os.path.join("themes", theme, "templates","*.*")) + glob.glob(os.path.join("themes", theme, "templates","*","*.*")):
-		#DEBUG print (templateFilename)
+	for templateFilename in glob.glob(os.path.join(pathOfScript, "themes", theme, "templates","*.*")) + glob.glob(os.path.join(pathOfScript, "themes", theme, "templates","*","*.*")):
+		#DEBUG print (">>>", templateFilename)
 		reader = TemplateFileReader()
 		reader.readFile(templateFilename)
 		if reader.kind != "":
