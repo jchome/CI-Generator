@@ -28,7 +28,6 @@ export default class %%(self.obName.title())%%ListElement extends GenericListEle
 
     getEditorHtml(){
         return html`<app-%%(self.obName.lower())%%-edit id="editor" 
-                .conf=${ this.conf } 
                 .metadata=${ this.metadata }
                 .user="${ this.user }">
             </app-%%(self.obName.lower())%%-edit>`
@@ -36,7 +35,6 @@ export default class %%(self.obName.title())%%ListElement extends GenericListEle
 
     getCreatorHtml(){
         return html`<app-%%(self.obName.lower())%%-create id="creator"
-                .conf=${ this.conf } 
                 .metadata=${ this.metadata }
                 .user="${ this.user }">
             </app-%%(self.obName.lower())%%-create>`
