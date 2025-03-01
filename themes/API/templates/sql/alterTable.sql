@@ -19,7 +19,7 @@ for field in self.fields:
 	typeForSQL = field.sqlType
 
 	if field.sqlType.upper()[0:4] == "FLAG":
-		typeForSQL = "char(1)"
+		typeForSQL = "tinyint(1)"
 	elif field.sqlType.upper()[0:5] == "COLOR":
 		typeForSQL = "char(7)"
 	elif field.sqlType.upper()[0:5] == "FLOAT":

@@ -88,8 +88,13 @@ RETURN = allAttributesCode
 for field in self.fields:
     if field.sqlType.upper()[0:4] == "FILE":
         allAttributeCode += """
-        $data_%(dbName)s = $data['%(dbName)s'];
+        $data_%(dbName)s = $data['%(dbName)s'];""" % {'dbName': field.dbName}
+        if field.nullable:
+            allAttributeCode += """
         $data['%(dbName)s'] = null;""" % {'dbName': field.dbName}
+        else:
+            allAttributeCode += """
+        $data['%(dbName)s'] = 'processing';""" % {'dbName': field.dbName}
 
     elif field.sqlType.upper()[0:4] == "DATE":
         allAttributeCode += """

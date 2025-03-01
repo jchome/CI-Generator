@@ -77,7 +77,9 @@ class CIObject:
 			if objectDef.getAttribute("isCrossTable").upper() == "TRUE" or objectDef.getAttribute("isCrossTable").upper() == "YES":
 				self.isCrossTable = True
 		descriptionDef = objectDef.getElementsByTagName("description")[0]
-		self.description = descriptionDef.firstChild.data
+		self.description = ""
+		if descriptionDef.firstChild :
+			self.description = descriptionDef.firstChild.data
 
 		# stockage des objets référencés pour ne pas avoir à les charger en boucle
 		allSubStructure = {}
