@@ -211,7 +211,21 @@ RETURN = allAttributeCode
                 ->orderBy($sortBy, $order)
                 ->paginate($limit, 'default', $page);
         }
-            
+
+        // Convert types for a better json format
+        foreach($items as $item){%%allAttributeCode = ""
+for field in self.fields:
+    if field.sqlType.upper()[0:3] == "INT":
+        allAttributeCode += """
+            $item->%(dbName)s = intval( $item->%(dbName)s );""" % {'dbName': field.dbName}
+    if field.sqlType.upper()[0:5] == "FLOAT":
+        allAttributeCode += """
+            $item->%(dbName)s = (float)$item->%(dbName)s;""" % {'dbName': field.dbName}
+        
+RETURN = allAttributeCode
+%%
+        }
+
         $response = [
             'data' => $items,
             'pager' => $this->model->pager->getDetails(),
