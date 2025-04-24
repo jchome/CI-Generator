@@ -202,12 +202,12 @@ RETURN = allAttributeCode
 
     protected function searchIndex($sortBy, $order, $page, $limit, $searchField, $searchValue){
         if (!empty($searchField) && !empty($searchValue)) {
-            $items = $this->model
+            $items = $this->model->asObject()
                 ->orderBy($sortBy, $order)
                 ->like($searchField, $searchValue)
                 ->paginate($limit, 'default', $page);
         }else{
-            $items = $this->model
+            $items = $this->model->asObject()
                 ->orderBy($sortBy, $order)
                 ->paginate($limit, 'default', $page);
         }
