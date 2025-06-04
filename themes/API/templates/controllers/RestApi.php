@@ -109,15 +109,21 @@ RETURN = allAttributeCode
         $existingObject = $this->createData($data);
         $data['id'] = $existingObject['id'];
 %%allAttributeCode = ""
+requireUpdate = False
 for field in self.fields:
     if field.sqlType.upper()[0:4] == "FILE":
         allAttributeCode += """
         $data['%(dbName)s'] = $data_%(dbName)s;
         $data = manageFileUpload($data, '%(dbName)s', $existingObject);""" % {'dbName': field.dbName}
+        requireUpdate = True
 
+if requireUpdate:
+    allAttributeCode += """
+        $this->model->update($data['id'], $data);
+    """
 RETURN = allAttributeCode
 %%
-        $this->model->update($data['id'], $data);
+        
         return $this->respondCreated($data);
     }
     
