@@ -1,8 +1,8 @@
 %[kind : views]
 %[file : list.js] 
 %[path : app/assets/generated/%%(self.obName.lower())%%]
-import GenericListElement from '../list-generic.js'
-import { html } from 'lit';
+import { GenericListElement } from '../../components'
+import { html } from 'lit'
 
 import %%(self.obName.title())%%EditElement from './edit.js'
 import %%(self.obName.title())%%CreateElement from './create.js'

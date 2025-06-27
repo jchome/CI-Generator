@@ -1,8 +1,7 @@
 %[kind : views]
 %[file : create.js] 
 %[path : app/assets/generated/%%(self.obName.lower())%%]
-import GenericCreateElement from '../create-generic.js';
-import { html } from 'lit';
+import { GenericCreateElement } from '../../components'
 
 
 export default class %%(self.obName.title())%%CreateElement extends GenericCreateElement {

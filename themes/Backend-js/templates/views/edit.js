@@ -1,8 +1,7 @@
 %[kind : views]
 %[file : edit.js] 
 %[path : app/assets/generated/%%(self.obName.lower())%%]
-import GenericEditElement from '../edit-generic.js';
-import { html } from 'lit';
+import { GenericEditElement } from '../../components'
 
 
 export default class %%(self.obName.title())%%EditElement extends GenericEditElement {

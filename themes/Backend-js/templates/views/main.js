@@ -4,10 +4,10 @@
 import { html } from 'lit'
 
 import %%(self.obName.title())%%ListElement from './list.js'
-import MainGenericElement from '../main-generic.js'
+import { GenericMainElement } from '../../components'
 
 
-export default class Main%%(self.obName.title())%%Element extends MainGenericElement {
+export default class Main%%(self.obName.title())%%Element extends GenericMainElement {
 
     renderMain() {
         return html`

@@ -28,10 +28,9 @@ class %%(self.obName.title())%% extends SecuredResourceController {
         }
         $page   = $this->request->getGet('page') ?? 1;       // Numéro de la page (1 par défaut)
         $limit  = $this->request->getGet('limit') ?? 10;     // Limite d'éléments par page (10 par défaut)
-        $searchField = $this->request->getGet('search_on');
-        $searchValue = $this->request->getGet('search_value');
+        $filters = $this->request->getGet('filters') ?? [];
 
-        return $this->searchIndex($sortBy, $order, $page, $limit, $searchField, $searchValue);
+        return $this->searchIndex($sortBy, $order, $page, $limit, $filters);
     }
 
     /**
@@ -206,17 +205,28 @@ RETURN = allAttributeCode
     /* -- Functions to override -- */
     /* -------------------------------------------------------- */
 
-    protected function searchIndex($sortBy, $order, $page, $limit, $searchField, $searchValue){
-        if (!empty($searchField) && !empty($searchValue)) {
-            $items = $this->model->asObject()
-                ->orderBy($sortBy, $order)
-                ->like($searchField, $searchValue)
-                ->paginate($limit, 'default', $page);
-        }else{
-            $items = $this->model->asObject()
-                ->orderBy($sortBy, $order)
-                ->paginate($limit, 'default', $page);
+    protected function searchIndex($sortBy, $order, $page, $limit, $filters){
+        $this->model->asObject()->orderBy($sortBy, $order);
+        
+        foreach($filters as $filter){
+            $filterData = explode('~', $filter);
+            if(sizeof($filterData) != 3){
+                continue;
+            }
+            $value = urldecode($filterData[2]);
+            log_message('debug', "filter value = " . $value);
+            if($filterData[1] == "lk"){
+                $this->model->like($filterData[0], $value);
+            }elseif($filterData[1] == "eq"){
+                $this->model->where($filterData[0], $value);
+            }elseif($filterData[1] == "ne"){
+                $this->model->where($filterData[0] . '!=', $value);
+            }elseif($filterData[1] == "em"){
+                $this->model->where($filterData[0] . 'IS NULL', null, false);
+            }
         }
+
+        $items = $this->model->paginate($limit, 'default', $page);
 
         // Convert types for a better json format
         foreach($items as $item){%%allAttributeCode = ""
