@@ -222,7 +222,13 @@ RETURN = allAttributeCode
             }elseif($filterData[1] == "ne"){
                 $this->model->where($filterData[0] . '!=', $value);
             }elseif($filterData[1] == "em"){
-                $this->model->where($filterData[0] . 'IS NULL', null, false);
+                $this->model->where($filterData[0] . ' IS NULL', null, false);
+            }elseif($filterData[1] == "nem"){
+                $this->model->where($filterData[0] . ' IS NOT NULL', null, false);
+            }elseif($filterData[1] == "gt"){
+                $this->model->where($filterData[0] . ' >= ', $value);
+            }elseif($filterData[1] == "lt"){
+                $this->model->where($filterData[0] . ' <= ', $value);
             }
         }
 

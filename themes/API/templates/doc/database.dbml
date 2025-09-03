@@ -1,0 +1,40 @@
+%[kind : doc]
+%[file : %%(self.obName.lower())%%_diagram.dbml]
+%[path : ../../Assets/Doc]
+// Paste this script in https://dbdiagram.io/
+Table %%(self.obName)%% {
+%%
+allAttributesCode = ""
+for field in self.fields:
+    if field.sqlType.upper()[0:4] == "FILE":
+		typeForDBML = "varchar(4000)" 
+    elif field.sqlType.upper()[0:4] == "ENUM":
+        enumTypes = field.sqlType[5:-1]
+        allValues = []
+		for enum in enumTypes.split(','):
+			valueAndText = enum.replace('"','').replace("'","").split(':')
+			allValues.append( """'%(value)s',""" % {'value': valueAndText[0].strip()} )
+        
+        typeForDBML = "enum(" + ','.join(allValues) + ")"
+    else:
+        typeForDBML = field.sqlType
+
+    notNull = " NN" if field in self.keyFields else ""
+    refFK = ""
+    if field.referencedObject:
+        refFK = " [ref: > %(refTable)s.%(refField)s]" % {
+            'refTable': field.referencedObject.dbTableName,
+            'refField': field.referencedObject.keyFields[0].dbName,
+        }
+
+	attributeCode = """  %(dbName)s %(type)s%(notNull)%(refFK)""" % { 
+        'dbName' : field.dbName, 
+        'type' : typeForDBML,
+        'notNull' : notNull,
+        'refFK' : refFK
+    }
+
+	allAttributesCode += attributeCode + "\n"
+RETURN = allAttributesCode
+%%
+}
