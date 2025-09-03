@@ -87,8 +87,8 @@ class DbAttribute:
 if __name__ == "__main__":
     ouputFile = codecs.open("out.dbml", "w", "utf-8")
     
-    ouputFile.write("## Use with https://dbdiagram.io/\n")
-    ouputFile.write("## -- %s --\n\n" % datetime.now().strftime("%m/%d/%Y, %H:%M:%S") )
+    ouputFile.write("// Use with https://dbdiagram.io/\n")
+    ouputFile.write("// -- %s --\n\n" % datetime.now().strftime("%m/%d/%Y, %H:%M:%S") )
     objects = {}
     for i in range(1, len(sys.argv)):
         for file in glob.glob(sys.argv[i]):
