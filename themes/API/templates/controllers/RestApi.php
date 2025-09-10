@@ -239,10 +239,14 @@ RETURN = allAttributeCode
 for field in self.fields:
     if field.sqlType.upper()[0:3] == "INT":
         allAttributeCode += """
-            $item->%(dbName)s = intval( $item->%(dbName)s );""" % {'dbName': field.dbName}
+            if($item->%(dbName)s != null){
+                $item->%(dbName)s = intval( $item->%(dbName)s );
+            }""" % {'dbName': field.dbName}
     if field.sqlType.upper()[0:5] == "FLOAT":
         allAttributeCode += """
-            $item->%(dbName)s = (float)$item->%(dbName)s;""" % {'dbName': field.dbName}
+            if($item->%(dbName)s != null){
+                $item->%(dbName)s = (float)$item->%(dbName)s;
+        }""" % {'dbName': field.dbName}
         
 RETURN = allAttributeCode
 %%

@@ -9,11 +9,20 @@
     
     <meta name="author" content="Julien CORON">
     <title>Application</title>
+%%
+textAreaImports = ""
 
-    <!-- For local developpment, use this line to avoid having 1 unique CSS file. -->
-    <!-- link href="./assets/css/index.css" rel="stylesheet"-->
-    <!-- If commented, the "app\assets\index.js" file has to include this CSS file -->
-    
+for field in self.fields:
+    if field.sqlType.upper()[0:4] == "TEXT":
+      textAreaImports = """
+    <link rel="stylesheet" href="https://unpkg.com/jodit@latest/es2021/jodit.min.css"/>
+    <script src="https://unpkg.com/jodit@latest/es2021/jodit.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+    """
+      break
+
+RETURN = textAreaImports
+%%
   </head>
   <body class="h-100" style="background-color: #1d1d1d;">
 
