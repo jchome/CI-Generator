@@ -7,13 +7,13 @@ Table %%(self.obName)%% {
 allAttributesCode = ""
 for field in self.fields:
     if field.sqlType.upper()[0:4] == "FILE":
-		typeForDBML = "varchar(4000)" 
+        typeForDBML = "varchar(4000)" 
     elif field.sqlType.upper()[0:4] == "ENUM":
-        enumTypes = field.sqlType[5:-1]
+        enumTypes = field.sqlType[5:-1].replace(';',',')
         allValues = []
-		for enum in enumTypes.split(','):
-			valueAndText = enum.replace('"','').replace("'","").split(':')
-			allValues.append( """'%(value)s',""" % {'value': valueAndText[0].strip()} )
+        for enum in enumTypes.split(','):
+            valueAndText = enum.replace('"','').replace("'","").split(':')
+            allValues.append( """'%(value)s',""" % {'value': valueAndText[0].strip()} )
         
         typeForDBML = "enum(" + ','.join(allValues) + ")"
     else:
@@ -27,14 +27,14 @@ for field in self.fields:
             'refField': field.referencedObject.keyFields[0].dbName,
         }
 
-	attributeCode = """  %(dbName)s %(type)s%(notNull)%(refFK)""" % { 
+    attributeCode = """  %(dbName)s %(type)s%(notNull)s%(refFK)s""" % { 
         'dbName' : field.dbName, 
         'type' : typeForDBML,
         'notNull' : notNull,
         'refFK' : refFK
     }
 
-	allAttributesCode += attributeCode + "\n"
+    allAttributesCode += attributeCode + "\n"
 RETURN = allAttributesCode
 %%
 }

@@ -86,7 +86,7 @@ for field in self.fields:
 			'referencedObjectLower' : field.referencedObject.obName.lower()
 		}
 	elif field.sqlType.upper()[0:4] == "ENUM":
-		enumTypes = field.sqlType[5:-1]
+		enumTypes = field.sqlType[5:-1].replace(';',',')
 		attributeCode = """
 		$data["enum_%(dbName)s"] = array( """ % {'dbName' : field.dbName}
 		for enum in enumTypes.split(','):

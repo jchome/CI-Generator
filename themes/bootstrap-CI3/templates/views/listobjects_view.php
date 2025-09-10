@@ -59,7 +59,7 @@ RETURN = self.dbAndObVariablesList("""<th class=\"sortable\"><!-- (dbVar)s -->
 for field in self.fields:
 	if field.dbName != self.keyFields[0].dbName:
 		if field.sqlType.upper()[0:4] == "ENUM":
-			enumTypes = field.sqlType[5:-1]
+			enumTypes = field.sqlType[5:-1].replace(';',',')
 			for enum in enumTypes.split(','):
 				valueAndText = enum.replace('"','').replace("'","").split(':')
 				attributeCode = "\"%(value)s\"=>\"%(text)s\"" % {'value': valueAndText[0].strip(), 

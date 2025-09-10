@@ -28,7 +28,7 @@ for field in self.fields:
 	attributeCode = ""
 	if field.sqlType.upper()[0:4] == "ENUM":
 		attributeCode = "static $liste_%(dbName)s = array(" % { 'dbName' : field.dbName }
-		enumTypes = field.sqlType[5:-1]
+		enumTypes = field.sqlType[5:-1].replace(';',',')
 		typeList = ""
 		for enum in enumTypes.split(','):
 			valueAndText = enum.replace('"','').replace("'","").split(':')

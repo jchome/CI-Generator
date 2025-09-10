@@ -142,7 +142,7 @@ for field in self.fields:
 			attributeCode += """
 				<option value=""></option>"""
 			
-		enumTypes = field.sqlType[5:-1]
+		enumTypes = field.sqlType[5:-1].replace(';',',')
 		for enum in enumTypes.split(','):
 			valueAndText = enum.replace('"','').replace("'","").split(':')
 			attributeCode += """

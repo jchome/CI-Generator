@@ -122,7 +122,7 @@ for field in self.fields:
 		attributeCode += """<select name="%(dbName)s" id="%(dbName)s" %(moreAttributes)s>""" % { 'dbName' : field.dbName,
 			'moreAttributes' : moreAttributes
 			}
-		enumTypes = field.sqlType[5:-1]
+		enumTypes = field.sqlType[5:-1].replace(';',',')
 		for enum in enumTypes.split(','):
 			valueAndText = enum.replace('"','').replace("'","").split(':')
 			attributeCode += """<option value="%(value)s" >%(text)s</option>""" % {'value': valueAndText[0].strip(), 

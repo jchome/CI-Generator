@@ -95,7 +95,7 @@ for field in self.fields:
 		
 	elif field.sqlType.upper()[0:4] == "ENUM":
 		attributeCode += """<select name="%(dbName)s" id="%(dbName)s" class="styledselect_form_1">""" % { 'dbName' : field.dbName }
-		enumTypes = field.sqlType[5:-1]
+		enumTypes = field.sqlType[5:-1].replace(';',',')
 		for enum in enumTypes.split(','):
 			valueAndText = enum.replace('"','').replace("'","").split(':')
 			attributeCode += """<option value="%(value)s">%(text)s</option>""" % {'value': valueAndText[0].strip(), 'text': valueAndText[1].strip()}
