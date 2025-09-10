@@ -250,6 +250,7 @@ for field in self.fields:
         
 RETURN = allAttributeCode
 %%
+            $this->populate%%(self.obName.title())%%($item);
         }
 
         $response = [
@@ -257,6 +258,10 @@ RETURN = allAttributeCode
             'pager' => $this->model->pager->getDetails(),
         ];
         return $this->respond($response);
+    }
+    
+    protected function populate%%(self.obName.title())%%($item){
+        // Override this method if needed.
     }
 
 
