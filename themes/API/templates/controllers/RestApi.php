@@ -214,7 +214,9 @@ RETURN = allAttributeCode
                 continue;
             }
             $value = urldecode($filterData[2]);
-            log_message('debug', "filter value = " . $value);
+            // ^ will be replaced by "~"
+            $value = str_replace('^', '~', $value);
+            //log_message('debug', "filter value = " . $value);
             if($filterData[1] == "lk"){
                 $this->model->like($filterData[0], $value);
             }elseif($filterData[1] == "eq"){
