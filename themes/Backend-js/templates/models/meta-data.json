@@ -22,6 +22,8 @@ for field in self.fields:
     visibleInList = True
     if field.sqlType.upper()[0:8] == "PASSWORD" or field.isKey:
         visibleInList = False
+    elif field.sqlType.upper()[0:4] == "ENUM":
+        field.sqlType = field.sqlType.replace(';', ',')
 
     attributeCode = """
             {
