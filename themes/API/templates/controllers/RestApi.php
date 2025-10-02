@@ -116,9 +116,11 @@ for field in self.fields:
         allAttributeCode += """
         if(isset($data['%(dbName)s'])){
             $data['%(dbName)s'] = $data_%(dbName)s;
-            $data = manageFileUpload($data, '%(dbName)s', $existingObject);
+            $data = manageFileUpload($data, '%(objectName)s', '%(dbName)s', $existingObject);
             $requireUpdate = TRUE;
-        }""" % {'dbName': field.dbName}
+        }""" % {'dbName': field.dbName,
+                'objectName': self.obName.lower()
+        }
         
 allAttributeCode += """
         if($requireUpdate){
@@ -166,7 +168,10 @@ RETURN = allAttributeCode
 for field in self.fields:
     if field.sqlType.upper()[0:4] == "FILE":
         allAttributeCode += """
-        $data = manageFileUpload($data, '%(dbName)s', $existingObject); """ % {'dbName': field.dbName}
+        $data = manageFileUpload($data, '%(objectName)s', '%(dbName)s', $existingObject); """ % {
+            'dbName': field.dbName,
+            'objectName': self.obName.lower()
+        }
 
     elif field.sqlType.upper()[0:4] == "DATE":
         allAttributeCode += """
