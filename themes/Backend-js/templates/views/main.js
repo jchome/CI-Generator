@@ -12,7 +12,8 @@ export default class Main%%(self.obName.title())%%Element extends GenericMainEle
     renderMain() {
         return html`
             <app-%%(self.obName.lower())%%-list
-                .user="${this.user}">
+                .user="${this.user}"
+                .filters=${this.filters}>
             </app-%%(self.obName.lower())%%-list>
         `
     }
