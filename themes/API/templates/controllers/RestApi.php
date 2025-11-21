@@ -40,10 +40,11 @@ class %%(self.obName.title())%% extends SecuredResourceController {
      * 
      */
     public function show($id = null){
-        $object = $this->model->find($id);
+        $object = $this->model->asObject()->find($id);
         if (!$object) {
             return $this->failNotFound('Object not found');
         }
+		$this->populate%%(self.obName.title())%%($item);
         return $this->respond($object);
     }
 

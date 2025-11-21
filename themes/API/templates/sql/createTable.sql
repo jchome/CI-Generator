@@ -46,6 +46,9 @@ for field in self.fields:
             typeForSQL += """'%(value)s',""" % {'value': valueAndText[0].strip()}
         typeForSQL = typeForSQL[:-1]
         typeForSQL += ")"
+    elif field.sqlType.upper()[0:4] == "TEXT":
+        ## Allow insertion of emojis
+        typeForSQL = field.sqlType + ' CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'
 
     elif field.sqlType.upper()[0:4] == "FILE":
         typeForSQL = "varchar(4000)" 

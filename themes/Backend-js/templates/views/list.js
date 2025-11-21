@@ -15,7 +15,6 @@ export default class %%(self.obName.title())%%ListElement extends GenericListEle
     constructor() {
         super()
         this.objectName = "%%(self.obName.lower())%%"
-        this.orderBy = "order"
     }
 
     /** Override if needed
