@@ -9,7 +9,6 @@
 namespace V1;
 
 use Exception;
-use Helper;
 use TypeSafeQueryBuilder;
 
 class %%(self.obName.title())%%
@@ -17,6 +16,7 @@ class %%(self.obName.title())%%
     private $log;
     private $db;
     private $tableName;
+    private $helper;
     
     public static function defineRoutes($f3)
     {
@@ -32,6 +32,7 @@ class %%(self.obName.title())%%
         $this->log = \Base::instance()->get('LOG')->startup('../logs/log_%%(self.obName.lower())%%s.log');
         $this->db = \Base::instance()->get('DB');
         $this->tableName = \Base::instance()->get('db.prefix') . '%%(self.dbTableName)%%';
+        $this->helper = \Base::instance()->get('HELPER');
     }
 
     
@@ -159,6 +160,8 @@ RETURN = test_key_int
         //$this->log->info('App/post', 'Creating a new %%(self.obName.lower())%%');
         header('Content-Type: application/json; charset=utf-8');
         $data = new \DB\SQL\Mapper($this->db, $this->tableName);
+        $dataArray = json_decode($f3->get('BODY'), true);
+        $this->checkRequiredFields($dataArray);
 %%
 allAttributesCode = ""
 for field in self.fields:
@@ -168,18 +171,21 @@ for field in self.fields:
         continue
     elif field.sqlType.upper()[0:8] == "PASSWORD":
         allAttributesCode += """
-        $data->%(dbName)s = password_hash($f3->get('POST.%(dbName)s'), PASSWORD_DEFAULT);""" % { 'dbName' : field.dbName }
+        if ($dataArray['%(dbName)s'] != null && $dataArray['%(dbName)s'] != '') {
+            $data->%(dbName)s = password_hash($dataArray['%(dbName)s'], PASSWORD_DEFAULT);
+        }""" % { 'dbName' : field.dbName }
     elif field.sqlType.upper()[0:3] == "INT":
         allAttributesCode += """
-        $data->%(dbName)s =  empty($f3->get('POST.%(dbName)s')) ? null : intval($f3->get('POST.%(dbName)s'));""" % { 'dbName' : field.dbName }
+        $data->%(dbName)s =  empty($dataArray['%(dbName)s']) ? null : intval($dataArray['%(dbName)s']);""" % { 'dbName' : field.dbName }
     else:
         allAttributesCode += """
-        $data->%(dbName)s = $f3->get('POST.%(dbName)s');""" % { 'dbName' : field.dbName }
+        $data->%(dbName)s = $dataArray['%(dbName)s'];""" % { 'dbName' : field.dbName }
 RETURN = allAttributesCode
 %%
-        $this->beforeSave($data);
+
+        $this->beforeSave($data, $dataArray);
         $data->save();
-        $this->afterSave($data);
+        $this->afterSave($data, $dataArray);
 
         echo json_encode($data->cast(), JSON_UNESCAPED_UNICODE);
     }
@@ -200,6 +206,8 @@ RETURN = allAttributesCode
             throw new Exception('Object not found');
         }
         $existingObjectArr = $data->cast();
+        $dataArray = json_decode($f3->get('BODY'), true);
+        $this->checkRequiredFields($dataArray);
 %%
 allAttributesCode = ""
 for field in self.fields:
@@ -209,28 +217,48 @@ for field in self.fields:
         continue
     elif field.sqlType.upper()[0:8] == "PASSWORD":
         allAttributesCode += """
-        $data->%(dbName)s = password_hash($f3->get('POST.%(dbName)s'), PASSWORD_DEFAULT);""" % { 'dbName' : field.dbName }
+        if ($dataArray['%(dbName)s'] != null && $dataArray['%(dbName)s'] != '') {
+            $data->%(dbName)s = password_hash($dataArray['%(dbName)s'], PASSWORD_DEFAULT);
+        }""" % { 'dbName' : field.dbName }
     elif field.sqlType.upper()[0:3] == "INT":
         allAttributesCode += """
-        $data->%(dbName)s =  empty($f3->get('POST.%(dbName)s')) ? null : intval($f3->get('POST.%(dbName)s'));""" % { 'dbName' : field.dbName }
+        $data->%(dbName)s =  empty($dataArray['%(dbName)s']) ? null : intval($dataArray['%(dbName)s']);""" % { 'dbName' : field.dbName }
     else:
         allAttributesCode += """
-        $data->%(dbName)s = $f3->get('POST.%(dbName)s');""" % { 'dbName' : field.dbName }
+        $data->%(dbName)s = $dataArray['%(dbName)s'];""" % { 'dbName' : field.dbName }
 RETURN = allAttributesCode
 %%
-        $this->beforeSave($data);
+
+        $this->beforeSave($data, $dataArray);
         $data->save();
-        $this->afterSave($data, $existingObjectArr);
+        $this->afterSave($data, $dataArray, $existingObjectArr);
         //$this->log->info('App/put', 'Object updated!');
         
         echo json_encode($data->cast(), JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * Check that required fields are not empty
+     * Else, an exception is thrown (that will generate a 500 Server error)
+     */
+    protected function checkRequiredFields($dataArray)
+    {%%
+allAttributesCode = ""
+for field in self.fields:
+    if not field.nullable:
+        allAttributesCode += """
+        if ($dataArray['%(dbName)s'] == null || $dataArray['%(dbName)s'] == '') {
+            throw new Exception('%(dbName)s is required');
+        }""" % { 'dbName' : field.dbName }
+RETURN = allAttributesCode
+%%
     }
 
 
     /**
      * Override this function to manage data BEFORE saving in database
      */
-    protected function beforeSave($data)
+    protected function beforeSave($data, $dataArray = null)
     {
         // Nothing to do here
     }
@@ -238,16 +266,16 @@ RETURN = allAttributesCode
     /**
      * Override this function to manage data AFTER the object is saved in database
      */
-    protected function afterSave($data, $existingObject = null)
-    {
-%%
+    protected function afterSave($data, $dataArray = null, $existingObject = null)
+    {%%
 allAttributesCode = ""
 for field in self.fields:
     if field.sqlType.upper()[0:4] == "FILE":
         allAttributesCode += """
-        if($data['%(dbName)s'] != "") {
-            Helper::manageFileUpload($data->cast(), '%(objectName)s', '%(dbName)s', $existingObject);
-        }""" % { 'dbName' : field.dbName,
+        $dataArray = $this->helper->manageFileUpload($dataArray, '%(objectName)s', '%(dbName)s', $existingObject);
+        $data->%(dbName)s = $dataArray['%(dbName)s'];
+        $data->save();
+        """ % { 'dbName' : field.dbName,
             'objectName' : self.obName,
             'dbName' : field.dbName }
 RETURN = allAttributesCode
