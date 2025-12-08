@@ -20,11 +20,11 @@ class %%(self.obName.title())%%
     
     public static function defineRoutes($f3)
     {
-        $f3->route("GET /%%(self.obName.lower())%%s", 'V1\\%%(self.obName.title())%%->get_list');
-        $f3->route("GET /%%(self.obName.lower())%%s/@item", 'V1\\%%(self.obName.title())%%->get_item');
-        $f3->route("POST /%%(self.obName.lower())%%s", 'V1\\%%(self.obName.title())%%->post');
-        $f3->route("PUT /%%(self.obName.lower())%%s/@item", 'V1\\%%(self.obName.title())%%->put');
-        $f3->route("DELETE /%%(self.obName.lower())%%s/@item", 'V1\\%%(self.obName.title())%%->delete');
+        $f3->route("GET /%%(self.obName.lower())%%s", __NAMESPACE__ . '\\%%(self.obName.title())%%->get_list');
+        $f3->route("GET /%%(self.obName.lower())%%s/@item", __NAMESPACE__ . '\\%%(self.obName.title())%%->get_item');
+        $f3->route("POST /%%(self.obName.lower())%%s", __NAMESPACE__ . '\\%%(self.obName.title())%%->post');
+        $f3->route("PUT /%%(self.obName.lower())%%s/@item", __NAMESPACE__ . '\\%%(self.obName.title())%%->put');
+        $f3->route("DELETE /%%(self.obName.lower())%%s/@item", __NAMESPACE__ . '\\%%(self.obName.title())%%->delete');
     }
 
     public function __construct()
