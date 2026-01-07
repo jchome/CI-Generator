@@ -11,12 +11,11 @@ namespace V1;
 use Exception;
 use TypeSafeQueryBuilder;
 
-class %%(self.obName.title())%%
+class %%(self.obName.title())%% extends \API\FilteredApiController
 {
-    private $log;
-    private $db;
-    private $tableName;
-    private $helper;
+    protected $db;
+    protected $tableName;
+    protected $helper;
     
     public static function defineRoutes($f3)
     {
@@ -53,18 +52,9 @@ class %%(self.obName.title())%%
 
         $builder = new TypeSafeQueryBuilder($this->db->pdo());
         $builder->select($this->tableName);
-        
-        foreach ($filters as $filter) {
-            $filterData = explode('~', $filter);
-            if (sizeof($filterData) != 3) {
-                continue;
-            }
-            $value = urldecode($filterData[2]);
-            // ^ will be replaced by "~"
-            $value = str_replace('^', '~', $value);
 
-            $this->manageFilter($filterData, $value, $builder);
-        }
+        $this->manageFiltersArray($filters, $builder);
+        
         //$this->log->info('App/get_list', "Query \n" . $builder->query());
         $builder->orderBy($sortBy, $order);
         $builder->limit($limit, $offset);
@@ -95,21 +85,6 @@ class %%(self.obName.title())%%
         echo json_encode($response, JSON_UNESCAPED_UNICODE);
     }
 
-    protected function manageFilter($filterData, $value, $builder)
-    {
-        //$this->log->info('App/manageFilter', 'Managing filter ' . $filterData[0] . ' ' . $filterData[1] . ' ' . $value);
-        if ($filterData[1] == "lk") {
-            $builder->where($filterData[0], $value, 'LIKE');
-        } elseif ($filterData[1] == "eq") {
-            $builder->where($filterData[0], $value);
-        } elseif ($filterData[1] == "gt") {
-            $builder->where($filterData[0], $value, '>=');
-        } elseif ($filterData[1] == "lt") {
-            $builder->where($filterData[0], $value, '<=');
-        } else {
-            $this->log->warning('App/manageFilter', 'Unknown filter condition ' . $filterData[1]);
-        }
-    }
     
     /**
     * Get one %%(self.obName.lower())%%
@@ -176,7 +151,7 @@ for field in self.fields:
         }""" % { 'dbName' : field.dbName }
     elif field.sqlType.upper()[0:3] == "INT":
         allAttributesCode += """
-        $data->%(dbName)s =  empty($dataArray['%(dbName)s']) ? null : intval($dataArray['%(dbName)s']);""" % { 'dbName' : field.dbName }
+        $data->%(dbName)s = empty($dataArray['%(dbName)s']) ? null : intval($dataArray['%(dbName)s']);""" % { 'dbName' : field.dbName }
     else:
         allAttributesCode += """
         $data->%(dbName)s = $dataArray['%(dbName)s'];""" % { 'dbName' : field.dbName }
@@ -222,7 +197,7 @@ for field in self.fields:
         }""" % { 'dbName' : field.dbName }
     elif field.sqlType.upper()[0:3] == "INT":
         allAttributesCode += """
-        $data->%(dbName)s =  empty($dataArray['%(dbName)s']) ? null : intval($dataArray['%(dbName)s']);""" % { 'dbName' : field.dbName }
+        $data->%(dbName)s = empty($dataArray['%(dbName)s']) ? null : intval($dataArray['%(dbName)s']);""" % { 'dbName' : field.dbName }
     else:
         allAttributesCode += """
         $data->%(dbName)s = $dataArray['%(dbName)s'];""" % { 'dbName' : field.dbName }
