@@ -44,7 +44,7 @@ class %%(self.obName.title())%% extends SecuredResourceController {
         if (!$object) {
             return $this->failNotFound('Object not found');
         }
-		$this->populate%%(self.obName.title())%%($item);
+		$this->populate%%(self.obName.title())%%($object);
         return $this->respond($object);
     }
 

@@ -23,7 +23,7 @@ export default class %%(self.obName.title())%%ListElement extends GenericListEle
         if(this.orderBy != undefined){
             sortQuery = `&sort_by=${this.orderBy}&order=${this.asc?'asc':'desc'}`
         }
-        return `/api/v2/%%(self.obName.lower())%%s/?page=${this.currentPage}${sortQuery}`
+        return `/v2/%%(self.obName.lower())%%s/?page=${this.currentPage}${sortQuery}`
     }*/
 
     getEditorHtml(){

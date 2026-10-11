@@ -15,7 +15,7 @@ export default class %%(self.obName.title())%%EditElement extends GenericEditEle
 
     /** Override if needed
     urlOfSave(id){
-        return `/api/v2/%%(self.obName.lower())%%s/${id}`
+        return `/v2/%%(self.obName.lower())%%s/${id}`
     }*/
 
 

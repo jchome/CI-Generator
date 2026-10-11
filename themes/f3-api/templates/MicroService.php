@@ -8,6 +8,7 @@
  */
 namespace V1;
 
+use Throwable;
 use Exception;
 use TypeSafeQueryBuilder;
 
@@ -136,7 +137,18 @@ RETURN = test_key_int
         header('Content-Type: application/json; charset=utf-8');
         $data = new \DB\SQL\Mapper($this->db, $this->tableName);
         $dataArray = json_decode($f3->get('BODY'), true);
-        $this->checkRequiredFields($dataArray);
+        try{
+            $this->checkRequiredFields($dataArray, true);
+        }catch(Throwable $th){
+            $this->log->error("App/post", "Error on checkRequiredFields:" . $th->getMessage());
+            $response = [
+                "status" => "Error",
+                "message" => $th->getMessage(),
+                "input" => $dataArray
+            ];
+            echo json_encode($response, JSON_UNESCAPED_UNICODE);
+            return;
+        }
 %%
 allAttributesCode = ""
 for field in self.fields:
@@ -182,7 +194,18 @@ RETURN = allAttributesCode
         }
         $existingObjectArr = $data->cast();
         $dataArray = json_decode($f3->get('BODY'), true);
-        $this->checkRequiredFields($dataArray);
+        try{
+            $this->checkRequiredFields($dataArray, false);
+        }catch(Throwable $th){
+            $this->log->error("App/put", "Error on checkRequiredFields:" . $th->getMessage());
+            $response = [
+                "status" => "Error",
+                "message" => $th->getMessage(),
+                "input" => $dataArray
+            ];
+            echo json_encode($response, JSON_UNESCAPED_UNICODE);
+            return;
+        }
 %%
 allAttributesCode = ""
 for field in self.fields:
@@ -216,12 +239,23 @@ RETURN = allAttributesCode
      * Check that required fields are not empty
      * Else, an exception is thrown (that will generate a 500 Server error)
      */
-    protected function checkRequiredFields($dataArray)
+    protected function checkRequiredFields(array $dataArray, bool $isCreation)
     {%%
 allAttributesCode = ""
 for field in self.fields:
     if not field.nullable:
-        allAttributesCode += """
+        if field in self.keyFields:
+            allAttributesCode += """
+        if (!$isCreation && ($dataArray['%(dbName)s'] == null || $dataArray['%(dbName)s'] == '')) {
+            throw new Exception('%(dbName)s is required');
+        }""" % { 'dbName' : field.dbName }
+        elif field.sqlType.upper()[0:8] == "PASSWORD":
+            allAttributesCode += """
+        if ($isCreation && ($dataArray['%(dbName)s'] == null || $dataArray['%(dbName)s'] == '')) {
+            throw new Exception('%(dbName)s is required');
+        }""" % { 'dbName' : field.dbName }
+        else:
+            allAttributesCode += """
         if ($dataArray['%(dbName)s'] == null || $dataArray['%(dbName)s'] == '') {
             throw new Exception('%(dbName)s is required');
         }""" % { 'dbName' : field.dbName }
