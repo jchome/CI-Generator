@@ -15,7 +15,7 @@ export default class %%(self.obName.title())%%CreateElement extends GenericCreat
 
     /** Override if needed
     urlOfSave(){
-        return `/v1/%%(self.obName.lower())%%s/`
+        return `v2/%%(self.obName.lower())%%s/`
     }*/
 
 

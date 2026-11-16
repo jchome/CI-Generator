@@ -33,6 +33,7 @@ class %%(self.obName.title())%% extends \API\FilteredApiController
         $this->db = \Base::instance()->get('DB');
         $this->tableName = \Base::instance()->get('db.prefix') . '%%(self.dbTableName)%%';
         $this->helper = \Base::instance()->get('HELPER');
+        $this->helper->log = $this->log;
     }
 
     
@@ -40,10 +41,10 @@ class %%(self.obName.title())%% extends \API\FilteredApiController
     * Get list of %%(self.obName.lower())%%s
     * GET /%%(self.obName.lower())%%s/
     */
-    function get_list()
+    public function get_list()
     {
         header('Content-Type: application/json; charset=utf-8');
-        //$this->log->info('App/get_list', 'Selecting list of %%(self.obName.lower())%%s');
+        //$this->log->info('App/v1/%%(self.obName.title())%%get_list', 'Selecting list of %%(self.obName.lower())%%s');
         $sortBy = isset($_GET['sort_by']) ? $_GET['sort_by'] : 'id';
         $order = isset($_GET['order']) ? $_GET['order'] : 'ASC';
         $order = strtoupper($order) === 'DESC' ? 'DESC' : 'ASC';
@@ -56,16 +57,16 @@ class %%(self.obName.title())%% extends \API\FilteredApiController
 
         $this->manageFiltersArray($filters, $builder);
         
-        //$this->log->info('App/get_list', "Query \n" . $builder->query());
+        //$this->log->info('App/v1/%%(self.obName.title())%%/get_list', "Query \n" . $builder->query());
         $builder->orderBy($sortBy, $order);
         $builder->limit($limit, $offset);
         try {
             $rows = $builder->execute();
         } catch (\Throwable $th) {
-            $this->log->error('App/get_list', "Error: " . $th->getMessage());
+            $this->log->error('App/v1/%%(self.obName.title())%%/get_list', "Error: " . $th->getMessage());
             throw $th;
         }
-        //$this->log->info('App/get_list', "Query result: \n" . print_r($rows, true));
+        //$this->log->info('App/v1/%%(self.obName.title())%%/get_list', "Query result: \n" . print_r($rows, true));
 
         $items = array_map(function ($row) {
             return $this->afterRead($row);
@@ -91,7 +92,7 @@ class %%(self.obName.title())%% extends \API\FilteredApiController
     * Get one %%(self.obName.lower())%%
     * GET /%%(self.obName.lower())%%s/{key}
     */
-    function get_item($f3)
+    public function get_item($f3)
     {
         $key = $f3->get('PARAMS.item');
         if($key === null) {
@@ -104,18 +105,29 @@ if self.keyFields[0].sqlType.upper()[0:3] == "INT":
 RETURN = test_key_int
 %%
         header('Content-Type: application/json; charset=utf-8');
-        //$this->log->info('App/get_item', 'Selecting one %%(self.obName.lower())%%');
+        //$this->log->info('App/v1/%%(self.obName.title())%%/get_item', 'Selecting one %%(self.obName.lower())%%');
         $data = new \DB\SQL\Mapper($this->db, $this->tableName);
         $data->load(['%%(self.keyFields[0].dbName)%%=?', $key]);
         if ($data->dry()) {
-            http_response_code(404);
-            $this->log->error('App/get_item', 'Object not found');
-            throw new Exception('Object not found');
+            $this->log->error('App/v1/%%(self.obName.title())%%/get_item', 'Object not found');
+            $response = [
+                "status" => "error",
+                "message" => 'Object not found',
+                "input" => $key
+            ];
+            echo json_encode($response, JSON_UNESCAPED_UNICODE);
+            return;
         }
         $data = $data->cast();
-        //$this->log->info('App/get_item', 'Object found!');
+        //$this->log->info('App/v1/%%(self.obName.title())%%/get_item', 'Object found!');
         $data = $this->afterRead($data);
-        echo json_encode($data, JSON_UNESCAPED_UNICODE);
+
+        $response = [
+            "status" => "ok",
+            "data" => $data,
+        ];
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        return;
     }
 
     /**
@@ -123,7 +135,15 @@ RETURN = test_key_int
      */
     protected function afterRead($data)
     {
-        //unset($data['lat_lon_coord']);
+%%
+allAttributesCode = ""
+for field in self.fields:
+    if field.sqlType.upper()[0:5] == "POINT":
+        allAttributesCode += """
+        unset($data['%(dbName)s']);""" % { 'dbName' : field.dbName }
+    
+RETURN = allAttributesCode
+%%
         return $data;
     }
 
@@ -133,16 +153,16 @@ RETURN = test_key_int
     */
     function post($f3)
     {
-        //$this->log->info('App/post', 'Creating a new %%(self.obName.lower())%%');
+        //$this->log->info('App/v1/%%(self.obName.title())%%/post', 'Creating a new %%(self.obName.lower())%%');
         header('Content-Type: application/json; charset=utf-8');
         $data = new \DB\SQL\Mapper($this->db, $this->tableName);
         $dataArray = json_decode($f3->get('BODY'), true);
         try{
             $this->checkRequiredFields($dataArray, true);
         }catch(Throwable $th){
-            $this->log->error("App/post", "Error on checkRequiredFields:" . $th->getMessage());
+            $this->log->error("App/v1/%%(self.obName.title())%%/post", "Error on checkRequiredFields:" . $th->getMessage());
             $response = [
-                "status" => "Error",
+                "status" => "error",
                 "message" => $th->getMessage(),
                 "input" => $dataArray
             ];
@@ -155,6 +175,8 @@ for field in self.fields:
     if field in self.keyFields:
         continue
     elif field.sqlType.upper()[0:4] == "FILE":
+        continue
+    elif field.sqlType.upper()[0:5] == "POINT":
         continue
     elif field.sqlType.upper()[0:8] == "PASSWORD":
         allAttributesCode += """
@@ -173,33 +195,41 @@ RETURN = allAttributesCode
         $this->beforeSave($data, $dataArray);
         $data->save();
         $this->afterSave($data, $dataArray);
+        $response = [
+	        "status" => "ok",
+	        "data" => $data->cast()
+        ];
 
-        echo json_encode($data->cast(), JSON_UNESCAPED_UNICODE);
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
     }
     
     /**
     * Update an object
     * PUT /%%(self.obName.lower())%%/{key}
     */
-    function put($f3)
+    public function put($f3)
     {
-        //$this->log->info('App/put', 'Updating one %%(self.obName.lower())%%');
+        //$this->log->info('App/v1/%%(self.obName.title())%%/put', 'Updating one %%(self.obName.lower())%%');
         $key = $f3->get('PARAMS.item');
         header('Content-Type: application/json; charset=utf-8');
         $data = new \DB\SQL\Mapper($this->db, $this->tableName);
         $data->load(['%%(self.keyFields[0].dbName)%%=?', $key]);
         if ($data->dry()) {
-            http_response_code(404);
-            throw new Exception('Object not found');
+            $response = [
+                "status" => "error",
+                "message" => 'Object not found',
+            ];
+            echo json_encode($response, JSON_UNESCAPED_UNICODE);
+            return;
         }
         $existingObjectArr = $data->cast();
         $dataArray = json_decode($f3->get('BODY'), true);
         try{
             $this->checkRequiredFields($dataArray, false);
         }catch(Throwable $th){
-            $this->log->error("App/put", "Error on checkRequiredFields:" . $th->getMessage());
+            $this->log->error("App/v1/%%(self.obName.title())%%/put", "Error on checkRequiredFields:" . $th->getMessage());
             $response = [
-                "status" => "Error",
+                "status" => "error",
                 "message" => $th->getMessage(),
                 "input" => $dataArray
             ];
@@ -212,6 +242,8 @@ for field in self.fields:
     if field in self.keyFields:
         continue
     elif field.sqlType.upper()[0:4] == "FILE":
+        continue
+    elif field.sqlType.upper()[0:5] == "POINT":
         continue
     elif field.sqlType.upper()[0:8] == "PASSWORD":
         allAttributesCode += """
@@ -230,9 +262,13 @@ RETURN = allAttributesCode
         $this->beforeSave($data, $dataArray);
         $data->save();
         $this->afterSave($data, $dataArray, $existingObjectArr);
-        //$this->log->info('App/put', 'Object updated!');
+        //$this->log->info('App/v1/%%(self.obName.title())%%/put', 'Object updated!');
         
-        echo json_encode($data->cast(), JSON_UNESCAPED_UNICODE);
+        $response = [
+	        "status" => "ok",
+	        "data" => $data->cast()
+        ];
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
     }
 
     /**
@@ -243,6 +279,10 @@ RETURN = allAttributesCode
     {%%
 allAttributesCode = ""
 for field in self.fields:
+
+    if field.sqlType.upper()[0:5] == "POINT":
+        continue
+
     if not field.nullable:
         if field in self.keyFields:
             allAttributesCode += """
@@ -281,16 +321,41 @@ allAttributesCode = ""
 for field in self.fields:
     if field.sqlType.upper()[0:4] == "FILE":
         allAttributesCode += """
-        $dataArray = $this->helper->manageFileUpload($dataArray, '%(objectName)s', '%(dbName)s', $existingObject);
-        $data->%(dbName)s = $dataArray['%(dbName)s'];
+        $fileContent = $dataArray['%(dbName)s']['file'];
+        $extension = $dataArray['%(dbName)s']['extension'];
+        $filename = $this->helper->manageFileUpload($fileContent, '%(objectName)s', '%(dbName)s', $existingObject, $extension);
+        $data->%(dbName)s = $filename;
         $data->save();
-        """ % { 'dbName' : field.dbName,
-            'objectName' : self.obName,
-            'dbName' : field.dbName }
+        """ % { 
+            'dbName' : field.dbName,
+            'objectName' : self.obName
+        }
+
+    elif field.sqlType.upper()[0:5] == "POINT":
+        allAttributesCode += """
+        $this->updateGpsPoint($data->id, $dataArray, '%(dbName)s');
+        """ % { 'dbName' : field.dbName }
 RETURN = allAttributesCode
 %%
-        // TODO: Update the lat_lon_coord
+    }
+
+    private function updateGpsPoint($key, $dataArray, $fieldName)
+    {
+        $sourceFieldName = $fieldName.substr($fieldName, $fieldName.strpos($fieldName, '_coord'));
+        [$lat, $lon] = array_map(
+            function ($f) {return floatval($f);} , 
+            explode('@', $dataArray[$sourceFieldName])
+        );
         
+        $this->db->exec(
+            'UPDATE ' . $this->tableName . '
+            SET '.$fieldName.' = ST_GeomFromText(
+                CONCAT("POINT(", ?, " ", ?, ")"),
+                4326
+            )
+            WHERE id = ?',
+            [$lon, $lat, $key]
+        );
     }
 
     
@@ -298,30 +363,49 @@ RETURN = allAttributesCode
     * Delete an object
     * DELETE /%%(self.obName.lower())%%s/{key}
     */
-    function delete($f3)
+    public function delete($f3)
     {
-        //$this->log->info('App/delete', 'Deleting one %%(self.obName.lower())%%');
+        //$this->log->info('App/v1/%%(self.obName.title())%%/delete', 'Deleting one %%(self.obName.lower())%%');
         $key = $f3->get('PARAMS.item');
         header('Content-Type: application/json; charset=utf-8');
         $data = new \DB\SQL\Mapper($this->db, $this->tableName);
         $data->load(['%%(self.keyFields[0].dbName)%%=?', $key]);
         if ($data->dry()) {
-            http_response_code(404);
-            throw new Exception('Object not found');
+            $response = [
+                "status" => "error",
+                "message" => 'Object not found',
+            ];
+            echo json_encode($response, JSON_UNESCAPED_UNICODE);
+            return;
         }
         $this->beforeDelete($data);
         $data->erase();
         $this->afterDelete($data);
-        //$this->log->info('App/put', 'Object deleted!');
-
-        echo json_encode($data->cast(), JSON_UNESCAPED_UNICODE);
+        //$this->log->info('App/v1/%%(self.obName.title())%%/put', 'Object deleted!');
+        $response = [
+            "status" => "ok",
+            "data" => $data->cast(),
+        ];
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        return;
     }
 
     /**
      * Override this function to manage links to this object BEFORE the deletion
      */
-    protected function beforeDelete($data){
-        // Nothing to do here
+    protected function beforeDelete($data){%%
+allAttributesCode = ""
+for field in self.fields:
+    if field.sqlType.upper()[0:4] == "FILE":
+        allAttributesCode += """
+        // Delete file if exists
+        $this->helper->manageFileUpload('DELETE', '%(objectName)s', '%(dbName)s', $data->cast());
+        """ % {
+            'dbName' : field.dbName,
+            'objectName' : self.obName
+        }
+RETURN = allAttributesCode
+%%
     }
 
     /**
